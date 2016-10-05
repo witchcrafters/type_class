@@ -1,0 +1,2 @@
+defmodule Classy do
+end
