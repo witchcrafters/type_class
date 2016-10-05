@@ -10,3 +10,6 @@ def deps do
   [{:classy, "~> 0.1"}]
 end
 ```
+
+# NOTE!
+This is in extremely early stages! _Nothing_ works yet! Barely more than a sketch of an idea.
