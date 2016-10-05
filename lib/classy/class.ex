@@ -22,9 +22,7 @@ defmodule Classy.Class do
         defdelegate a == b, to: equal?
         defdelegate a != b, to: unequal?
 
-        defmodule Metadata do
-          def class_constraints, do: []
-        end
+        def __dependencies__, do: []
 
         defmodule Property do
           def all, do: [&reflexivity/1, &symmetry/2, &transitivity/3]
@@ -44,7 +42,7 @@ end
 
 defclass Witchcraft.Monoid do
   @depend Witchcraft.Semigroup
-  # Calls `use`, and adds to Witchcraft.Monoid.Metadata.dependencies
+  # Calls `use`, and adds to Witchcraft.Monoid.__dependencies__
 
   defmacro __using__(_) do
     quote do
@@ -53,8 +51,10 @@ defclass Witchcraft.Monoid do
     end
   end
 
+  @operator &&&
   def append_id(a), do: identity <> a
 
+  @operator ^
   @where identity(any) :: any
 
   # Must contain at least one law
