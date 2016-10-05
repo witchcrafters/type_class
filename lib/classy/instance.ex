@@ -14,6 +14,8 @@ defmodule Classy.Instance do
       Enum.reduce(class_name.Metadata.class_constraints, true, fn(constraint, validity) ->
         validity && exists?(constraint.target)
       end)
+
+      Enum.each(class_name.Property.all, run_prop)
     end
   end
 end
