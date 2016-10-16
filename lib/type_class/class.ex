@@ -10,7 +10,11 @@ defmodule TypeClass.Class do
 
     quote do
       Dependancy.set_up
+      Operator.set_up
+      Property.set_up
+      Protocol.set_up
 
+      body
 
       # defmodule unquote(class_name) do
       #   defmacro __using__(_) do
@@ -42,6 +46,9 @@ defmodule TypeClass.Class do
       # end
 
       Dependancy.run
+      Operator.run
+      Property.run
+      Protocol.run
     end
   end
 end

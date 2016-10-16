@@ -1,15 +1,9 @@
-defmodule TypeClass.Class.Dependancy do
-
-  defmacro __using__(_) do
-    quote do
-      require unquote(__MODULE__)
-      alias   unquote(__MODULE__)
-    end
-  end
+defmodule TypeClass.Class.Operator do
 
   defmacro set_up do
     quote do
-      Module.register_attribute __MODULE__, :depend, accumulate: true
+      Module.register_attribute __MODULE__, :operator, accumulate: true
+      # find function that it refers to
     end
   end
 
