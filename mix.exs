@@ -13,11 +13,11 @@ defmodule TypeClass.Mixfile do
       package: [
         maintainers: ["Brooklyn Zelenka"],
         licenses:    ["MIT"],
-        links:       %{"GitHub" => "https://github.com/expede/TypeClass"}
+        links:       %{"GitHub" => "https://github.com/expede/type_class"}
       ],
 
-      source_url:   "https://github.com/expede/TypeClass",
-      homepage_url: "https://github.com/expede/TypeClass",
+      source_url:   "https://github.com/expede/type_class",
+      homepage_url: "https://github.com/expede/type_class",
 
       aliases: ["quality": ["test", "credo --strict"]],
 
