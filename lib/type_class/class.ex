@@ -1,4 +1,4 @@
-defmodule Classy.Class do
+defmodule TypeClass.Class do
 
   defmacro __using__(_) do
     require unquote(__MODULE__)
@@ -6,40 +6,40 @@ defmodule Classy.Class do
   end
 
   defmacro defclass(class_name, do: body) do
-    use Classy.Class.Dependency
+    use TypeClass.Class.Dependancy
 
     quote do
       Dependancy.set_up
 
 
-      defmodule unquote(class_name) do
-        defmacro __using__(_) do
-          import Kernel, except: overrides
-          import class_name
-        end
+      # defmodule unquote(class_name) do
+      #   defmacro __using__(_) do
+      #     import Kernel, except: overrides
+      #     import class_name
+      #   end
 
-        import Kernel, except: [==: 2] # Manual, since body gets inlined
-        def __dependencies__, do: [Witchcraft.Semigroup]
+      #   import Kernel, except: [==: 2] # Manual, since body gets inlined
+      #   def __dependencies__, do: [Witchcraft.Semigroup]
 
-        defdelegate equal?(a, b), to: Protocol
+      #   defdelegate equal?(a, b), to: Protocol
 
-        def unequal?(a, b), do: !equal?(a, b)
+      #   def unequal?(a, b), do: !equal?(a, b)
 
-        defdelegate a == b, to: equal?
-        defdelegate a != b, to: unequal?
+      #   defdelegate a == b, to: equal?
+      #   defdelegate a != b, to: unequal?
 
-        defmodule Property do
-          def all, do: [&reflexivity/1, &symmetry/2, &transitivity/3]
+      #   defmodule Property do
+      #     def all, do: [&reflexivity/1, &symmetry/2, &transitivity/3]
 
-          def reflexivity(a), do: a == a
-          def symmetry(a, b), do: equal?(a, b) == equal?(b, a)
-          def transitivity(a, b, c), do: equal?(a, b) && equal?(b, c) && equal?(a, c)
-        end
+      #     def reflexivity(a), do: a == a
+      #     def symmetry(a, b), do: equal?(a, b) == equal?(b, a)
+      #     def transitivity(a, b, c), do: equal?(a, b) && equal?(b, c) && equal?(a, c)
+      #   end
 
-        defprotocol Protocol do
-          def equal?(a, b)
-        end
-      end
+      #   defprotocol Protocol do
+      #     def equal?(a, b)
+      #   end
+      # end
 
       Dependancy.run
     end
