@@ -6,7 +6,12 @@ defmodule Classy.Class do
   end
 
   defmacro defclass(class_name, do: body) do
+    use Classy.Class.Dependency
+
     quote do
+      Dependancy.set_up
+
+
       defmodule unquote(class_name) do
         defmacro __using__(_) do
           import Kernel, except: overrides
@@ -14,6 +19,7 @@ defmodule Classy.Class do
         end
 
         import Kernel, except: [==: 2] # Manual, since body gets inlined
+        def __dependencies__, do: [Witchcraft.Semigroup]
 
         defdelegate equal?(a, b), to: Protocol
 
@@ -21,8 +27,6 @@ defmodule Classy.Class do
 
         defdelegate a == b, to: equal?
         defdelegate a != b, to: unequal?
-
-        def __dependencies__, do: []
 
         defmodule Property do
           def all, do: [&reflexivity/1, &symmetry/2, &transitivity/3]
@@ -36,12 +40,15 @@ defmodule Classy.Class do
           def equal?(a, b)
         end
       end
+
+      Dependancy.run
     end
   end
 end
 
 defclass Witchcraft.Monoid do
   @depend Witchcraft.Semigroup
+
   # Calls `use`, and adds to Witchcraft.Monoid.__dependencies__
 
   defmacro __using__(_) do
@@ -58,7 +65,7 @@ defclass Witchcraft.Monoid do
   @where identity(any) :: any
 
   # Must contain at least one law
-  @law reflexivity(a), do: a == a
-  @law symmetry(a, b), do: equal?(a, b) == equal?(b, a)
-  @law transitivity(a, b, c), do: equal?(a, b) && equal?(b, c) && equal?(a, c)
+  @property reflexivity(a), do: a == a
+  @property symmetry(a, b), do: equal?(a, b) == equal?(b, a)
+  @property transitivity(a, b, c), do: equal?(a, b) && equal?(b, c) && equal?(a, c)
 end

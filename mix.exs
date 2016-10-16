@@ -1,23 +1,23 @@
-defmodule Classy.Mixfile do
+defmodule TypeClass.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app:  :classy,
-      name: "Classy",
+      app:  :type_class,
+      name: "TypeClass",
       description: "Principled type classes for Elixir",
 
-      version: "0.6.0",
+      version: "0.0.1",
       elixir:  "~> 1.3",
 
       package: [
         maintainers: ["Brooklyn Zelenka"],
         licenses:    ["MIT"],
-        links:       %{"GitHub" => "https://github.com/expede/classy"}
+        links:       %{"GitHub" => "https://github.com/expede/TypeClass"}
       ],
 
-      source_url:   "https://github.com/expede/classy",
-      homepage_url: "https://github.com/expede/classy",
+      source_url:   "https://github.com/expede/TypeClass",
+      homepage_url: "https://github.com/expede/TypeClass",
 
       aliases: ["quality": ["test", "credo --strict"]],
 

@@ -1,0 +1,2 @@
+defmodule TypeClass do
+end

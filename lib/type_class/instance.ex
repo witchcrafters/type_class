@@ -1,4 +1,4 @@
-defmodule Classy.Instance do
+defmodule TypeClass.Instance do
   @moduledoc ~S"""
   """
 

@@ -1,2 +1,0 @@
-defmodule Classy do
-end
