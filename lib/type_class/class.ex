@@ -16,39 +16,17 @@ defmodule TypeClass.Class do
 
       body
 
-      # defmodule unquote(class_name) do
-      #   defmacro __using__(_) do
-      #     import Kernel, except: overrides
-      #     import class_name
-      #   end
-
-      #   import Kernel, except: [==: 2] # Manual, since body gets inlined
-      #   def __dependencies__, do: [Witchcraft.Semigroup]
-
-      #   defdelegate equal?(a, b), to: Protocol
-
-      #   def unequal?(a, b), do: !equal?(a, b)
-
-      #   defdelegate a == b, to: equal?
-      #   defdelegate a != b, to: unequal?
-
-      #   defmodule Property do
-      #     def all, do: [&reflexivity/1, &symmetry/2, &transitivity/3]
-
-      #     def reflexivity(a), do: a == a
-      #     def symmetry(a, b), do: equal?(a, b) == equal?(b, a)
-      #     def transitivity(a, b, c), do: equal?(a, b) && equal?(b, c) && equal?(a, c)
-      #   end
-
-      #   defprotocol Protocol do
-      #     def equal?(a, b)
-      #   end
-      # end
-
       Dependancy.run
       Operator.run
       Property.run
       Protocol.run
+
+      defmacro __using__(:class) do
+        require class_name
+        import class_name
+
+        use_dependencies
+      end
     end
   end
 end

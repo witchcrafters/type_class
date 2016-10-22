@@ -26,4 +26,10 @@ defmodule TypeClass.Class.Dependancy do
       def __dependancies__, do: @dependancies
     end
   end
+
+  defmacro use_dependancies do
+    quote do
+      Enum.map(__DEPENDANCIES__, fn dep -> Kernel.use(dep, :class) end)
+    end
+  end
 end
