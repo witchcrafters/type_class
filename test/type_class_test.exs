@@ -1,6 +1,7 @@
-defmodule ClassyTest do
+defmodule TypeClassTest do
   use ExUnit.Case
-  doctest Classy
+
+  doctest TypeClass
 
   test "the truth" do
     assert 1 + 1 == 2

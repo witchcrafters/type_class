@@ -22,6 +22,8 @@ defmodule TypeClass.Mixfile do
       aliases: ["quality": ["test", "credo --strict"]],
 
       deps: [
+        {:operator, "~> 0.2"},
+
         {:credo,    "~> 0.4",  only: [:dev, :test]},
 
         {:dialyxir, "~> 0.3",  only: :dev},

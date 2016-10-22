@@ -3,6 +3,8 @@ defmodule TypeClass.Class do
   defmacro __using__(_) do
     require unquote(__MODULE__)
     import unquote(__MODULE__)
+
+    use Operator
   end
 
   defmacro defclass(class_name, do: body) do
@@ -10,14 +12,12 @@ defmodule TypeClass.Class do
 
     quote do
       Dependancy.set_up
-      Operator.set_up
       Property.set_up
       Protocol.set_up
 
       body
 
       Dependancy.run
-      Operator.run
       Property.run
       Protocol.run
 
@@ -32,7 +32,7 @@ defmodule TypeClass.Class do
 end
 
 defclass Witchcraft.Monoid do
-  @depend Witchcraft.Semigroup
+  @extend Witchcraft.Semigroup
 
   # Calls `use`, and adds to Witchcraft.Monoid.__dependencies__
 
