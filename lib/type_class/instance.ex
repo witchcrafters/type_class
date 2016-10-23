@@ -18,4 +18,15 @@ defmodule TypeClass.Instance do
   #     Enum.each(class_name.Property.all, run_prop)
   #   end
   # end
+
+  alias TypeClass.Utility
+
+  defmacro definstance(class, for: type, do: body) do
+    quote do
+      defimpl(Utility.Module.to_protocol(unquote(class)), for: unquote(type)) do
+        use TypeClass.Property.DataGenerator
+        unquote do(body)
+      end
+    end
+  end
 end

@@ -3,6 +3,7 @@ defmodule TypeClass.Class.Protocol do
   The protocol helpers for defining the critical functions of a type class
   """
 
+  alias TypeClass.Utility
   use TypeClass.Utility.Attribute
 
   @keyword :class_where
@@ -40,7 +41,10 @@ defmodule TypeClass.Class.Protocol do
   end
 
   defmacro all_wheres do
-    quote do: unquote(@keyword) |> Attribute.get |> List.flatten
+    quote do
+      [__DATA_GENERATOR__(name, do: body) | Attribute.get(unquote(@keyword))]
+      |> List.flatten
+    end
   end
 
   defmacro unify_top_level_api(wheres) do
@@ -49,9 +53,10 @@ defmodule TypeClass.Class.Protocol do
 
   defmacro generate_protocol(wheres, for: module) do
     quote do
-      defprotocol TypeClass.Class.Name.to_protocol(unquote(module)) do
+      defprotocol Utility.Module.to_protocol(unquote(module)) do
         @moduledoc moduledoc_text(unquote(module))
-        wheres
+
+        unquote(wheres)
       end
     end
   end
@@ -72,7 +77,7 @@ defmodule TypeClass.Class.Protocol do
           unquote(ast)
 
         fun ->
-          protocol = TypeClass.Class.Name.to_protocol(__MODULE__)
+          protocol = Utility.Module.to_protocol(__MODULE__)
           defdelegate(unquote(ast), to: protocol, as: unquote(fun_sym))
       end
     end

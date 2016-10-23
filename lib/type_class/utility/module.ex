@@ -1,4 +1,4 @@
-defmodule TypeClass.Class.Name do
+defmodule TypeClass.Utility.Module do
   @moduledoc "Naming convention helpers to help follow TypeClass conventions"
 
   @doc ~S"""
@@ -7,11 +7,11 @@ defmodule TypeClass.Class.Name do
 
   ## Examples
 
-      iex> TypeClass.Class.Name.protocol(MyClass.Awesome)
-      MyClass.Awesome.Protocol
+  iex> TypeClass.Class.Name.protocol(MyClass.Awesome)
+  MyClass.Awesome.Protocol
 
-      iex> TypeClass.Class.Name.protocol(MyClass.Awesome.Protocol)
-      MyClass.Awesome.Protocol
+  iex> TypeClass.Class.Name.protocol(MyClass.Awesome.Protocol)
+  MyClass.Awesome.Protocol
 
   """
   @spec to_protocol(module) :: module

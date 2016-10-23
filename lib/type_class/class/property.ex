@@ -16,8 +16,7 @@ defmodule TypeClass.Class.Property do
   defmacro run do
     quote do
       def __PROPERTIES__, do: Attribute.get(:property)
-
-      # run props with QuickCheck or equivalent
+      TypeClass.Property.check_all(__MODULE__)
     end
   end
 end
