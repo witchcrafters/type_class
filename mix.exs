@@ -23,6 +23,7 @@ defmodule TypeClass.Mixfile do
 
       deps: [
         {:operator, "~> 0.2"},
+        {:quark,    "~> 2.2"},
 
         {:credo,    "~> 0.4",  only: [:dev, :test]},
 

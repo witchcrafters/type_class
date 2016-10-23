@@ -11,46 +11,26 @@ defmodule TypeClass.Class do
     use TypeClass.Class.Dependancy
 
     quote do
-      Dependancy.set_up
-      Property.set_up
-      Protocol.set_up
-
+      set_up
       body
-
-      Dependancy.run
-      Property.run
-      Protocol.run
+      run
 
       defmacro __using__(:class) do
         require class_name
         import class_name
-
-        use_dependencies
       end
     end
   end
-end
 
-defclass Witchcraft.Monoid do
-  @extend Witchcraft.Semigroup
-
-  # Calls `use`, and adds to Witchcraft.Monoid.__dependencies__
-
-  defmacro __using__(_) do
-    quote do
-      import unquote(__MODULE__)
-      use_dependencies
-    end
+  defmacro set_up do
+    Dependancy.use
+    # Property.use
+    # Protocol.use
   end
 
-  @operator &&&
-  def append_id(a), do: identity <> a
-
-  @operator ^
-  @where identity(any) :: any
-
-  # Must contain at least one law
-  @property reflexivity(a), do: a == a
-  @property symmetry(a, b), do: equal?(a, b) == equal?(b, a)
-  @property transitivity(a, b, c), do: equal?(a, b) && equal?(b, c) && equal?(a, c)
+  defmacro run do
+    Dependancy.run
+    # Property.run
+    # Protocol.run
+  end
 end
