@@ -3,6 +3,10 @@ defmodule TypeClass.Class.Protocol do
   The protocol portion of a type class
   """
 
+  use TypeClass.Util.Attribute
+
+  @keyword :class_where
+
   defmacro __using__(_) do
     quote do
       require unquote(__MODULE__)
@@ -11,16 +15,33 @@ defmodule TypeClass.Class.Protocol do
   end
 
   defmacro where(do: fun_specs) do
+    ast = Macro.escape(fun_specs)
+    quote do
+      @where unquote(ast)
+    end
+  end
+
+  defmacro set_up do
+    quote do: Attribute.register(unquote(@keyword), accumulate: true)
+  end
+
+  defmacro run do
     quote do
       defprotocol TypeClass.Class.Name.to_protocol(unquote(__MODULE__)) do
-        @moduledoc ~s"""
-        Protocol for the `#{unquote(__MODULE__)}` type class
+        __MODULE__
+        |> moduledoc
+        |> Attribute.set(:moduledoc)
 
-        For this type class's API, please refer to `#{unquote(__MODULE__)}`
-        """
-
-        unquote(fun_specs)
+        Attribute.get(unquote(@keyword))
       end
     end
+  end
+
+  def moduledoc(module) do
+    ~s"""
+    Protocol for the `#{module}` type class
+
+    For this type class's API, please refer to `#{module}`
+    """
   end
 end
