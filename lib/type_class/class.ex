@@ -8,29 +8,26 @@ defmodule TypeClass.Class do
   end
 
   defmacro defclass(class_name, do: body) do
-    use TypeClass.Class.Dependancy
-
     quote do
-      set_up
-      body
-      run
-
       defmacro __using__(:class) do
-        require class_name
-        import class_name
+        require unquote(class_name)
+        import  unquote(class_name)
       end
+
+      TypeClass.Class.set_up
+      unquote(body)
+      TypeClass.Class.run
     end
   end
 
   defmacro set_up do
     Dependancy.use
     # Property.use
-    # Protocol.use
+    Protocol.use
   end
 
   defmacro run do
     Dependancy.run
     # Property.run
-    # Protocol.run
   end
 end

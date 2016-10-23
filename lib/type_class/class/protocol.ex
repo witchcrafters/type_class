@@ -1,27 +1,23 @@
 defmodule TypeClass.Class.Protocol do
 
-  defmacro set_up do
+  defmacro __using__(_) do
     quote do
-      Module.register_attribute __MODULE__, :where, accumulate: true
+      require unquote(__MODULE__)
+      import  unquote(__MODULE__), only: [where: 1]
     end
   end
 
-  defmacro run do
+  defmacro where(do: fun_specs) do
     quote do
-      class_module = __MODULE__
-      protocol_module = Module.concat([class_module, Protocol])
+      defprotocol TypeClass.Class.Name.to_protocol(unquote(__MODULE__)) do
+        @moduledoc ~s"""
+        Protocol for the `#{unquote(__MODULE__)}` type class
 
-      funs = Module.get_attribute(class_module, :where)
+        For this type class's API, please refer to `#{unquote(__MODULE__)}`
+        """
 
-      # SO MUCH PLACEHOLDER!
-
-      defmodule protocol_module do
-        Enum.each(funs, Protocol.def)
+        unquote(fun_specs)
       end
-
-      funs
-      |> extract_names
-      Enum.each(fn fun_name -> defdelegate(fun, to: protocol_module) end)
     end
   end
 end
