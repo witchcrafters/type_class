@@ -65,10 +65,12 @@ defmodule TypeClass.Class do
   """
 
   defmacro __using__(_) do
-    require unquote(__MODULE__)
-    import unquote(__MODULE__)
+    quote do
+      require unquote(__MODULE__)
+      import  unquote(__MODULE__)
 
-    use Operator
+      use Operator
+    end
   end
 
   defmacro defclass(class_name, do: body) do

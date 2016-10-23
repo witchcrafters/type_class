@@ -1,6 +1,6 @@
 defmodule TypeClass.Class.Protocol do
   @moduledoc ~S"""
-  The protocol portion of a type class
+  The protocol helpers for defining the critical functions of a type class
   """
 
   use TypeClass.Util.Attribute
@@ -31,10 +31,7 @@ defmodule TypeClass.Class.Protocol do
   defmacro run do
     quote do
       defprotocol TypeClass.Class.Name.to_protocol(unquote(__MODULE__)) do
-        __MODULE__
-        |> moduledoc
-        |> Attribute.set(as: :moduledoc)
-
+        @moduledoc moduledoc(__MODULE__)
         Attribute.get(unquote(@keyword))
       end
     end

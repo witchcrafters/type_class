@@ -28,13 +28,11 @@ defmodule TypeClass.Class.Dependancy do
   defmacro create_dependancies_meta do
     quote do
       def __DEPENDANCIES__ do
-        unquote do
-          use Quark
+        use Quark
 
-          __MODULE__
-          |> Module.get_attribute(unquote(@keyword))
-          |> Enum.map(Class.Name.to_protocol <~> Class.Protocol.assert_impl!)
-        end
+        __MODULE__
+        |> Module.get_attribute(unquote(@keyword))
+        |> Enum.map(Class.Name.to_protocol <~> Class.Protocol.assert_impl!)
       end
     end
   end
@@ -42,7 +40,7 @@ defmodule TypeClass.Class.Dependancy do
   defmacro create_use_dependancies do
     quote do
       __DEPENDANCIES__
-      |> Enum.map(&(Kernel.use &1, :class)
+      |> Enum.map(&(Kernel.use(&1, :class)))
       |> unquote_splicing
     end
   end
