@@ -64,36 +64,47 @@ defmodule TypeClass.Class do
   and will throw errors if they fail.
   """
 
+  use TypeClass.Class.Dependancy
+  use TypeClass.Class.Property
+  use TypeClass.Class.Protocol
+  use TypeClass.Utility.Attribute
+
   defmacro __using__(_) do
     quote do
       require unquote(__MODULE__)
       import  unquote(__MODULE__)
-
-      use Operator
     end
   end
 
   defmacro defclass(class_name, do: body) do
     quote do
+      TypeClass.Class.set_up
+      use Operator
+
+      unquote(body)
+
       defmacro __using__(:class) do
         require unquote(class_name)
         import  unquote(class_name)
       end
 
-      TypeClass.Class.set_up
-      unquote(body)
       TypeClass.Class.run
     end
   end
 
   defmacro set_up do
-    Dependancy.use
-    # Property.use
-    Protocol.use
+    quote do
+      Dependancy.use
+      Property.use
+      Protocol.use
+    end
   end
 
   defmacro run do
-    Dependancy.run
-    # Property.run
+    quote do
+      Dependancy.run
+      Property.run
+      Protocol.run
+    end
   end
 end

@@ -1,15 +1,21 @@
 defmodule TypeClass.Class.Property do
 
-  defmacro set_up do
+  use TypeClass.Utility.Attribute
+
+  defmacro __using__(_) do
     quote do
-      Module.register_attribute __MODULE__, :property, accumulate: true
+      require unquote(__MODULE__)
+      alias   unquote(__MODULE__)
     end
+  end
+
+  defmacro set_up do
+    quote do: Attribute.register(:property, accumulate: true)
   end
 
   defmacro run do
     quote do
-      @props Module.get_attribute(__MODULE__, :property)
-      def __properties__, do: @props
+      def __PROPERTIES__, do: Attribute.get(:property)
 
       # run props with QuickCheck or equivalent
     end

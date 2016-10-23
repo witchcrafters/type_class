@@ -1,5 +1,8 @@
 defmodule TypeClass.Class.Dependancy do
 
+  use TypeClass.Utility.Attribute
+  use Quark
+
   defmacro __using__(_) do
     quote do
       alias   TypeClass.Class
@@ -28,8 +31,6 @@ defmodule TypeClass.Class.Dependancy do
   defmacro create_dependancies_meta do
     quote do
       def __DEPENDANCIES__ do
-        use Quark
-
         __MODULE__
         |> Module.get_attribute(unquote(@keyword))
         |> Enum.map(Class.Name.to_protocol <~> Class.Protocol.assert_impl!)
