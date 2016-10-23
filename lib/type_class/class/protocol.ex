@@ -1,4 +1,7 @@
 defmodule TypeClass.Class.Protocol do
+  @moduledoc ~S"""
+  The protocol portion of a type class
+  """
 
   defmacro __using__(_) do
     quote do
