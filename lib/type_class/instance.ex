@@ -21,11 +21,18 @@ defmodule TypeClass.Instance do
 
   alias TypeClass.Utility
 
+  defmacro __using__(_) do
+    quote do
+      require unquote(__MODULE__)
+      alias   unquote(__MODULE__)
+    end
+  end
+
   defmacro definstance(class, for: type, do: body) do
     quote do
       defimpl(Utility.Module.to_protocol(unquote(class)), for: unquote(type)) do
         use TypeClass.Property.DataGenerator
-        unquote do(body)
+        unquote do: body
       end
     end
   end

@@ -1,11 +1,10 @@
 defmodule TypeClass.Class.Dependancy do
 
-  use TypeClass.Utility
+  use TypeClass.Utility.Attribute
   use Quark
 
   defmacro __using__(_) do
     quote do
-      alias   TypeClass.Class
       alias   unquote(__MODULE__)
       require unquote(__MODULE__)
 
@@ -17,7 +16,7 @@ defmodule TypeClass.Class.Dependancy do
 
   defmacro set_up do
     quote do
-      Utility.Attribute.register(unquote(@ketword), accumulate: true)
+      Attribute.register(unquote(@ketword), accumulate: true)
     end
   end
 
@@ -32,7 +31,7 @@ defmodule TypeClass.Class.Dependancy do
     quote do
       def __DEPENDANCIES__ do
         __MODULE__
-        |> Utility.Attribute.get(unquote(@keyword))
+        |> Attribute.get(unquote(@keyword))
         |> Enum.map(Utility.Module.to_protocol <~> Protocol.assert_impl!)
       end
     end

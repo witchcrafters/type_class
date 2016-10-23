@@ -63,11 +63,11 @@ defmodule TypeClass.Class do
   These will be run at compile time (in dev and test environments),
   and will throw errors if they fail.
   """
+  use TypeClass.Utility.Attribute
 
   use TypeClass.Class.Dependancy
   use TypeClass.Class.Property
   use TypeClass.Class.Protocol
-  use TypeClass.Utility.Attribute
 
   defmacro __using__(_) do
     quote do

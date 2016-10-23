@@ -10,7 +10,7 @@ defmodule TypeClass.Property.DataGenerator do
 
   defmacro defgenerator(unique_name, do: body) do
     quote do
-      def __DATA_GENERATOR__(unquote(unique_name)) do: unquote(body)
+      def __DATA_GENERATOR__(unquote(unique_name), do: unquote(body))
     end
   end
 end
