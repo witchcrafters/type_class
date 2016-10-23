@@ -16,8 +16,11 @@ defmodule TypeClass.Class.Protocol do
 
   defmacro where(do: fun_specs) do
     ast = Macro.escape(fun_specs)
+
     quote do
-      @where unquote(ast)
+      ast
+      |> unquote
+      |> Attribute.set(as: unquote(@keyword))
     end
   end
 
@@ -30,7 +33,7 @@ defmodule TypeClass.Class.Protocol do
       defprotocol TypeClass.Class.Name.to_protocol(unquote(__MODULE__)) do
         __MODULE__
         |> moduledoc
-        |> Attribute.set(:moduledoc)
+        |> Attribute.set(as: :moduledoc)
 
         Attribute.get(unquote(@keyword))
       end
