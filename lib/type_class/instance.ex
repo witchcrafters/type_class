@@ -19,6 +19,13 @@ defmodule TypeClass.Instance do
   #   end
   # end
 
+  # Only need generators on ADTs
+  # defgenerator list(of: :int, max \\ 100) do
+  #   0..(max * 10)
+  #   |> Enum.shuffle
+  #   |> Enum.take(:rand.uniform(max))
+  # end
+
   alias TypeClass.Utility
 
   defmacro __using__(_) do

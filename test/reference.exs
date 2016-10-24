@@ -14,6 +14,7 @@ defclass Algebra.Monoid do
   end
 
   where do
+    @doc "Return the 'identity' or 'empty' element of the monoid"
     @operator ^
     identity(any) :: any
   end
@@ -28,4 +29,8 @@ defclass Algebra.Monoid do
 
   @operator ^^^
   def append_id(a), do: identity(a) <> a
+end
+
+definstance Algebra.Monoid, for: List do
+  def identity(a), do: []
 end
