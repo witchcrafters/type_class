@@ -19,7 +19,10 @@ defmodule TypeClass.Class.Dependancy do
   end
 
   defmacro extend(parent_class) do
-    quote do: Attribute.set(unquote(@keyword), as: unquote(parent_class))
+    quote do
+      use unquote(parent_class)
+      Attribute.set(unquote(@keyword), as: unquote(parent_class))
+    end
   end
 
   defmacro run do
