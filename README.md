@@ -46,23 +46,23 @@ At the core, type classes are about the _properties_ that enable its functions t
 
 [John De Goes](http://degoes.net) defines [principled type classes](http://degoes.net/articles/principled-typeclasses) as:
 
-> 1. Haskell-style. A baked-in notion of type classes in the overall style of Haskell, Purescript, Idris, etc.
+> #1. Haskell-style. A baked-in notion of type classes in the overall style of Haskell, Purescript, Idris, etc.
 
 `defclass` and `definstance` get us 99% of the way here. It's not as lightweight as in Haskell &c, but it's close (and much more succinct than what is available in `Kernel`)
 
-> 2. Lawful. First-class laws for type classes, which are enforced by the compiler.
+> #2. Lawful. First-class laws for type classes, which are enforced by the compiler.
 
 As mentioned above, we meet laws/properties halfway with compile-time property tests.
 
-> 3. Hierarchical. A compiler-verified requirement that a subclass of a type class must have at least one more law than that type class.
+> #3. Hierarchical. A compiler-verified requirement that a subclass of a type class must have at least one more law than that type class.
 
 `TypeClass` requires at least one property per class. You can build type class hierarchies with `extend`.
 
-> 4. Globally Unambiguous. Type class resolution that produces an error if there exists more than one instances which satisfies the constraints at the point where the compiler must choose an instance.
+> #4. Globally Unambiguous. Type class resolution that produces an error if there exists more than one instances which satisfies the constraints at the point where the compiler must choose an instance.
 
 Elixir is dynamically typed, and so we cannot constrain functions at compile time. However, the point is well taken: rather than creating a renamed variant of a type so that you can have multiple instances (ex. `Monoid` can be integer addition or multiplication), extend the typeclass and give it the additional properties that you're interested in for each case (ex. `AdditiveMonoid` and `MultiplicativeMonoid` extend `Monoid`).
 
-> 5. Abstractable. The ability to abstract over type classes themselves.
+> #5. Abstractable. The ability to abstract over type classes themselves.
 
 De Goes is referring here to abstracting over type holes. Elixir is dynamically typed, so this one doesn't apply to us.
 
