@@ -29,12 +29,12 @@ end
 # Type Classes
 Type classes are not unlike protocols. They are essentially a mechanism for ad hoc polymorphism. However, doing extensive work with protocols can be cumbersome in Elixir. Even the standard library uses the confusingly named `Enumerator` protocol to support the `Enum` module. `TypeClass` attempts to hide many of the details to give you a single module interface.
 
-## `defclass` and `definstance`
+## Condensed Style
 To this end, `TypeClass` provides the `defclass` macro to handle generating all of the modules, submodules, and protocols.
 
 `definstance` is very similar to `defimpl`, except that you don't need to pass it the actual protocol; you only pass it just the "top" class module. It will also automatically run a number of checks at compile time to help keep everything running as per the definition in `defclass` (more on that later)
 
-## Hierarchy
+## Hierarchical
 Type classes can be hierarchical. The `extend` macro allows defining another class that your class depends on existing. A common example from Haskell and similar is how the monad instance must also be an applicative, which in turn must be a functor. `definstance` will check that the type you are implementing already has an implementation of the parent classes. Specifying multiple parents is totally okay, as this is superclassing, not subclassing like in an object oriented system.
 
 ## Principled
@@ -44,7 +44,22 @@ At the core, type classes are about the _properties_ that enable its functions t
 
 `TypeClass` meets this challenge halfway: property testing. `definstance` will property test a small batch of examples on every data typed that the class is defined for _at compile time_. By default, it skips this check in production, runs a minimal set of cases in development, and runs a larger suite in the test environment. Property testing lets `TypeClass` check hundreds of specific examples very quickly, so while it doesn't give you a guarantee that your instance is correct, it does give you a high level of confidence.
 
-For more, see John De Goes's wonderful article [Haskell's Type Classes: We Can Do Better](http://degoes.net/articles/principled-typeclasses)
+[John De Goes](http://degoes.net) [defines principled type classes](http://degoes.net/articles/principled-typeclasses) as:
+
+> 1. Haskell-style. A baked-in notion of type classes in the overall style of Haskell, Purescript, Idris, etc.
+`defclass` and `definstance` get us 99% of the way here. It's not as lightweight as in Haskell &c, but it's close (and much more succinct than what is available in `Kernel`)
+
+> 2. Lawful. First-class laws for type classes, which are enforced by the compiler.
+As mentioned above, we meet laws/properties halfway with compile-time property tests.
+
+> 3. Hierarchical. A compiler-verified requirement that a subclass of a type class must have at least one more law than that type class.
+`TypeClass` requires at least one property per class. You can build type class hierarchies with `extend`.
+
+> 4. Globally Unambiguous. Type class resolution that produces an error if there exists more than one instances which satisfies the constraints at the point where the compiler must choose an instance.
+Elixir is dynamically typed, and so we cannot constrain functions at compile time. However, the point is well taken: rather than creating a renamed variant of a type so that you can have multiple instances (ex. `Monoid` can be integer addition or multiplication), extend the typeclass and give it the additional properties that you're interested in for each case (ex. `AdditiveMonoid` and `MultiplicativeMonoid` extend `Monoid`).
+
+> 5. Abstractable. The ability to abstract over type classes themselves.
+De Goes is referring here to abstracting over type holes. Elixir is dynamically typed, so this one doesn't apply to us.
 
 # Example
 
