@@ -9,3 +9,6 @@ class (Setoid a, Semigroup a) => Monoid a where
 
 append_id :: a -> a
 append_id a = identity a `append` a
+
+instance Monoid [] where
+  identity _ = []

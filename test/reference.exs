@@ -32,5 +32,5 @@ defclass Algebra.Monoid do
 end
 
 definstance Algebra.Monoid, for: List do
-  def identity(a), do: []
+  def identity(_list), do: []
 end
