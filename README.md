@@ -6,7 +6,7 @@
 
 # Quick Start
 
-```
+```elixir
 def deps do
   [{:type_class, "~> 0.1"}]
 end
