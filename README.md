@@ -40,15 +40,15 @@ defclass Algebra.Monoid do
   end
 
   defproperty left_identity(monoid_a) do
-    monoid == monoid_a <> identity(monoid_a)
+    monoid == monoid_a <|> identity(monoid_a)
   end
 
   defproperty right_identity(monoid_a) do
-    monoid == identity(monoid_a) <> monoid_a
+    monoid == identity(monoid_a) <|> monoid_a
   end
 
   @operator ^^^
-  def append_id(a), do: identity(a) <> a
+  def append_id(a), do: identity(a) <|> a
 end
 
 definstance Algebra.Monoid, for: List do
