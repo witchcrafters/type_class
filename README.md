@@ -79,8 +79,8 @@ defclass Algebra.Monoid do
 
   defmacro __using__(_) do
     quote do
-      require unquote(__MODULE__)
-      import  unquote(__MODULE__)
+      require Algebra.Monoid
+      import  Algebra.Monoid
 
       use_dependencies
     end
