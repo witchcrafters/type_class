@@ -103,8 +103,8 @@ defmodule TypeClass.Class do
   defmacro run do
     quote do
       Dependancy.run
-      Property.run
       Protocol.run
+      Property.run
     end
   end
 end

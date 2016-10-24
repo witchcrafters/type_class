@@ -15,9 +15,11 @@ defmodule TypeClass.Class.Dependancy do
   @keyword :extend
 
   defmacro set_up do
-    quote do
-      Attribute.register(unquote(@ketword), accumulate: true)
-    end
+    quote do: Attribute.register(unquote(@keyword), accumulate: true)
+  end
+
+  defmacro extend(parent_class) do
+    quote do: Attribute.set(unquote(@keyword), as: unquote(parent_class))
   end
 
   defmacro run do
