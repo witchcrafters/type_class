@@ -1,36 +1,31 @@
-# Might need to be TypeClass.defclass Monoid do
-defclass Monoid do
+defclass Algebra.Monoid do
   @moduledoc "Monoid docs here"
 
-  alias Quux
-  use Bar
-
-  extend Witchcraft.Semigroup
-  extend Witchcraft.Foo
+  extend Algebra.Setoid
+  extend Algebra.Semigroup
 
   defmacro __using__(_) do
     quote do
       require unquote(__MODULE__)
-      import unquote(__MODULE__)
+      import  unquote(__MODULE__)
 
       use_dependencies
     end
   end
-
-  @operator &&&
-  def append_id(a), do: identity <> a
 
   where do
     @operator ^
     identity(any) :: any
   end
 
-  properties do
-    def reflexivity(a), do: a == a
-    def symmetry(a, b), do: equal?(a, b) == equal?(b, a)
+  defproperty left_identity(monoid_a) do
+    monoid == monoid_a <> identity(monoid_a)
   end
 
-  defproperty transitivity(a, b, c) do
-    equal?(a, b) && equal?(b, c) && equal?(a, c)
+  defproperty right_identity(monoid_a) do
+    monoid == identity(monoid_a) <> monoid_a
   end
+
+  @operator ^^^
+  def append_id(a), do: identity(a) <> a
 end
