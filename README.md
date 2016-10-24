@@ -44,7 +44,7 @@ At the core, type classes are about the _properties_ that enable its functions t
 
 `TypeClass` meets this challenge halfway: property testing. `definstance` will property test a small batch of examples on every data typed that the class is defined for _at compile time_. By default, it skips this check in production, runs a minimal set of cases in development, and runs a larger suite in the test environment. Property testing lets `TypeClass` check hundreds of specific examples very quickly, so while it doesn't give you a guarantee that your instance is correct, it does give you a high level of confidence.
 
-[John De Goes](http://degoes.net) [defines principled type classes](http://degoes.net/articles/principled-typeclasses) as:
+[John De Goes](http://degoes.net) defines [principled type classes](http://degoes.net/articles/principled-typeclasses) as:
 
 > 1. Haskell-style. A baked-in notion of type classes in the overall style of Haskell, Purescript, Idris, etc.
 
