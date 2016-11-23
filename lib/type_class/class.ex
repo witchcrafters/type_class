@@ -35,14 +35,14 @@ defmodule TypeClass.Class do
 
   ## Structure
   A `Class` is composed of several parts:
-  - Dependancies
+  - Dependencies
   - Protocol
   - Properties
 
 
-  ### Dependancies
+  ### Dependencies
 
-  Dependancies are the other type classes that the type class being
+  Dependencies are the other type classes that the type class being
   defined extends. For istance, . It only needs the immediate parents in
   the chain, as those type classes will have performed all of the checks required
   for their parents.
@@ -65,7 +65,7 @@ defmodule TypeClass.Class do
   """
   use TypeClass.Utility.Attribute
 
-  use TypeClass.Class.Dependancy
+  use TypeClass.Class.Dependency
   use TypeClass.Class.Property
   use TypeClass.Class.Protocol
 
@@ -94,7 +94,7 @@ defmodule TypeClass.Class do
 
   defmacro set_up do
     quote do
-      Dependancy.use
+      Dependency.use
       Property.use
       Protocol.use
     end
@@ -102,7 +102,7 @@ defmodule TypeClass.Class do
 
   defmacro run do
     quote do
-      Dependancy.run
+      Dependency.run
       Protocol.run
       Property.run
     end
