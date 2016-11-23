@@ -5,13 +5,6 @@ defmodule TypeClass do
   use TypeClass.Property
   use TypeClass.Property.DataGenerator
 
-  defmacro __using__(_) do
-    quote do
-      require unquote(__MODULE__)
-      import  unquote(__MODULE__)
-    end
-  end
-
   defmacro defclass(name, do: body) do
     quote do: Class.defclass(unquote(name), do: unquote(body))
   end
