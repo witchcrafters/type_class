@@ -15,7 +15,9 @@ defmodule TypeClass.Class.Dependency do
   @keyword :extend
 
   defmacro set_up do
-    quote do: Attribute.register(unquote(@keyword), accumulate: true)
+    quote do
+      Attribute.register(unquote(@keyword), accumulate: true)
+    end
   end
 
   defmacro extend(parent_class) do
@@ -27,12 +29,12 @@ defmodule TypeClass.Class.Dependency do
 
   defmacro run do
     quote do
-      create_dependencies_meta
-      create_use_dependencies
+      unquote(__MODULE__).create_dependencies_meta
+      unquote(__MODULE__).create_use_dependencies
     end
   end
 
-  defmacro create_dependencies_meta do
+  def create_dependencies_meta do
     quote do
       def __DEPENDENCIES__ do
         __MODULE__
@@ -42,7 +44,7 @@ defmodule TypeClass.Class.Dependency do
     end
   end
 
-  defmacro create_use_dependencies do
+  def create_use_dependencies do
     quote do
       __DEPENDENCIES__
       |> Enum.map(&(Kernel.use(&1, :class)))

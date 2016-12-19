@@ -15,7 +15,7 @@ defmodule TypeClass.Utility.Module do
 
   """
   @spec to_protocol(module) :: module
-  def to_protocol(base_module) do: to_submodule(base_module, "Protocol")
+  def to_protocol(base_module), do: to_submodule(base_module, "Protocol")
 
   @doc ~S"""
   Generate the module name for the protocol portion of the class.
@@ -31,7 +31,7 @@ defmodule TypeClass.Utility.Module do
 
   """
   @spec to_property(module) :: module
-  def to_property(base_module) do: to_submodule(base_module__, "Property")
+  def to_property(base_module), do: to_submodule(base_module, "Property")
 
   @doc ~S"""
   Generate a submodule name. If the module already ends in the
@@ -64,6 +64,6 @@ defmodule TypeClass.Utility.Module do
     child_module
     |> to_string
     |> Module.split
-    |> Quark.flip(to_submodule).(base_module)
+    |> Quark.flip(&to_submodule/2).(base_module)
   end
 end

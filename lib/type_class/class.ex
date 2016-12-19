@@ -70,10 +70,7 @@ defmodule TypeClass.Class do
   use TypeClass.Class.Protocol
 
   defmacro __using__(_) do
-    quote do
-      require unquote(__MODULE__)
-      import  unquote(__MODULE__)
-    end
+    quote do: import unquote(__MODULE__)
   end
 
   defmacro defclass(class_name, do: body) do
@@ -84,27 +81,24 @@ defmodule TypeClass.Class do
       unquote(body)
 
       defmacro __using__(:class) do
-        require unquote(class_name)
-        import  unquote(class_name)
+        quote do
+          import unquote(class_name)
+        end
       end
 
       TypeClass.Class.run
     end
   end
 
-  defmacro set_up do
-    quote do
-      Dependency.use
-      Property.use
-      Protocol.use
-    end
+  def set_up do
+    Dependency.use
+    Property.use
+    Protocol.use
   end
 
   defmacro run do
-    quote do
-      Dependency.run
-      Protocol.run
-      Property.run
-    end
+    Dependency.run
+    Protocol.run
+    Property.run
   end
 end

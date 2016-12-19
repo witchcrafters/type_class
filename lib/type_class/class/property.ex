@@ -19,12 +19,13 @@ defmodule TypeClass.Class.Property do
     quote do
       unquote(@keyword)
       |> Attribute.get
-      |> merge_blocks
+      |> unquote(__MODULE__).merge_blocks
       |> fn ast ->
         __MODULE__
         |> Utility.Module.to_property
-        |> defmodule(do: unquote(ast))
+        |> defmodule(do: ast)
       end.()
+    end
   end
 
   defmacro defproperty(fun_head, do: body) do

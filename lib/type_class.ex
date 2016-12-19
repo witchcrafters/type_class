@@ -1,6 +1,6 @@
 defmodule TypeClass do
 
-  use TypeClass.Class
+  import TypeClass.Class
   use TypeClass.Instance
   use TypeClass.Property
   use TypeClass.Property.DataGenerator
