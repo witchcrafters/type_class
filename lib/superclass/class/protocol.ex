@@ -6,11 +6,6 @@ defmodule Superclass.Class.Protocol do
   alias Superclass.Utility
   use Superclass.Utility.Attribute
 
-  @keyword :class_where
-
-  @funs_keyword      :protocol_functions
-  @operators_keyword :protocol_operators
-
   defmacro __using__(_) do
     quote do
       require unquote(__MODULE__)
@@ -20,16 +15,11 @@ defmodule Superclass.Class.Protocol do
 
   defmacro where(do: fun_specs) do
     ast = Macro.escape(fun_specs)
-
-    quote do
-      ast
-      |> unquote
-      |> Attribute.set(as: unquote(@keyword))
-    end
+    quote do: @class_where unquote(ast)
   end
 
   defmacro set_up do
-    quote do: Attribute.register(unquote(@keyword), accumulate: true)
+    quote do: Attribute.register(:class_where, accumulate: true)
   end
 
   defmacro run do
@@ -42,7 +32,7 @@ defmodule Superclass.Class.Protocol do
 
   defmacro all_wheres do
     quote do
-      [__DATA_GENERATOR__(name, do: body) | Attribute.get(unquote(@keyword))]
+      [__DATA_GENERATOR__(name, do: body) | @class_where]
       |> List.flatten
     end
   end

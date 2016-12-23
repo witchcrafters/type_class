@@ -3,8 +3,10 @@ defmodule Superclass.Class.Dependency do
 
   defmacro __using__(_) do
     quote do
+      require Superclass.Utility.Attribute # Must be first
+
       import unquote(__MODULE__)
-      require Superclass.Utility.Attribute
+      unquote(__MODULE__).set_up
     end
   end
 

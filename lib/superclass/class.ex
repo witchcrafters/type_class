@@ -100,9 +100,9 @@ defmodule Superclass.Class do
 
   defmacro set_up do
     quote do
-      Superclass.Class.Dependency.set_up
+      use Superclass.Class.Dependency
+      # Protocol.set_up
       # Property.use
-      # Protocol.use
     end
   end
 
