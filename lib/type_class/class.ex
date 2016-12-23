@@ -8,29 +8,29 @@ defmodule TypeClass.Class do
 
   ## Example
 
-      defclass MyApp.Monoid do
-        @extend MyApp.Semigroup
+  defclass MyApp.Monoid do
+  @extend MyApp.Semigroup
 
-        @doc "Appends the identity to the monoid"
-        @operator &&&
-        @spec append_id(Monoid.t) :: Monoid.t
-        def append_id(a), do: identity <> a
+  @doc "Appends the identity to the monoid"
+  @operator &&&
+  @spec append_id(Monoid.t) :: Monoid.t
+  def append_id(a), do: identity <> a
 
-        where do
-          @operator ^
-          identity(any) :: any
-        end
+  where do
+  @operator ^
+  identity(any) :: any
+  end
 
-        defproperty reflexivity(a), do: a == a
+  defproperty reflexivity(a), do: a == a
 
-        properties do
-          def symmetry(a, b), do: equal?(a, b) == equal?(b, a)
+  properties do
+  def symmetry(a, b), do: equal?(a, b) == equal?(b, a)
 
-          def transitivity(a, b, c) do
-            equal?(a, b) && equal?(b, c) && equal?(a, c)
-          end
-        end
-      end
+  def transitivity(a, b, c) do
+  equal?(a, b) && equal?(b, c) && equal?(a, c)
+  end
+  end
+  end
 
 
   ## Structure
@@ -75,18 +75,20 @@ defmodule TypeClass.Class do
 
   defmacro defclass(class_name, do: body) do
     quote do
-      TypeClass.Class.set_up
-      use Operator
+      defmodule unquote(class_name) do
+        # TypeClass.Class.set_up
+        # use Operator
 
-      unquote(body)
-
-      defmacro __using__(:class) do
-        quote do
-          import unquote(class_name)
+        defmacro __using__(:class) do
+          quote do
+            import unquote(class_name)
+          end
         end
-      end
 
-      TypeClass.Class.run
+        unquote(body)
+
+        # TypeClass.Class.run
+      end
     end
   end
 
