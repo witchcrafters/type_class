@@ -93,12 +93,7 @@ defmodule Superclass.Class do
 
         unquote(body)
 
-
-        # Superclass.Class.Dependency.create_dependencies_meta
         unquote(__MODULE__).run
-        # defmacro __dependencies__(), do: @extend #  Module.get_attribute(__MODULE__, unquote(@keyword))
-
-        # unquote(__MODULE__).run # unquote(__MODULE__)
       end
     end
   end

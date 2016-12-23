@@ -16,7 +16,7 @@ defmodule Superclass.Class.Dependency do
 
   defmacro extend(parent_class) do
     quote do
-      use unquote(parent_class), :class
+      use unquote(parent_class), :class # use & ensure it actually exists
       @extend unquote(parent_class)
     end
   end
