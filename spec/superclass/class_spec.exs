@@ -1,6 +1,6 @@
 defmodule Superclass.ClassSpec do
+  import Superclass.Class
   use ESpec
-  use Superclass.Class
 
   defmodule MyModule do
     def plus_five(int), do: int + 5
@@ -33,6 +33,31 @@ defmodule Superclass.ClassSpec do
 
       expect(DependencyClass.__dependencies__)
       |> to(eql [Superclass.ClassSpec.MyOtherClass, Superclass.ClassSpec.MyClass])
+    end
+  end
+
+  describe "protocol" do
+    defclass Functor do
+      where do
+        # @spec fmap(any, fun) :: any
+        def fmap(enum, fun)
+      end
+    end
+
+    defimpl Functor.Protocol, for: List do
+      def fmap(enum, fun), do: Enum.map(enum, fun)
+    end
+
+    describe "underlying protocol" do
+      it "is fmappable" do
+        expect(Functor.Protocol.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
+      end
+    end
+
+    describe "unified API (reexport)" do
+      it "is fmappable" do
+        expect(Functor.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
+      end
     end
   end
 end

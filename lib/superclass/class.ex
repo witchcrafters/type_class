@@ -63,25 +63,11 @@ defmodule Superclass.Class do
   These will be run at compile time (in dev and test environments),
   and will throw errors if they fail.
   """
-  use Superclass.Utility.Attribute
-
-  use Superclass.Class.Dependency
-  use Superclass.Class.Property
-  use Superclass.Class.Protocol
-
-  defmacro __using__(_) do
-    quote do
-      import unquote(__MODULE__)
-      use Superclass.Class.Dependency
-    end
-  end
-
-  @keyword :extend
 
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        unquote(__MODULE__).set_up
+        use Superclass.Class.Dependency
 
         defmacro __using__(:class) do
           class_name = unquote(class_name)
@@ -93,24 +79,29 @@ defmodule Superclass.Class do
 
         unquote(body)
 
-        unquote(__MODULE__).run
+        Superclass.Class.Dependency.run
       end
     end
   end
 
-  defmacro set_up do
+  defmacro where(do: fun_specs) do
     quote do
-      use Superclass.Class.Dependency
-      # Protocol.set_up
-      # Property.use
-    end
-  end
+      # name = Superclass.Utility.Module.to_protocol(__MODULE__)
 
-  defmacro run do #(module) do
-    quote do
-      Superclass.Class.Dependency.run #unquote(module)
-      # Protocol.run
-      # Property.run
+      defprotocol Protocol do
+        @moduledoc ~s"""
+        Protocol for the `#{__MODULE__}` type class
+
+        For this type class's API, please refer to `#{__MODULE__}`
+        """
+
+        unquote(fun_specs)
+      end
+
+      # defdelegate fmap(a, b), to: Protocol
+
+      # import Superclass.Utility.Module
+      # reexport(Protocol)
     end
   end
 end

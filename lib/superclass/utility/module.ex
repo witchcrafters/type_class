@@ -7,11 +7,11 @@ defmodule Superclass.Utility.Module do
 
   ## Examples
 
-      iex> MyClass.Awesome |> to_protocol
-      MyClass.Awesome.Protocol
+  iex> MyClass.Awesome |> to_protocol
+  MyClass.Awesome.Protocol
 
-      iex> MyClass.Awesome.Protocol |> to_protocol
-      MyClass.Awesome.Protocol
+  iex> MyClass.Awesome.Protocol |> to_protocol
+  MyClass.Awesome.Protocol
 
   """
   @spec to_protocol(module) :: module
@@ -23,11 +23,11 @@ defmodule Superclass.Utility.Module do
 
   ## Examples
 
-      iex> MyClass.Awesome |> to_property
-      MyClass.Awesome.Property
+  iex> MyClass.Awesome |> to_property
+  MyClass.Awesome.Property
 
-      iex> MyClass.Awesome.Property |> to_property
-      MyClass.Awesome.Property
+  iex> MyClass.Awesome.Property |> to_property
+  MyClass.Awesome.Property
 
   """
   @spec to_property(module) :: module
@@ -39,14 +39,14 @@ defmodule Superclass.Utility.Module do
 
   ## Examples
 
-      iex> MyModule.Awesome |> to_submodule(Submodule)
-      MyModule.Awesome.Submodule
+  iex> MyModule.Awesome |> to_submodule(Submodule)
+  MyModule.Awesome.Submodule
 
-      iex> MyModule.Awesome |> to_submodule("Submodule")
-      MyModule.Awesome.Submodule
+  iex> MyModule.Awesome |> to_submodule("Submodule")
+  MyModule.Awesome.Submodule
 
-      iex> MyModule.Awesome.Submodule |> to_submodule(Submodule)
-      MyModule.Awesome.Submodule
+  iex> MyModule.Awesome.Submodule |> to_submodule(Submodule)
+  MyModule.Awesome.Submodule
 
   """
   @spec to_submodule(module, String.t | module) :: module
@@ -67,24 +67,27 @@ defmodule Superclass.Utility.Module do
     |> Quark.flip(&to_submodule/2).(base_module)
   end
 
-  defmacro reexport_all(module_name) do
-    quote do
-      module = unquote(module_name)
+  defmacro reexport(module_name) do
+    # IO.puts(inspect module_name)
+    module = (module_name)
+    # Enum.map(module.__info__(:functions), &dispatch_delegate(&1, module))
+    Enum.map([{:fmap, 2}], &dispatch_delegate(&1, module))
+  end
 
-      Enum.map(module.__info__, fn {fun_name, arity} ->
-        case arity do
-          0 -> defdelegate fun_name(), to: module
-          1 -> defdelegate fun_name(a), to: module
-          2 -> defdelegate fun_name(a, b), to: module
-          3 -> defdelegate fun_name(a, b, c), to: module
-          4 -> defdelegate fun_name(a, b, c, d), to: module
-          5 -> defdelegate fun_name(a, b, c, d, e), to: module
-          6 -> defdelegate fun_name(a, b, c, d, e, f), to: module
-          7 -> defdelegate fun_name(a, b, c, d, e, f, g), to: module
-          8 -> defdelegate fun_name(a, b, c, d, e, f, g, h), to: module
-          9 -> defdelegate fun_name(a, b, c, d, e, f, g, h, i), to: module
-        end
-      end)
+  def dispatch_delegate({fun_name, arity}, module) do
+    # quote do
+    case arity do
+      # 0 -> defdelegate apply(fun_name, []), to: module
+      # 1 -> defdelegate apply(fun_name, [a]), to: module
+      _ -> quote do: defdelegate fmap(a, b), to: Superclass.ClassSpec.Functor.Protocol
+      # 3 -> defdelegate apply(fun_name, [a, b, c]), to: module
+      # 4 -> defdelegate fun_name(a, b, c, d), to: module
+      # 5 -> defdelegate fun_name(a, b, c, d, e), to: module
+      # 6 -> defdelegate fun_name(a, b, c, d, e, f), to: module
+      # 7 -> defdelegate fun_name(a, b, c, d, e, f, g), to: module
+      # 8 -> defdelegate fun_name(a, b, c, d, e, f, g, h), to: module
+      # 9 -> defdelegate fun_name(a, b, c, d, e, f, g, h, i), to: module
+      # end
     end
   end
 end
