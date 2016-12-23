@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/expede/superclass.svg?branch=master)](https://travis-ci.org/expede/superclass) [![Inline docs](http://inch-ci.org/github/expede/superclass.svg?branch=master)](http://inch-ci.org/github/expede/superclass) [![Deps Status](https://beta.hexfaktor.org/badge/all/github/expede/superclass.svg)](https://beta.hexfaktor.org/github/expede/superclass) [![hex.pm version](https://img.shields.io/hexpm/v/superclass.svg?style=flat)](https://hex.pm/packages/superclass) [![API Docs](https://img.shields.io/badge/api-docs-yellow.svg?style=flat)](http://hexdocs.pm/superclass/) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/expede/superclass/blob/master/LICENSE)
 
-`Superclass` brings (semi-)[principled](http://degoes.net/articles/principled-Superclasses) [type classes](https://en.wikibooks.org/wiki/Haskell/Classes_and_types) to Elixir
+`Superclass` brings (semi-)[principled](http://degoes.net/articles/principled-typelasses) [type classes](https://en.wikibooks.org/wiki/Haskell/Classes_and_types) to Elixir
 
 # NOTE!
 This is in extremely early stages! _Nothing_ works yet! Barely more than a sketch of an idea.
@@ -44,7 +44,7 @@ At the core, type classes are about the _properties_ that enable its functions t
 
 `Superclass` meets this challenge halfway: property testing. `definstance` will property test a small batch of examples on every data typed that the class is defined for _at compile time_. By default, it skips this check in production, runs a minimal set of cases in development, and runs a larger suite in the test environment. Property testing lets `Superclass` check hundreds of specific examples very quickly, so while it doesn't give you a guarantee that your instance is correct, it does give you a high level of confidence.
 
-[John De Goes](http://degoes.net) defines [principled type classes](http://degoes.net/articles/principled-Superclasses) as:
+[John De Goes](http://degoes.net) defines [principled type classes](http://degoes.net/articles/principled-typeclasses) as:
 
 > Haskell-style. A baked-in notion of type classes in the overall style of Haskell, Purescript, Idris, etc.
 
