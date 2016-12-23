@@ -76,7 +76,7 @@ defmodule Superclass.Class do
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        # Superclass.Class.set_up
+        Superclass.Class.set_up
         # use Operator
 
         defmacro __using__(:class) do
@@ -88,20 +88,24 @@ defmodule Superclass.Class do
 
         unquote(body)
 
-        # Superclass.Class.run
+        Superclass.Class.run
       end
     end
   end
 
   def set_up do
-    Dependency.use
-    Property.use
-    Protocol.use
+    quote do
+      Dependency.use
+      Property.use
+      Protocol.use
+    end
   end
 
-  defmacro run do
-    Dependency.run
-    Protocol.run
-    Property.run
+  def run do
+    quote do
+      Dependency.run
+      Protocol.run
+      Property.run
+    end
   end
 end
