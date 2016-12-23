@@ -1,10 +1,10 @@
-defmodule Superclass.Mixfile do
+defmodule TypeClass.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app:  :superclass,
-      name: "Superclass",
+      app:  :type_class,
+      name: "TypeClass",
       description: "Principled type classes for Elixir",
 
       version: "0.0.1",

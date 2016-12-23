@@ -1,4 +1,4 @@
-defmodule Superclass.Class do
+defmodule TypeClass.Class do
   @moduledoc ~S"""
   Helpers for defining (bootstrapped) principled type classes
 
@@ -67,10 +67,10 @@ defmodule Superclass.Class do
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        use Superclass.Class.Dependency
+        use TypeClass.Class.Dependency
 
         defmacro __using__(:class) do
-          class_name = unquote(class_name)
+          class_name = unquote(class_name) # Help compiler with unwrapping quotes
 
           quote do
             import unquote(class_name)
@@ -79,15 +79,13 @@ defmodule Superclass.Class do
 
         unquote(body)
 
-        Superclass.Class.Dependency.run
+        TypeClass.Class.Dependency.run
       end
     end
   end
 
   defmacro where(do: fun_specs) do
     quote do
-      # name = Superclass.Utility.Module.to_protocol(__MODULE__)
-
       defprotocol Protocol do
         @moduledoc ~s"""
         Protocol for the `#{__MODULE__}` type class
@@ -100,8 +98,8 @@ defmodule Superclass.Class do
 
       # defdelegate fmap(a, b), to: Protocol
 
-      # import Superclass.Utility.Module
-      # reexport(Protocol)
+      # import TypeClass.Utility.Module
+      # reexport_all Protocol
     end
   end
 end

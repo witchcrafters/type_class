@@ -1,17 +1,26 @@
-defmodule Superclass.ClassSpec do
-  import Superclass.Class
+defmodule TypeClass.ClassSpec do
+  import TypeClass.Class
   use ESpec
 
   defmodule MyModule do
     def plus_five(int), do: int + 5
+    where do
+
+    end
   end
 
   defclass MyClass do
     def plus_five(int), do: int + 5
+    where do
+
+    end
   end
 
   defclass MyOtherClass do
     def times_ten(int), do: int * 10
+    where do
+
+    end
   end
 
   describe "moduleness" do
@@ -32,7 +41,7 @@ defmodule Superclass.ClassSpec do
       require DependencyClass
 
       expect(DependencyClass.__dependencies__)
-      |> to(eql [Superclass.ClassSpec.MyOtherClass, Superclass.ClassSpec.MyClass])
+      |> to(eql [TypeClass.ClassSpec.MyOtherClass, TypeClass.ClassSpec.MyClass])
     end
   end
 

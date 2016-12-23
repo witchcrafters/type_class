@@ -1,6 +1,6 @@
-defmodule Superclass.Class.Property do
+defmodule TypeClass.Class.Property do
 
-  use Superclass.Utility.Attribute
+  use TypeClass.Utility.Attribute
 
   defmacro __using__(_) do
     quote do

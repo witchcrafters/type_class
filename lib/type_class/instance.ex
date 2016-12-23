@@ -1,4 +1,4 @@
-defmodule Superclass.Instance do
+defmodule TypeClass.Instance do
   # @moduledoc ~S"""
   # """
 
@@ -26,7 +26,7 @@ defmodule Superclass.Instance do
   #   |> Enum.take(:rand.uniform(max))
   # end
 
-  alias Superclass.Utility
+  alias TypeClass.Utility
 
   defmacro __using__(_) do
     quote do
@@ -38,7 +38,7 @@ defmodule Superclass.Instance do
   defmacro definstance(class, for: type, do: body) do
     quote do
       defimpl(Utility.Module.to_protocol(unquote(class)), for: unquote(type)) do
-        use Superclass.Property.DataGenerator
+        use TypeClass.Property.DataGenerator
         unquote do: body
       end
     end

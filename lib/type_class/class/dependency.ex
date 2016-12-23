@@ -1,9 +1,9 @@
-defmodule Superclass.Class.Dependency do
-  use Superclass.Utility.Attribute
+defmodule TypeClass.Class.Dependency do
+  use TypeClass.Utility.Attribute
 
   defmacro __using__(_) do
     quote do
-      require Superclass.Utility.Attribute # Must be first
+      require TypeClass.Utility.Attribute # Must be first
 
       import unquote(__MODULE__)
       unquote(__MODULE__).set_up

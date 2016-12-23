@@ -1,15 +1,15 @@
-defmodule Superclass do
+defmodule TypeClass do
 
-  alias Superclass.Class
+  alias TypeClass.Class
 
-  use Superclass.Instance
-  use Superclass.Property
-  use Superclass.Property.DataGenerator
+  use TypeClass.Instance
+  use TypeClass.Property
+  use TypeClass.Property.DataGenerator
 
   defmacro __using__(_) do
     quote do
       import unquote(__MODULE__)
-      require Superclass.Class
+      require TypeClass.Class
     end
   end
 
@@ -23,7 +23,7 @@ defmodule Superclass do
     end
   end
 
-  # defmacro defproperty(fun_head, opts), to: Superclass.Property
+  # defmacro defproperty(fun_head, opts), to: TypeClass.Property
 
   defmacro defgenerator(unique_name, do: body) do
     quote do: DataGenerator.defgenerator(unquote(unique_name), do: unquote(body))

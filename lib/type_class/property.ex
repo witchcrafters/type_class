@@ -1,4 +1,4 @@
-defmodule Superclass.Property do
+defmodule TypeClass.Property do
   alias __MODULE__
 
   defmacro __using__(_) do

@@ -1,4 +1,4 @@
-defmodule Superclass.Utility.Attribute do
+defmodule TypeClass.Utility.Attribute do
 
   defmacro __using__(_) do
     quote do
