@@ -81,6 +81,7 @@ defmodule Superclass.Class do
 
         defmacro __using__(:class) do
           class_name = unquote(class_name)
+
           quote do
             import unquote(class_name)
           end
