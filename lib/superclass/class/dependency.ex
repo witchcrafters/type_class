@@ -23,22 +23,13 @@ defmodule Superclass.Class.Dependency do
 
   defmacro run do
     quote do
-      unquote(__MODULE__).create_dependencies_meta #(unquote(module))
-      # unquote(__MODULE__).create_use_dependencies(unquote(module))
+      unquote(__MODULE__).create_dependencies_meta
     end
   end
 
   defmacro create_dependencies_meta do
     quote do
-      defmacro __dependencies__(), do: @extend
+      def __dependencies__, do: @extend
     end
   end
-
-  # def create_use_dependencies do
-  #   quote do
-  #     __DEPENDENCIES__
-  #     |> Enum.map(&(Kernel.use(&1, :class)))
-  #     |> unquote_splicing
-  #   end
-  # end
 end
