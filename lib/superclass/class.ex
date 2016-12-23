@@ -70,14 +70,18 @@ defmodule Superclass.Class do
   use Superclass.Class.Protocol
 
   defmacro __using__(_) do
-    quote do: import unquote(__MODULE__)
+    quote do
+      import unquote(__MODULE__)
+      use Superclass.Class.Dependency
+    end
   end
+
+  @keyword :extend
 
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        Superclass.Class.set_up
-        # use Operator
+        unquote(__MODULE__).set_up
 
         defmacro __using__(:class) do
           class_name = unquote(class_name)
@@ -89,24 +93,29 @@ defmodule Superclass.Class do
 
         unquote(body)
 
-        Superclass.Class.run
+
+        # Superclass.Class.Dependency.create_dependencies_meta
+        unquote(__MODULE__).run
+        # defmacro __dependencies__(), do: @extend #  Module.get_attribute(__MODULE__, unquote(@keyword))
+
+        # unquote(__MODULE__).run # unquote(__MODULE__)
       end
     end
   end
 
-  def set_up do
+  defmacro set_up do
     quote do
-      Dependency.use
-      Property.use
-      Protocol.use
+      Superclass.Class.Dependency.set_up
+      # Property.use
+      # Protocol.use
     end
   end
 
-  def run do
+  defmacro run do #(module) do
     quote do
-      Dependency.run
-      Protocol.run
-      Property.run
+      Superclass.Class.Dependency.run #unquote(module)
+      # Protocol.run
+      # Property.run
     end
   end
 end
