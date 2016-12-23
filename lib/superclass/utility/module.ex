@@ -66,4 +66,25 @@ defmodule Superclass.Utility.Module do
     |> Module.split
     |> Quark.flip(&to_submodule/2).(base_module)
   end
+
+  defmacro reexport_all(module_name) do
+    quote do
+      module = unquote(module_name)
+
+      Enum.map(module.__info__, fn {fun_name, arity} ->
+        case arity do
+          0 -> defdelegate fun_name(), to: module
+          1 -> defdelegate fun_name(a), to: module
+          2 -> defdelegate fun_name(a, b), to: module
+          3 -> defdelegate fun_name(a, b, c), to: module
+          4 -> defdelegate fun_name(a, b, c, d), to: module
+          5 -> defdelegate fun_name(a, b, c, d, e), to: module
+          6 -> defdelegate fun_name(a, b, c, d, e, f), to: module
+          7 -> defdelegate fun_name(a, b, c, d, e, f, g), to: module
+          8 -> defdelegate fun_name(a, b, c, d, e, f, g, h), to: module
+          9 -> defdelegate fun_name(a, b, c, d, e, f, g, h, i), to: module
+        end
+      end)
+    end
+  end
 end
