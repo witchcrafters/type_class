@@ -1,5 +1,5 @@
-defmodule TypeClass.Utility.Module do
-  @moduledoc "Naming convention helpers to help follow TypeClass conventions"
+defmodule Superclass.Utility.Module do
+  @moduledoc "Naming convention helpers to help follow Superclass conventions"
 
   @doc ~S"""
   Generate the module name for the protocol portion of the class.

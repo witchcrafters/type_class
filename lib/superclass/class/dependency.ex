@@ -1,6 +1,6 @@
-defmodule TypeClass.Class.Dependency do
+defmodule Superclass.Class.Dependency do
 
-  use TypeClass.Utility.Attribute
+  use Superclass.Utility.Attribute
   use Quark
 
   defmacro __using__(_) do

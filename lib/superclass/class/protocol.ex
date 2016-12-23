@@ -1,10 +1,10 @@
-defmodule TypeClass.Class.Protocol do
+defmodule Superclass.Class.Protocol do
   @moduledoc ~S"""
   The protocol helpers for defining the critical functions of a type class
   """
 
-  alias TypeClass.Utility
-  use TypeClass.Utility.Attribute
+  alias Superclass.Utility
+  use Superclass.Utility.Attribute
 
   @keyword :class_where
 

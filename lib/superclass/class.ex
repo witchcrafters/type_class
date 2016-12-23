@@ -1,4 +1,4 @@
-defmodule TypeClass.Class do
+defmodule Superclass.Class do
   @moduledoc ~S"""
   Helpers for defining (bootstrapped) principled type classes
 
@@ -63,11 +63,11 @@ defmodule TypeClass.Class do
   These will be run at compile time (in dev and test environments),
   and will throw errors if they fail.
   """
-  use TypeClass.Utility.Attribute
+  use Superclass.Utility.Attribute
 
-  use TypeClass.Class.Dependency
-  use TypeClass.Class.Property
-  use TypeClass.Class.Protocol
+  use Superclass.Class.Dependency
+  use Superclass.Class.Property
+  use Superclass.Class.Protocol
 
   defmacro __using__(_) do
     quote do: import unquote(__MODULE__)
@@ -76,7 +76,7 @@ defmodule TypeClass.Class do
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        # TypeClass.Class.set_up
+        # Superclass.Class.set_up
         # use Operator
 
         defmacro __using__(:class) do
@@ -87,7 +87,7 @@ defmodule TypeClass.Class do
 
         unquote(body)
 
-        # TypeClass.Class.run
+        # Superclass.Class.run
       end
     end
   end

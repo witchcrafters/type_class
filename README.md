@@ -1,8 +1,8 @@
 ![](./brand/logo.png)
 
-[![Build Status](https://travis-ci.org/expede/type_class.svg?branch=master)](https://travis-ci.org/expede/type_class) [![Inline docs](http://inch-ci.org/github/expede/type_class.svg?branch=master)](http://inch-ci.org/github/expede/type_class) [![Deps Status](https://beta.hexfaktor.org/badge/all/github/expede/type_class.svg)](https://beta.hexfaktor.org/github/expede/type_class) [![hex.pm version](https://img.shields.io/hexpm/v/type_class.svg?style=flat)](https://hex.pm/packages/type_class) [![API Docs](https://img.shields.io/badge/api-docs-yellow.svg?style=flat)](http://hexdocs.pm/type_class/) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/expede/type_class/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/expede/superclass.svg?branch=master)](https://travis-ci.org/expede/superclass) [![Inline docs](http://inch-ci.org/github/expede/superclass.svg?branch=master)](http://inch-ci.org/github/expede/superclass) [![Deps Status](https://beta.hexfaktor.org/badge/all/github/expede/superclass.svg)](https://beta.hexfaktor.org/github/expede/superclass) [![hex.pm version](https://img.shields.io/hexpm/v/superclass.svg?style=flat)](https://hex.pm/packages/superclass) [![API Docs](https://img.shields.io/badge/api-docs-yellow.svg?style=flat)](http://hexdocs.pm/superclass/) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/expede/superclass/blob/master/LICENSE)
 
-`TypeClass` brings (semi-)[principled](http://degoes.net/articles/principled-typeclasses) [type classes](https://en.wikibooks.org/wiki/Haskell/Classes_and_types) to Elixir
+`Superclass` brings (semi-)[principled](http://degoes.net/articles/principled-Superclasses) [type classes](https://en.wikibooks.org/wiki/Haskell/Classes_and_types) to Elixir
 
 # NOTE!
 This is in extremely early stages! _Nothing_ works yet! Barely more than a sketch of an idea.
@@ -15,22 +15,22 @@ This is in extremely early stages! _Nothing_ works yet! Barely more than a sketc
   - [Hierarchy](#hierarchy)
   - [Principled](#principled)
 - [Example](#example)
-  - [TypeClass](#typeclass)
+  - [Superclass](#Superclass)
   - [Haskell](#haskell)
 
 # Quick Start
 
 ```elixir
 def deps do
-  [{:type_class, "~> 0.1"}]
+  [{:superclass, "~> 0.1"}]
 end
 ```
 
 # Type Classes
-Type classes are not unlike protocols. They are essentially a mechanism for ad hoc polymorphism. However, doing extensive work with protocols can be cumbersome in Elixir. Even the standard library uses the confusingly named `Enumerator` protocol to support the `Enum` module. `TypeClass` attempts to hide many of the details to give you a single module interface.
+Type classes are not unlike protocols. They are essentially a mechanism for ad hoc polymorphism. However, doing extensive work with protocols can be cumbersome in Elixir. Even the standard library uses the confusingly named `Enumerator` protocol to support the `Enum` module. `Superclass` attempts to hide many of the details to give you a single module interface.
 
 ## Condensed Style
-To this end, `TypeClass` provides the `defclass` macro to handle generating all of the modules, submodules, and protocols.
+To this end, `Superclass` provides the `defclass` macro to handle generating all of the modules, submodules, and protocols.
 
 `definstance` is very similar to `defimpl`, except that you don't need to pass it the actual protocol; you only pass it just the "top" class module. It will also automatically run a number of checks at compile time to help keep everything running as per the definition in `defclass` (more on that later)
 
@@ -42,9 +42,9 @@ Type classes have the ability to be abused. For instance, in languages such as H
 
 At the core, type classes are about the _properties_ that enable its functions to work correctly. To emphasize that: _properties are the most important part of a type class_. Strictly speaking, for the compiler to enforce properties at compile time, it needs to have a lot of type-level information (ideally dependant types, GADTs, or very advanced static analysis). Elixir is dynamically typed, and has almost no type information at compile time.
 
-`TypeClass` meets this challenge halfway: property testing. `definstance` will property test a small batch of examples on every data typed that the class is defined for _at compile time_. By default, it skips this check in production, runs a minimal set of cases in development, and runs a larger suite in the test environment. Property testing lets `TypeClass` check hundreds of specific examples very quickly, so while it doesn't give you a guarantee that your instance is correct, it does give you a high level of confidence.
+`Superclass` meets this challenge halfway: property testing. `definstance` will property test a small batch of examples on every data typed that the class is defined for _at compile time_. By default, it skips this check in production, runs a minimal set of cases in development, and runs a larger suite in the test environment. Property testing lets `Superclass` check hundreds of specific examples very quickly, so while it doesn't give you a guarantee that your instance is correct, it does give you a high level of confidence.
 
-[John De Goes](http://degoes.net) defines [principled type classes](http://degoes.net/articles/principled-typeclasses) as:
+[John De Goes](http://degoes.net) defines [principled type classes](http://degoes.net/articles/principled-Superclasses) as:
 
 > Haskell-style. A baked-in notion of type classes in the overall style of Haskell, Purescript, Idris, etc.
 
@@ -56,11 +56,11 @@ As mentioned above, we meet laws/properties halfway with compile-time property t
 
 > Hierarchical. A compiler-verified requirement that a subclass of a type class must have at least one more law than that type class.
 
-`TypeClass` requires at least one property per class. You can build type class hierarchies with `extend`.
+`Superclass` requires at least one property per class. You can build type class hierarchies with `extend`.
 
 > Globally Unambiguous. Type class resolution that produces an error if there exists more than one instances which satisfies the constraints at the point where the compiler must choose an instance.
 
-Elixir is dynamically typed, and so we cannot constrain functions at compile time. However, the point is well taken: rather than creating a renamed variant of a type so that you can have multiple instances (ex. `Monoid` can be integer addition or multiplication), extend the typeclass and give it the additional properties that you're interested in for each case (ex. `AdditiveMonoid` and `MultiplicativeMonoid` extend `Monoid`).
+Elixir is dynamically typed, and so we cannot constrain functions at compile time. However, the point is well taken: rather than creating a renamed variant of a type so that you can have multiple instances (ex. `Monoid` can be integer addition or multiplication), extend the Superclass and give it the additional properties that you're interested in for each case (ex. `AdditiveMonoid` and `MultiplicativeMonoid` extend `Monoid`).
 
 > Abstractable. The ability to abstract over type classes themselves.
 
@@ -68,7 +68,7 @@ De Goes is referring here to abstracting over type holes. Elixir is dynamically 
 
 # Example
 
-## TypeClass
+## Superclass
 
 ```elixir
 defclass Algebra.Monoid do

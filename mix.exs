@@ -1,10 +1,10 @@
-defmodule TypeClass.Mixfile do
+defmodule Superclass.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app:  :type_class,
-      name: "TypeClass",
+      app:  :superclass,
+      name: "Superclass",
       description: "Principled type classes for Elixir",
 
       version: "0.0.1",
@@ -13,11 +13,11 @@ defmodule TypeClass.Mixfile do
       package: [
         maintainers: ["Brooklyn Zelenka"],
         licenses:    ["MIT"],
-        links:       %{"GitHub" => "https://github.com/expede/type_class"}
+        links:       %{"GitHub" => "https://github.com/expede/superclass"}
       ],
 
-      source_url:   "https://github.com/expede/type_class",
-      homepage_url: "https://github.com/expede/type_class",
+      source_url:   "https://github.com/expede/superclass",
+      homepage_url: "https://github.com/expede/superclass",
 
       aliases: ["quality": ["test", "credo --strict"]],
 

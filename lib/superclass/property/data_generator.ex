@@ -1,4 +1,4 @@
-defmodule TypeClass.Property.DataGenerator do
+defmodule Superclass.Property.DataGenerator do
   # Generate Prop test inputs
 
   defmacro __using__(_) do

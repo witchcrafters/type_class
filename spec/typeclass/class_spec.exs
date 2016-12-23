@@ -1,5 +1,5 @@
-defmodule TypeClass.ClassSpec do
-  use TypeClass
+defmodule Superclass.ClassSpec do
+  use Superclass
   use ESpec
 
   defclass Foo do
