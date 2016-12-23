@@ -21,11 +21,14 @@ defmodule TypeClass.Mixfile do
 
       aliases: ["quality": ["test", "credo --strict"]],
 
+      preferred_cli_env: [espec: :test],
+
       deps: [
         {:operator, "~> 0.2"},
         {:quark,    "~> 2.2"},
 
         {:credo,    "~> 0.4",  only: [:dev, :test]},
+        {:espec, "~> 1.2", only: :test},
 
         {:dialyxir, "~> 0.3",  only: :dev},
         {:earmark,  "~> 1.0",  only: :dev},
