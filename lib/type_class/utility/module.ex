@@ -62,70 +62,40 @@ defmodule TypeClass.Utility.Module do
 
   def to_submodule(base_module, child_module) do
     child_module
-    |> to_string
     |> Module.split
     |> Quark.flip(&to_submodule/2).(base_module)
   end
 
-  defmacro reexport(module_name) do
-    # IO.puts(inspect module_name)
+  defmacro reexport(module) do
+    # require IEx
+    # IEx.pry
     quote do
-      module = (module_name)
-      # Enum.map(module.__info__(:functions), &dispatch_delegate(&1, module))
-      Enum.map([{:fmap, 2}], &dispatch_delegate(&1, module))
+      x = unquote(module).__info__(:functions) |> unquote(__MODULE__).get_functions
+      IO.puts(inspect x)
+      for {fun_name, arity} <- x do
+        TypeClass.Utility.Module.dispatch_delegate(fun_name, arity, unquote(module))
+      end
     end
   end
 
-  defmacro foo(funs, module) do
-    Enum.map((funs), &dispatch_delegate(&1, (module)))
+  def get_functions(module) do
+    module.__info__(:functions)
+    |> Enum.into(%{})
+    |> Map.drop(~w(__protocol__ impl_for impl_for! __builtin__ __derive__ __ensure_defimpl__ __functions_spec__ __impl__ __spec__? assert_impl! assert_protocol! consolidate consolidated? extract_impls extract_protocols)a)
   end
 
-  defmacro dispatch_delegate({fun_name, arity}, module) do
-    # quote do: defdelegate fmap(a, b), to: TypeClass.ClassSpec.Functor.Protocol
-
-    # quote do
-      case arity do
-      # 0 -> defdelegate apply(fun_name, []), to: module
-      # 1 -> defdelegate apply(fun_name, [a]), to: module
-        # 2 -> Macro.escape(quote do: defdelegate unquote(fun_name)(a, b), to: unquote(module))
-        2 -> quote do: defdelegate fmap(a, b), to: unquote(module)
-      # 3 -> defdelegate apply(fun_name, [a, b, c]), to: module
-      # 4 -> defdelegate fun_name(a, b, c, d), to: module
-      # 5 -> defdelegate fun_name(a, b, c, d, e), to: module
-      # 6 -> defdelegate fun_name(a, b, c, d, e, f), to: module
-      # 7 -> defdelegate fun_name(a, b, c, d, e, f, g), to: module
-      # 8 -> defdelegate fun_name(a, b, c, d, e, f, g, h), to: module
-      # 9 -> defdelegate fun_name(a, b, c, d, e, f, g, h, i), to: module
-      # end
+  def dispatch_delegate(fun_name, arity, module) do
+    case arity do
+      0 -> quote do: defdelegate unquote(fun_name)(), to: unquote(module)
+      1 -> quote do: defdelegate unquote(fun_name)(a), to: unquote(module)
+      2 -> quote do: defdelegate unquote(fun_name)(a, b), to: unquote(module)
+      3 -> quote do: defdelegate unquote(fun_name)(a, b, c), to: unquote(module)
+      4 -> quote do: defdelegate unquote(fun_name)(a, b, c, d), to: unquote(module)
+      5 -> quote do: defdelegate unquote(fun_name)(a, b, c, d, e), to: unquote(module)
+      6 -> quote do: defdelegate unquote(fun_name)(a, b, c, d, e, f), to: unquote(module)
+      7 -> quote do: defdelegate unquote(fun_name)(a, b, c, d, e, f, g), to: unquote(module)
+      8 -> quote do: defdelegate unquote(fun_name)(a, b, c, d, e, f, g, h), to: unquote(module)
+      9 -> quote do: defdelegate unquote(fun_name)(a, b, c, d, e, f, g, h, i), to: unquote(module)
     end
   end
-
-  # defmacro reexport_all(module_name) do
-  #   IO.puts(inspect(module_name))
-  #   quote do
-  #     module = unquote(module_name)
-  #     module.__info__(:functions)
-  #     |> List.keydelete(:__protocol__, 0)
-  #     |> List.keydelete(:impl_for, 0)
-  #     |> List.keydelete(:impl_for, 0)
-  #     # ^^^ do this better
-
-  #     Enum.map(module.__info__(:functions), fn {fun_name, arity} ->
-  #       case arity do
-  #         0 -> defdelegate fun_name(), to: module
-  #         1 -> defdelegate fun_name(a), to: module
-  #         2 -> defdelegate fun_name(a, b), to: module
-  #         3 -> defdelegate fun_name(a, b, c), to: module
-  #         4 -> defdelegate fun_name(a, b, c, d), to: module
-  #         5 -> defdelegate fun_name(a, b, c, d, e), to: module
-  #         6 -> defdelegate fun_name(a, b, c, d, e, f), to: module
-  #         7 -> defdelegate fun_name(a, b, c, d, e, f, g), to: module
-  #         8 -> defdelegate fun_name(a, b, c, d, e, f, g, h), to: module
-  #         9 -> defdelegate fun_name(a, b, c, d, e, f, g, h, i), to: module
-  #       end
-  #     end)
-
-  #     defdelegate fmap(a, b), to: unquote(module_name).Protocol
-  #   end
-  # end
 end

@@ -48,7 +48,6 @@ defmodule TypeClass.ClassSpec do
   describe "protocol" do
     defclass Functor do
       where do
-        # @spec fmap(any, fun) :: any
         def fmap(enum, fun)
       end
     end

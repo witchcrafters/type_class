@@ -64,6 +64,8 @@ defmodule TypeClass.Class do
   and will throw errors if they fail.
   """
 
+  import TypeClass.Utility.Module
+
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
@@ -85,7 +87,6 @@ defmodule TypeClass.Class do
   end
 
   defmacro where(do: fun_specs) do
-    import TypeClass.Utility.Module
     quote do
       defprotocol Protocol do
         @moduledoc ~s"""
@@ -97,11 +98,10 @@ defmodule TypeClass.Class do
         unquote(fun_specs)
       end
 
-      # defdelegate fmap(a, b), to: Protocol
+      funs = get_functions(__MODULE__.Protocol)
+      IO.puts (inspect funs)
+      # reexport(__MODULE__.Proto)
 
-      f = (foo([fmap: 2], __MODULE__))
-      IO.puts(inspect f)
-      # reexport_all Protocol
     end
   end
 end
