@@ -81,6 +81,7 @@ defmodule TypeClass.Utility.Module do
       end
     end
   end
+
   def dispatch_delegate(fun_name, arity, module) do
     params =
       Stream.unfold(96, fn n ->
