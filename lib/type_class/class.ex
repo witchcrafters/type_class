@@ -85,6 +85,7 @@ defmodule TypeClass.Class do
   end
 
   defmacro where(do: fun_specs) do
+    import TypeClass.Utility.Module
     quote do
       defprotocol Protocol do
         @moduledoc ~s"""
@@ -98,7 +99,8 @@ defmodule TypeClass.Class do
 
       # defdelegate fmap(a, b), to: Protocol
 
-      # import TypeClass.Utility.Module
+      f = (foo([fmap: 2], __MODULE__))
+      IO.puts(inspect f)
       # reexport_all Protocol
     end
   end

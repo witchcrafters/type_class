@@ -77,29 +77,28 @@ defmodule TypeClass.Utility.Module do
   end
 
   defmacro foo(funs, module) do
-    quote do
-      Enum.map(unquote(funs), &dispatch_delegate(&1, unquote(module)))
-    end
+    Enum.map((funs), &dispatch_delegate(&1, (module)))
   end
 
-  # def dispatch_delegate({fun_name, arity}, module) do
-  #   quote do: defdelegate fmap(a, b), to: TypeClass.ClassSpec.Functor.Protocol
+  defmacro dispatch_delegate({fun_name, arity}, module) do
+    # quote do: defdelegate fmap(a, b), to: TypeClass.ClassSpec.Functor.Protocol
 
-  #   # quote do
-  #   # case arity do
-  #     # 0 -> defdelegate apply(fun_name, []), to: module
-  #     # 1 -> defdelegate apply(fun_name, [a]), to: module
-  #     # _ -> quote do: defdelegate fmap(a, b), to: TypeClass.ClassSpec.Functor.Protocol
-  #     # 3 -> defdelegate apply(fun_name, [a, b, c]), to: module
-  #     # 4 -> defdelegate fun_name(a, b, c, d), to: module
-  #     # 5 -> defdelegate fun_name(a, b, c, d, e), to: module
-  #     # 6 -> defdelegate fun_name(a, b, c, d, e, f), to: module
-  #     # 7 -> defdelegate fun_name(a, b, c, d, e, f, g), to: module
-  #     # 8 -> defdelegate fun_name(a, b, c, d, e, f, g, h), to: module
-  #     # 9 -> defdelegate fun_name(a, b, c, d, e, f, g, h, i), to: module
-  #     # end
-  #   # end
-  # end
+    # quote do
+      case arity do
+      # 0 -> defdelegate apply(fun_name, []), to: module
+      # 1 -> defdelegate apply(fun_name, [a]), to: module
+        # 2 -> Macro.escape(quote do: defdelegate unquote(fun_name)(a, b), to: unquote(module))
+        2 -> quote do: defdelegate fmap(a, b), to: unquote(module)
+      # 3 -> defdelegate apply(fun_name, [a, b, c]), to: module
+      # 4 -> defdelegate fun_name(a, b, c, d), to: module
+      # 5 -> defdelegate fun_name(a, b, c, d, e), to: module
+      # 6 -> defdelegate fun_name(a, b, c, d, e, f), to: module
+      # 7 -> defdelegate fun_name(a, b, c, d, e, f, g), to: module
+      # 8 -> defdelegate fun_name(a, b, c, d, e, f, g, h), to: module
+      # 9 -> defdelegate fun_name(a, b, c, d, e, f, g, h, i), to: module
+      # end
+    end
+  end
 
   # defmacro reexport_all(module_name) do
   #   IO.puts(inspect(module_name))
