@@ -67,12 +67,11 @@ defmodule TypeClass.Utility.Module do
   end
 
   defmacro reexport(module) do
-    # require IEx
-    # IEx.pry
     quote do
-      x = unquote(module).__info__(:functions) |> unquote(__MODULE__).get_functions
-      IO.puts(inspect x)
-      for {fun_name, arity} <- x do
+      import unquote(__MODULE__)
+
+      for {fun_name, arity} <- get_functions(unquote module) do
+        IO.puts "name: #{fun_name} , arity: #{arity}"
         TypeClass.Utility.Module.dispatch_delegate(fun_name, arity, unquote(module))
       end
     end

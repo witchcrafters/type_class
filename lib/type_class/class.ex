@@ -98,9 +98,11 @@ defmodule TypeClass.Class do
         unquote(fun_specs)
       end
 
-      funs = get_functions(__MODULE__.Protocol)
-      IO.puts (inspect funs)
-      # reexport(__MODULE__.Proto)
+      # funs = get_functions(__MODULE__.Protocol)
+      # IO.puts (inspect funs)
+      a = reexport(__MODULE__.Protocol)
+      IO.puts (inspect a)
+      a
 
     end
   end
