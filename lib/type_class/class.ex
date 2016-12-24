@@ -87,7 +87,7 @@ defmodule TypeClass.Class do
   end
 
   defmacro where(do: fun_specs) do
-    quote do
+    z = quote do
       defprotocol Protocol do
         @moduledoc ~s"""
         Protocol for the `#{__MODULE__}` type class
@@ -98,12 +98,32 @@ defmodule TypeClass.Class do
         unquote(fun_specs)
       end
 
-      # funs = get_functions(__MODULE__.Protocol)
-      # IO.puts (inspect funs)
-      a = reexport(__MODULE__.Protocol)
-      IO.puts (inspect a)
-      a
-
+      reexport(__MODULE__.Protocol)
+      # IO.puts (inspect a)
+      # Macro.escape TypeClass.Class.foo(), unquote: true
+      # {:def, [context: TypeClass.Class, import: Kernel],
+      #   [{:fmap, [context: TypeClass.Class],
+      #     [{:a, [], TypeClass.Class}, {:b, [], TypeClass.Class}]},
+      #    [do: "STUFF"]]}
+      Macro.escape(
+        {:def, [context: Elixir, import: Kernel],
+         [{:fmap, [context: Elixir],
+           [{:a, [], Elixir}, {:b, [], Elixir}]},
+          [do: "STUFF"]]}
+        )
     end
+    IO.puts (inspect z)
+    z
+
+  end
+
+  defmacro foo() do
+    y = quote do
+      def fmap(a, b), do: "STUFF"
+    end
+    require IEx
+    IEx.pry
+    # IO.puts (inspect y) <> "<<<<<<<"
+    y
   end
 end

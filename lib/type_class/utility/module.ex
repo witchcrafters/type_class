@@ -66,35 +66,34 @@ defmodule TypeClass.Utility.Module do
     |> Quark.flip(&to_submodule/2).(base_module)
   end
 
-  defmacro reexport(module) do
-    quote do
-      import unquote(__MODULE__)
-
-      for {fun_name, arity} <- get_functions(unquote module) do
-        IO.puts "name: #{fun_name} , arity: #{arity}"
-        TypeClass.Utility.Module.dispatch_delegate(fun_name, arity, unquote(module))
-      end
-    end
-  end
-
   def get_functions(module) do
     module.__info__(:functions)
     |> Enum.into(%{})
     |> Map.drop(~w(__protocol__ impl_for impl_for! __builtin__ __derive__ __ensure_defimpl__ __functions_spec__ __impl__ __spec__? assert_impl! assert_protocol! consolidate consolidated? extract_impls extract_protocols)a)
   end
 
+  defmacro reexport(module) do
+    quote bind_quoted: [module: module] do
+      import TypeClass.Utility.Module
+
+      for {fun_name, arity} <- get_functions(module) do
+        dispatch_delegate(fun_name, arity, module)
+      end
+    end
+  end
   def dispatch_delegate(fun_name, arity, module) do
-    case arity do
-      0 -> quote do: defdelegate unquote(fun_name)(), to: unquote(module)
-      1 -> quote do: defdelegate unquote(fun_name)(a), to: unquote(module)
-      2 -> quote do: defdelegate unquote(fun_name)(a, b), to: unquote(module)
-      3 -> quote do: defdelegate unquote(fun_name)(a, b, c), to: unquote(module)
-      4 -> quote do: defdelegate unquote(fun_name)(a, b, c, d), to: unquote(module)
-      5 -> quote do: defdelegate unquote(fun_name)(a, b, c, d, e), to: unquote(module)
-      6 -> quote do: defdelegate unquote(fun_name)(a, b, c, d, e, f), to: unquote(module)
-      7 -> quote do: defdelegate unquote(fun_name)(a, b, c, d, e, f, g), to: unquote(module)
-      8 -> quote do: defdelegate unquote(fun_name)(a, b, c, d, e, f, g, h), to: unquote(module)
-      9 -> quote do: defdelegate unquote(fun_name)(a, b, c, d, e, f, g, h, i), to: unquote(module)
+    params =
+      Stream.unfold(96, fn n ->
+        next = n + 1
+        {
+          {List.to_atom([next]), [], Elixir},
+          next
+        }
+      end)
+      |> Enum.take(arity)
+
+    quote do
+      defdelegate unquote(fun_name)(unquote_splicing(params)), to: unquote(module)
     end
   end
 end
