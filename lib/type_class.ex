@@ -120,7 +120,7 @@ defmodule TypeClass do
           end
         end
 
-        alias unquote(class_name).Proto
+        import unquote(class_name).Proto
 
         TypeClass.Dependency.run
       end
