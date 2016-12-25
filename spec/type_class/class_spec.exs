@@ -8,15 +8,10 @@ defmodule TypeClass.ClassSpec do
 
   defclass MyClass do
     def plus_five(int), do: int + 5
-
-    where do
-    end
   end
 
   defclass MyOtherClass do
     def times_ten(int), do: int * 10
-    where do
-    end
   end
 
   describe "moduleness" do
@@ -29,9 +24,6 @@ defmodule TypeClass.ClassSpec do
     defclass DependencyClass do
       extend MyClass
       extend MyOtherClass
-
-      where do
-      end
 
       def half(int), do: int / 2
     end
