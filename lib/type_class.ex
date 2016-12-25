@@ -2,9 +2,9 @@ defmodule TypeClass do
 
   alias TypeClass.Class
 
-  use TypeClass.Instance
-  use TypeClass.Property
-  use TypeClass.Property.DataGenerator
+  # use TypeClass.Instance
+  # use TypeClass.Property
+  # use TypeClass.Property.DataGenerator
 
   defmacro __using__(_) do
     quote do

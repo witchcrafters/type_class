@@ -51,7 +51,9 @@ defmodule TypeClass.ClassSpec do
       end
     end
 
-    defimpl Functor.Proto, for: List do
+    import TypeClass.Instance
+
+    TypeClass.Instance.definst Functor, for: List do
       def fmap(enum, fun), do: Enum.map(enum, fun)
     end
 

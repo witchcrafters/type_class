@@ -26,21 +26,20 @@ defmodule TypeClass.Instance do
   #   |> Enum.take(:rand.uniform(max))
   # end
 
-  alias TypeClass.Utility
+  defmacro definst(class, opts, do: body) do
+    [for: datatype] = opts
 
-  defmacro __using__(_) do
     quote do
-      require unquote(__MODULE__)
-      alias   unquote(__MODULE__)
+      defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
     end
   end
 
-  defmacro definstance(class, for: type, do: body) do
-    quote do
-      defimpl(Utility.Module.to_protocol(unquote(class)), for: unquote(type)) do
-        use TypeClass.Property.DataGenerator
-        unquote do: body
-      end
-    end
-  end
+  # defmacro definstance(class, for: type, do: body) do
+  #   quote do
+  #     defimpl(Utility.Module.to_protocol(unquote(class)), for: unquote(type)) do
+  #       use TypeClass.Property.DataGenerator
+  #       unquote do: body
+  #     end
+  #   end
+  # end
 end
