@@ -12,18 +12,15 @@ defmodule TypeClass.Property do
     end
   end
 
-  def run!(datatype, class, prop_name, times \\ 1) do
+  def run!(datatype, class, prop_name, times \\ 100) do
     property_module = Module.append(class, Property)
     example_module = Module.append(TypeClass.Property.Generator, datatype)
 
     Stream.repeatedly(fn ->
       unless apply(property_module, prop_name, [example_module.generate(nil)]) do
-        datatype
-        |> TypeClass.Property.FailedCheck.new(class, prop_name)
-        |> raise
+        raise TypeClass.Property.FailedCheck.new(datatype, class, prop_name)
       end
     end)
-    |> Stream.take(times)
-    |> Enum.to_list
+    |> Enum.take(times)
   end
 end

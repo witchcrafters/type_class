@@ -93,8 +93,8 @@ defmodule TypeClass.ClassSpec do
           b = generate(data)
           c = generate(data)
 
-          left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
-          right = Semigroup.concat(a, Semigroup.concat(b, c))
+          left  = a |> Semigroup.Proto.concat(b) |> Semigroup.Proto.concat(c)
+          right = Semigroup.Proto.concat(a, Semigroup.Proto.concat(b, c))
 
           left == right
         end
@@ -115,12 +115,12 @@ defmodule TypeClass.ClassSpec do
       properties do
         def left_identity(data) do
           a = generate(data)
-          Semigroup.concat(Monoid.empty(a), a) == a
+          Semigroup.Proto.concat(Monoid.Proto.empty(a), a) == a
         end
 
         def right_identity(data) do
           a = generate(data)
-          Semigroup.concat(a, Monoid.empty(a)) == a
+          Semigroup.Proto.concat(a, Monoid.Proto.empty(a)) == a
         end
       end
     end

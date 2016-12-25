@@ -109,8 +109,6 @@ defmodule TypeClass do
           end
         end
 
-        # import unquote(class_name).Proto
-
         TypeClass.Dependency.run
         TypeClass.Property.ensure!
       end
