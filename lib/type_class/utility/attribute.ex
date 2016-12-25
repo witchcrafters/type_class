@@ -1,12 +1,5 @@
 defmodule TypeClass.Utility.Attribute do
 
-  defmacro __using__(_) do
-    quote do
-      require unquote(__MODULE__)
-      alias   unquote(__MODULE__)
-    end
-  end
-
   defmacro get(attribute) do
     quote do: Module.get_attribute(__MODULE__, unquote(attribute))
   end

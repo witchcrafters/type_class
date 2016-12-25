@@ -67,6 +67,7 @@ defmodule TypeClass do
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
+        import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
         require TypeClass.Property
         use TypeClass.Dependency
 
@@ -143,7 +144,9 @@ defmodule TypeClass do
         For this type class's API, please refer to `#{__MODULE__}`
         """
 
-        unquote(fun_specs)
+        import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
+
+        Macro.escape unquote(fun_specs), unquote: true
       end
     end
   end

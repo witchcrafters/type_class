@@ -3,7 +3,7 @@ defprotocol TypeClass.Property.Generator do
 end
 
 defimpl TypeClass.Property.Generator, for: Integer do
-  def generate(_), do: :rand.uniform(1000) * Enum.random([1, -1])
+  def generate(_), do: :rand.uniform(1000) * Enum.random([1, 1, 1, -1])
 end
 
 defimpl TypeClass.Property.Generator, for: Float do
@@ -12,28 +12,29 @@ defimpl TypeClass.Property.Generator, for: Float do
   end
 end
 
-defimpl TypeClass.Property.Generator, for: String do
+defimpl TypeClass.Property.Generator, for: BitString do
   def generate(_) do
-    Stream.unfold([], fn acc ->
-      next = :rand.uniform(90)
-      {next, [next | acc]}
-    end)
-    |> Enum.take(:rand.uniform(100))
-    |> to_string
+    Stream.unfold("", &({&1, :rand.uniform(90)}))
+    |> Stream.drop(1)
+    |> Stream.take(:rand.uniform(10))
+    |> Enum.to_list
+    |> List.to_string
   end
 end
 
 defimpl TypeClass.Property.Generator, for: List do
   def generate(_) do
-    Stream.unfold([], fn acc ->
+    Stream.unfold(1, fn acc ->
       next =
-        [0, 0.1, "a", {}, [], %{}]
+        [0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, "", "", "", "", {}, [], %{}]
         |> Enum.random
         |> TypeClass.Property.Generator.generate
 
-      {acc, [next | acc]}
+      {acc, next}
     end)
-    |> Enum.take(:rand.uniform(1000))
+    |> Stream.drop(1)
+    |> Stream.take(:rand.uniform(10))
+    |> Enum.to_list
   end
 end
 
@@ -43,14 +44,24 @@ end
 
 defimpl TypeClass.Property.Generator, for: Map do
   def generate(_) do
-    Stream.unfold([], fn acc ->
+    Stream.unfold({0, 1}, fn acc ->
       key = ["", 0] |> Enum.random |> TypeClass.Property.Generator.generate
-      value = ["", 0, 0.0, [], %{}] |> Enum.random |> TypeClass.Property.Generator.generate
+      value =
+        [0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, "", "", "", "", {}, [], %{}]
+        |> Enum.random
+        |> TypeClass.Property.Generator.generate
+
       next = {key, value}
 
-      {acc, [next | acc]}
+      {acc, next}
     end)
-    |> Enum.take(:rand.uniform(100))
+    |> Stream.drop(1)
+    |> Stream.take(:rand.uniform(10))
+    |> Enum.to_list
     |> Enum.into(%{})
+    |> fn x ->
+      IO.puts(inspect x)
+      x
+    end.()
   end
 end

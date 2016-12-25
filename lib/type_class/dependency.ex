@@ -1,5 +1,5 @@
 defmodule TypeClass.Dependency do
-  use TypeClass.Utility.Attribute
+  alias TypeClass.Utility.Attribute
 
   defmacro __using__(_) do
     quote do

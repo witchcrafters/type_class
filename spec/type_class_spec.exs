@@ -6,7 +6,7 @@ defmodule TypeClass.ClassSpec do
     def plus_five(int), do: int + 5
 
     properties do
-      def foo(gen), do: true
+      def foo(_), do: true
     end
   end
 
@@ -14,7 +14,7 @@ defmodule TypeClass.ClassSpec do
     def plus_five(int), do: int + 5
 
     properties do
-      def foo, do: true
+      def foo(_), do: true
     end
   end
 
@@ -22,7 +22,7 @@ defmodule TypeClass.ClassSpec do
     def times_ten(int), do: int * 10
 
     properties do
-      def foo, do: true
+      def foo(_), do: true
     end
   end
 
@@ -40,7 +40,7 @@ defmodule TypeClass.ClassSpec do
       def half(int), do: int / 2
 
       properties do
-        def foo, do: true
+        def foo(_), do: true
       end
     end
 
@@ -59,7 +59,7 @@ defmodule TypeClass.ClassSpec do
       end
 
       properties do
-        def foo, do: true
+        def foo(_), do: true
       end
     end
 
