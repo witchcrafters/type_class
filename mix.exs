@@ -27,7 +27,8 @@ defmodule TypeClass.Mixfile do
         {:operator, "~> 0.2"},
         {:quark,    "~> 2.2"},
 
-        {:credo, "~> 0.4", only: [:dev, :test]},
+        # {:credo, "~> 0.4", only: [:dev, :test]},
+        {:credo, github: "rrrene/credo"},
         {:espec, "~> 1.2", only: :test},
 
         {:dialyxir, "~> 0.3",  only: :dev},
