@@ -81,6 +81,7 @@ defmodule TypeClass do
     quote do
       defmodule unquote(class_name) do
         use TypeClass.Dependency
+        # @behaviour TypeClass.Property
 
         unquote(body)
 
@@ -139,6 +140,10 @@ defmodule TypeClass do
       end
 
       defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
+
+      for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
+        run_prop(unquote(datatype, unquote(class), prop_name))
+      end
     end
   end
 
@@ -156,5 +161,25 @@ defmodule TypeClass do
     end
   end
 
+  defmacro properties(do: prop_funs) do
+    quote do
+      defmodule Property do
+        @moduledoc ~S"""
+        Properties for the `#{__MODULE__}` type class
 
+        For this type class's functions, please refer to `#{__MODULE__}`
+        """
+
+        use TypeClass.Property
+
+        unquote(prop_funs)
+      end
+    end
+  end
+
+  def run_props do
+    quote do
+
+    end
+  end
 end
