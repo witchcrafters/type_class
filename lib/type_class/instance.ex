@@ -26,13 +26,6 @@ defmodule TypeClass.Instance do
   #   |> Enum.take(:rand.uniform(max))
   # end
 
-  defmacro definst(class, opts, do: body) do
-    [for: datatype] = opts
-
-    quote do
-      defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
-    end
-  end
 
   # defmacro definstance(class, for: type, do: body) do
   #   quote do

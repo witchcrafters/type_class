@@ -1,5 +1,5 @@
 defmodule TypeClass.ClassSpec do
-  import TypeClass.Class
+  import TypeClass
   use ESpec
 
   defmodule MyModule do
@@ -51,9 +51,7 @@ defmodule TypeClass.ClassSpec do
       end
     end
 
-    import TypeClass.Instance
-
-    TypeClass.Instance.definst Functor, for: List do
+    definst Functor, for: List do
       def fmap(enum, fun), do: Enum.map(enum, fun)
     end
 
@@ -70,4 +68,69 @@ defmodule TypeClass.ClassSpec do
       end
     end
   end
+
+  describe "definst" do
+    defclass Semigroup do
+      where do
+        def concat(a, b)
+      end
+    end
+
+    definst Semigroup, for: List do
+      def concat(a, b), do: a ++ b
+    end
+
+    defclass Monoid do
+      extend Semigroup
+      where do
+        def empty(sample)
+      end
+    end
+
+    definst Monoid, for: List do
+      def empty(_), do: []
+    end
+  end
+
+  # describe "classic case" do
+  #   defclass Functor do
+  #     where do
+  #       def map(collection, fun)
+  #     end
+  #   end
+
+  #   defclass Apply do
+  #     extend Functor
+
+  #     where do
+  #       def ap(collection, fun)
+  #     end
+  #   end
+
+  #   defclass Applicative do
+  #     extend Apply
+
+  #     where do
+  #       def of(val, ex)
+  #     end
+
+  #     defdelegate wrap(value, representative), to: Proto
+  #   end
+
+  #   defclass Chain do
+  #     extend Apply
+
+  #     where do
+  #       def chain(wrapped, chaining_fun)
+  #     end
+  #   end
+
+  #   defclass Monad do
+  #     extend Applicative
+  #     extend Chain
+
+  #     where do
+  #     end
+  #   end
+  # end
 end

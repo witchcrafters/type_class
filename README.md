@@ -11,7 +11,7 @@ This is in extremely early stages! _Nothing_ works yet! Barely more than a sketc
 
 - [Quick Start](#quick-start)
 - [Type Classes](#type-classes)
-  - [`defclass` and `definstance`](#defclass-and-definstance)
+  - [`defclass` and `definst`](#defclass-and-definst)
   - [Hierarchy](#hierarchy)
   - [Principled](#principled)
 - [Example](#example)

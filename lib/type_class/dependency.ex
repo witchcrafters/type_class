@@ -1,4 +1,4 @@
-defmodule TypeClass.Class.Dependency do
+defmodule TypeClass.Dependency do
   use TypeClass.Utility.Attribute
 
   defmacro __using__(_) do
