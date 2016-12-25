@@ -122,18 +122,13 @@ defmodule TypeClass do
     quote do
       for dependency <- unquote(class).__dependencies__ do
         dependency
-        |> TypeClass.Utility.Module.concat(Proto)
+        |> TypeClass.Utility.Module.append(Proto)
         |> Protocol.assert_impl!(unquote datatype)
       end
 
       defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
 
-      props =
-        unquote(class).Property.__info__(:functions)
-        |> Enum.into(%{})
-        |> Map.delete(:__generator__)
-
-      for {prop_name, _one} <- props do
+      for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
         TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
       end
     end
@@ -162,17 +157,7 @@ defmodule TypeClass do
         For this type class's functions, please refer to `#{__MODULE__}`
         """
 
-        @behaviour TypeClass.Property.Generator
-
         unquote(prop_funs)
-      end
-    end
-  end
-
-  defmacro defgenerator(do: body) do
-    quote do
-      def __generator__ do
-        unquote(body)
       end
     end
   end

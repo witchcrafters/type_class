@@ -6,7 +6,7 @@ defmodule TypeClass.ClassSpec do
     def plus_five(int), do: int + 5
 
     properties do
-      def foo, do: true
+      def foo(gen), do: true
     end
   end
 
