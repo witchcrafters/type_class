@@ -88,7 +88,16 @@ defmodule TypeClass.ClassSpec do
       end
 
       properties do
-        def foo, do: true
+        def associative(data) do
+          a = generate(data)
+          b = generate(data)
+          c = generate(data)
+
+          left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
+          right = Semigroup.concat(a, Semigroup.concat(b, c))
+
+          left == right
+        end
       end
     end
 
@@ -98,12 +107,21 @@ defmodule TypeClass.ClassSpec do
 
     defclass Monoid do
       extend Semigroup
+
       where do
         def empty(sample)
       end
 
       properties do
-        def foo, do: true
+        def left_identity(data) do
+          a = generate(data)
+          Semigroup.concat(Monoid.empty(a), a) == a
+        end
+
+        def right_identity(data) do
+          a = generate(data)
+          Semigroup.concat(a, Monoid.empty(a)) == a
+        end
       end
     end
 
@@ -148,9 +166,6 @@ defmodule TypeClass.ClassSpec do
   #   defclass Monad do
   #     extend Applicative
   #     extend Chain
-
-  #     where do
-  #     end
   #   end
   # end
 end
