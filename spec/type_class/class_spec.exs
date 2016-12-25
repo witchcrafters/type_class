@@ -4,14 +4,26 @@ defmodule TypeClass.ClassSpec do
 
   defmodule MyModule do
     def plus_five(int), do: int + 5
+
+    properties do
+      def foo, do: true
+    end
   end
 
   defclass MyClass do
     def plus_five(int), do: int + 5
+
+    properties do
+      def foo, do: true
+    end
   end
 
   defclass MyOtherClass do
     def times_ten(int), do: int * 10
+
+    properties do
+      def foo, do: true
+    end
   end
 
   describe "moduleness" do
@@ -26,6 +38,10 @@ defmodule TypeClass.ClassSpec do
       extend MyOtherClass
 
       def half(int), do: int / 2
+
+      properties do
+        def foo, do: true
+      end
     end
 
     it "has a dependency" do
@@ -40,6 +56,10 @@ defmodule TypeClass.ClassSpec do
     defclass Functor do
       where do
         def fmap(enum, fun)
+      end
+
+      properties do
+        def foo, do: true
       end
     end
 
@@ -66,6 +86,10 @@ defmodule TypeClass.ClassSpec do
       where do
         def concat(a, b)
       end
+
+      properties do
+        def foo, do: true
+      end
     end
 
     definst Semigroup, for: List do
@@ -76,6 +100,10 @@ defmodule TypeClass.ClassSpec do
       extend Semigroup
       where do
         def empty(sample)
+      end
+
+      properties do
+        def foo, do: true
       end
     end
 

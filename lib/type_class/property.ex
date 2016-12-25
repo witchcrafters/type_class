@@ -1,20 +1,24 @@
 defmodule TypeClass.Property do
-
-  defmacro __using__(_) do
+  defmacro ensure! do
     quote do
-      import unquote(__MODULE__)
+      case Code.ensure_loaded(__MODULE__.Property) do
+        {:module, _prop_submodule} -> nil
+
+        {:error, :nofile} ->
+          raise TypeClass.Property.Undefined.new(__MODULE__)
+      end
     end
   end
 
-  def run_prop(datatype, class, prop_name, times \\ 500) do
-    quote do
-      Steam.repeatedly(fn ->
-        unless apply(unquote(class).Property, fun_name, []) do
-          unquote(datatype)
-          |> TypeClass.Property.FailedCheck.new(unquote(class), unquote(prop_name))
-          |> raise
-        end
-      ) |> Enum.take(times)
-    end
+  def run!(datatype, class, prop_name, times \\ 500) do
+    property_module = Module.concat(class, Property)
+
+    Stream.repeatedly(fn ->
+      unless apply(property_module, prop_name, []) do
+        datatype
+        |> TypeClass.Property.FailedCheck.new(class, prop_name)
+        |> raise
+      end
+    end) |> Enum.take(times)
   end
 end

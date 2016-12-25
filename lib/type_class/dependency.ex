@@ -25,12 +25,6 @@ defmodule TypeClass.Dependency do
 
   defmacro run do
     quote do
-      unquote(__MODULE__).create_dependencies_meta
-    end
-  end
-
-  defmacro create_dependencies_meta do
-    quote do
       def __dependencies__, do: @extend
     end
   end

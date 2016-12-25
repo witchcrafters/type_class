@@ -64,24 +64,11 @@ defmodule TypeClass do
   and will throw errors if they fail.
   """
 
-  alias TypeClass.Class
-
-  # use TypeClass.Instance
-  # use TypeClass.Property
-  # use TypeClass.Property.DataGenerator
-
-  # defmacro __using__(_) do
-  #   quote do
-  #     import unquote(__MODULE__)
-  #     require TypeClass.Class
-  #   end
-  # end
-
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
+        require TypeClass.Property
         use TypeClass.Dependency
-        # @behaviour TypeClass.Property
 
         unquote(body)
 
@@ -121,28 +108,33 @@ defmodule TypeClass do
           end
         end
 
-        import unquote(class_name).Proto
+        # import unquote(class_name).Proto
 
         TypeClass.Dependency.run
+        TypeClass.Property.ensure!
       end
     end
   end
 
   defmacro definst(class, opts, do: body) do
     [for: datatype] = opts
+
     quote do
       for dependency <- unquote(class).__dependencies__ do
         dependency
-        |> Module.split
-        |> fn chain -> chain ++ [Proto] end.()
-        |> Module.concat
+        |> TypeClass.Utility.Module.concat(Proto)
         |> Protocol.assert_impl!(unquote datatype)
       end
 
       defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
 
-      for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
-        run_prop(unquote(datatype, unquote(class), prop_name))
+      props =
+        unquote(class).Property.__info__(:functions)
+        |> Enum.into(%{})
+        |> Map.delete(:__generator__)
+
+      for {prop_name, _one} <- props do
+        TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
       end
     end
   end
@@ -170,16 +162,18 @@ defmodule TypeClass do
         For this type class's functions, please refer to `#{__MODULE__}`
         """
 
-        use TypeClass.Property
+        @behaviour TypeClass.Property.Generator
 
         unquote(prop_funs)
       end
     end
   end
 
-  def run_props do
+  defmacro defgenerator(do: body) do
     quote do
-
+      def __generator__ do
+        unquote(body)
+      end
     end
   end
 end

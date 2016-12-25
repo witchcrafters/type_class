@@ -72,6 +72,13 @@ defmodule TypeClass.Utility.Module do
     |> Map.drop(~w(__protocol__ impl_for impl_for! __builtin__ __derive__ __ensure_defimpl__ __functions_spec__ __impl__ __spec__? assert_impl! assert_protocol! consolidate consolidated? extract_impls extract_protocols)a)
   end
 
+  def append(parent_module, submodule) do
+    parent_module
+    |> Module.split
+    |> fn modules -> modules ++ List.wrap(submodule) end.()
+    |> Module.concat
+  end
+
   # def dispatch_delegate(fun_name, arity, module) do
   #   args =
   #     Stream.unfold(96, fn char ->
