@@ -4,22 +4,18 @@ defmodule TypeClass.ClassSpec do
 
   defmodule MyModule do
     def plus_five(int), do: int + 5
-    where do
-
-    end
   end
 
   defclass MyClass do
     def plus_five(int), do: int + 5
-    where do
 
+    where do
     end
   end
 
   defclass MyOtherClass do
     def times_ten(int), do: int * 10
     where do
-
     end
   end
 
@@ -33,6 +29,9 @@ defmodule TypeClass.ClassSpec do
     defclass DependencyClass do
       extend MyClass
       extend MyOtherClass
+
+      where do
+      end
 
       def half(int), do: int / 2
     end
@@ -52,18 +51,19 @@ defmodule TypeClass.ClassSpec do
       end
     end
 
-    # defimpl Functor.Protocol, for: List do
-    #   def fmap(enum, fun), do: Enum.map(enum, fun)
-    # end
+    defimpl Functor.Proto, for: List do
+      def fmap(enum, fun), do: Enum.map(enum, fun)
+    end
 
-    # describe "underlying protocol" do
-    #   it "is fmappable" do
-    #     expect(Functor.Protocol.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
-    #   end
-    # end
+    describe "underlying protocol" do
+      it "is fmappable" do
+        expect(Functor.Proto.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
+      end
+    end
 
     describe "unified API (reexport)" do
       it "is fmappable" do
+        use Functor, class: :alias, as: Functor
         expect(Functor.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
       end
     end

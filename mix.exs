@@ -24,6 +24,7 @@ defmodule TypeClass.Mixfile do
       preferred_cli_env: [espec: :test],
 
       deps: [
+        {:exceptional, "~> 2.0"},
         {:operator, "~> 0.2"},
         {:quark,    "~> 2.2"},
 

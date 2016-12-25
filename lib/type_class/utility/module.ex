@@ -72,29 +72,29 @@ defmodule TypeClass.Utility.Module do
     |> Map.drop(~w(__protocol__ impl_for impl_for! __builtin__ __derive__ __ensure_defimpl__ __functions_spec__ __impl__ __spec__? assert_impl! assert_protocol! consolidate consolidated? extract_impls extract_protocols)a)
   end
 
-  defmacro reexport(module) do
-    quote bind_quoted: [module: module] do
-      import TypeClass.Utility.Module
+  # def dispatch_delegate(fun_name, arity, module) do
+  #   args =
+  #     Stream.unfold(96, fn char ->
+  #       next = char + 1
+  #       {
+  #         {List.to_atom([next]), [], Elixir},
+  #         next
+  #       }
+  #     end)
+  #     |> Enum.take(arity)
 
-      for {fun_name, arity} <- get_functions(module) do
-        dispatch_delegate(fun_name, arity, module)
-      end
-    end
-  end
+  #   quote do
+  #     defdelegate unquote(fun_name)(unquote_splicing(args)), to: unquote(module)
+  #   end
+  # end
 
-  def dispatch_delegate(fun_name, arity, module) do
-    params =
-      Stream.unfold(96, fn n ->
-        next = n + 1
-        {
-          {List.to_atom([next]), [], Elixir},
-          next
-        }
-      end)
-      |> Enum.take(arity)
+  # defmacro reexport(module) do
+  #   quote do
+  #     import TypeClass.Utility.Module
 
-    quote do
-      defdelegate unquote(fun_name)(unquote_splicing(params)), to: unquote(module)
-    end
-  end
+  #     for {fun_name, arity} <- get_functions(unquote(module)) do
+  #       dispatch_delegate(fun_name, arity, unquote(module))
+  #     end
+  #   end
+  # end
 end

@@ -12,13 +12,13 @@ defmodule TypeClass.Class.Dependency do
 
   defmacro set_up do
     quote do
-      Attribute.register(:extend, accumulate: true)
+      TypeClass.Utility.Attribute.register(:extend, accumulate: true)
     end
   end
 
   defmacro extend(parent_class) do
     quote do
-      use unquote(parent_class), :class # use & ensure it actually exists
+      use unquote(parent_class), :class # use & ensure it actually is a class
       @extend unquote(parent_class)
     end
   end

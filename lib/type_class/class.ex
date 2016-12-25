@@ -64,22 +64,47 @@ defmodule TypeClass.Class do
   and will throw errors if they fail.
   """
 
-  import TypeClass.Utility.Module
+  # import TypeClass.Utility.Module
 
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
         use TypeClass.Class.Dependency
 
-        defmacro __using__(:class) do
-          class_name = unquote(class_name) # Help compiler with unwrapping quotes
+        unquote(body)
 
+        defmacro __using__(:class) do
           quote do
-            import unquote(class_name)
+            use unquote(__MODULE__), class: :import
           end
         end
 
-        unquote(body)
+        defmacro __using__(class: :import) do
+          class = unquote(class_name) # Help compiler with unwrapping quotes
+
+          quote do
+            import unquote(class)
+            import unquote(class).Proto, except: [impl_for: 1, impl_for!: 1]
+          end
+        end
+
+        # defmacro __using__(class: :alias) do
+        #   class = unquote(class_name) # Help compiler with unwrapping quotes
+
+        #   quote do
+        #     alias unquote(class)
+        #     alias unquote(class).Proto, as: unquote(class)
+        #   end
+        # end
+
+        defmacro __using__(class: :alias, as: as_name) do
+          class = unquote(class_name) # Help compiler with unwrapping quotes
+
+          quote do
+            alias unquote(class), as: unquote(as_name)
+            alias unquote(class).Proto, as: unquote(as_name)
+          end
+        end
 
         TypeClass.Class.Dependency.run
       end
@@ -87,8 +112,8 @@ defmodule TypeClass.Class do
   end
 
   defmacro where(do: fun_specs) do
-    z = quote do
-      defprotocol Protocol do
+    quote do
+      defprotocol Proto do
         @moduledoc ~s"""
         Protocol for the `#{__MODULE__}` type class
 
@@ -97,33 +122,6 @@ defmodule TypeClass.Class do
 
         unquote(fun_specs)
       end
-
-      Macro.escape(reexport(__MODULE__.Protocol))
-      # IO.puts (inspect a)
-      # Macro.escape TypeClass.Class.foo(), unquote: true
-      # {:def, [context: TypeClass.Class, import: Kernel],
-      #   [{:fmap, [context: TypeClass.Class],
-      #     [{:a, [], TypeClass.Class}, {:b, [], TypeClass.Class}]},
-      #    [do: "STUFF"]]}
-      # Macro.escape(
-      #   {:def, [context: Elixir, import: Kernel],
-      #    [{:fmap, [context: Elixir],
-      #      [{:a, [], Elixir}, {:b, [], Elixir}]},
-      #     [do: "STUFF"]]}
-      #   )
     end
-    IO.puts (inspect z)
-    z
-
-  end
-
-  defmacro foo() do
-    y = quote do
-      def fmap(a, b), do: "STUFF"
-    end
-    require IEx
-    IEx.pry
-    # IO.puts (inspect y) <> "<<<<<<<"
-    y
   end
 end
