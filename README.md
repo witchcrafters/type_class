@@ -22,7 +22,7 @@ This is in extremely early stages! _Nothing_ works yet! Barely more than a sketc
 
 ```elixir
 def deps do
-  [{:type_class, "~> 0.1"}]
+  [{:type_class, "~> 1.0.0-alpha"}]
 end
 ```
 
@@ -42,13 +42,13 @@ Type classes have the ability to be abused. For instance, in languages such as H
 
 At the core, type classes are about the _properties_ that enable its functions to work correctly. To emphasize that: _properties are the most important part of a type class_. Strictly speaking, for the compiler to enforce properties at compile time, it needs to have a lot of type-level information (ideally dependant types, GADTs, or very advanced static analysis). Elixir is dynamically typed, and has almost no type information at compile time.
 
-`TypeClass` meets this challenge halfway: property testing. `definstance` will property test a small batch of examples on every data typed that the class is defined for _at compile time_. By default, it skips this check in production, runs a minimal set of cases in development, and runs a larger suite in the test environment. Property testing lets `TypeClass` check hundreds of specific examples very quickly, so while it doesn't give you a guarantee that your instance is correct, it does give you a high level of confidence.
+`TypeClass` meets this challenge halfway: property testing. `definst` will property test a small batch of examples on every data typed that the class is defined for _at compile time_. By default, it skips this check in production, runs a minimal set of cases in development, and runs a larger suite in the test environment. Property testing lets `TypeClass` check hundreds of specific examples very quickly, so while it doesn't give you a guarantee that your instance is correct, it does give you a high level of confidence.
 
 [John De Goes](http://degoes.net) defines [principled type classes](http://degoes.net/articles/principled-typeclasses) as:
 
 > Haskell-style. A baked-in notion of type classes in the overall style of Haskell, Purescript, Idris, etc.
 
-`defclass` and `definstance` get us 99% of the way here. It's not as lightweight as in Haskell &c, but it's close (and much more succinct than what is available in `Kernel`)
+`defclass` and `definst` get us 99% of the way here. It's not as lightweight as in Haskell &c, but it's close (and much more succinct than what is available in `Kernel`)
 
 > Lawful. First-class laws for type classes, which are enforced by the compiler.
 
@@ -72,46 +72,29 @@ De Goes is referring here to abstracting over type holes. Elixir is dynamically 
 
 ```elixir
 defclass Algebra.Monoid do
-  @moduledoc "Monoid docs here"
-
-  extend Algebra.Setoid
   extend Algebra.Semigroup
 
-  defmacro __using__(_) do
-    quote do
-      require Algebra.Monoid
-      import  Algebra.Monoid
+  where do
+    def empty(sample)
+  end
 
-      use_dependencies
+  properties do
+    def left_identity(data) do
+      a = generate(data)
+      Semigroup.concat(Monoid.empty(a), a) == a
+    end
+
+    def right_identity(data) do
+      a = generate(data)
+      Semigroup.concat(a, Monoid.empty(a)) == a
     end
   end
-
-  where do
-    @doc "Return the 'identity' or 'empty' element of the monoid"
-    @operator ^
-    identity(any) :: any
-  end
-
-  defproperty left_identity(monoid_a) do
-    monoid == monoid_a <|> identity(monoid_a)
-  end
-
-  defproperty right_identity(monoid_a) do
-    monoid == identity(monoid_a) <|> monoid_a
-  end
-
-  @operator ^^^
-  def append_id(a), do: identity(a) <|> a
-end
-
-definstance Algebra.Monoid, for: List do
-  def identity(_list), do: []
 end
 ```
 
 ## Haskell
 
-The rough equivalent in Haskell
+The _rough_ equivalent in Haskell
 
 ```haskell
 module Algebra.Monoid where
