@@ -1,6 +1,6 @@
 defmodule TypeClass do
   @moduledoc ~S"""
-  Helpers for defining (bootstrapped) principled type classes
+  Helpers for defining (bootstrapped, semi-)principled type classes
 
   Generates a few modules and several functions and aliases. There is no need
   to use these internals directly, as the top-level API will suffice for actual
