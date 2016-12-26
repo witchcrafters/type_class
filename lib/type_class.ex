@@ -67,7 +67,6 @@ defmodule TypeClass do
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        # alias unquote(class_name).Proto, as: unquote(class_name)
         import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
         require TypeClass.Property
         use TypeClass.Dependency
@@ -137,9 +136,7 @@ defmodule TypeClass do
 
     quote do
       for dependency <- unquote(class).__dependencies__ do
-        dependency
-        |> TypeClass.Utility.Module.append(Proto)
-        |> Protocol.assert_impl!(unquote datatype)
+        Protocol.assert_impl!(dependency, unquote datatype)
       end
 
       defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
@@ -170,6 +167,8 @@ defmodule TypeClass do
 
   defmacro properties(do: prop_funs) do
     class = __CALLER__.module
+    leaf  = class |> Module.split |> List.last |> List.wrap |> Module.concat
+    proto = Module.concat(Module.split(class) ++ [Proto])
 
     quote do
       defmodule Property do
@@ -178,6 +177,9 @@ defmodule TypeClass do
 
         For this type class's functions, please refer to `#{unquote(class)}`
         """
+
+        alias unquote(class)
+        alias unquote(proto), as: unquote(leaf)
 
         unquote(prop_funs)
       end

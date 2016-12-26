@@ -93,8 +93,8 @@ defmodule TypeClassSpec do
           b = generate(data)
           c = generate(data)
 
-          left  = a |> Semigroup.Proto.concat(b) |> Semigroup.Proto.concat(c)
-          right = Semigroup.Proto.concat(a, Semigroup.Proto.concat(b, c))
+          left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
+          right = Semigroup.concat(a, Semigroup.concat(b, c))
 
           left == right
         end
@@ -105,29 +105,29 @@ defmodule TypeClassSpec do
       def concat(a, b), do: a ++ b
     end
 
-    # defclass Monoid do
-    #   extend Semigroup
+    defclass Monoid do
+      extend Semigroup
 
-    #   where do
-    #     def empty(sample)
-    #   end
+      where do
+        def empty(sample)
+      end
 
-    #   properties do
-    #     def left_identity(data) do
-    #       a = generate(data)
-    #       Semigroup.concat(Monoid.empty(a), a) == a
-    #     end
+      properties do
+        def left_identity(data) do
+          a = generate(data)
+          Semigroup.concat(Monoid.empty(a), a) == a
+        end
 
-    #     def right_identity(data) do
-    #       a = generate(data)
-    #       Semigroup.concat(a, Monoid.empty(a)) == a
-    #     end
-    #   end
-    # end
+        def right_identity(data) do
+          a = generate(data)
+          Semigroup.concat(a, Monoid.empty(a)) == a
+        end
+      end
+    end
 
-    # definst Monoid, for: List do
-    #   def empty(_), do: []
-    # end
+    definst Monoid, for: List do
+      def empty(_), do: []
+    end
   end
 
   # describe "classic case" do
