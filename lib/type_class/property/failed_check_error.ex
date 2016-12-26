@@ -1,10 +1,10 @@
-defmodule TypeClass.Property.FailedCheck do
+defmodule TypeClass.Property.FailedCheckError do
   @moduledoc ~S"""
   Information about a failed property check
 
   ## Examples
 
-      %TypeClass.Property.FailedCheck{
+      %TypeClass.Property.FailedCheckError{
         message:  "List does not conform to property CoolClass.associative",
         datatype: List,
         property: :associative,
@@ -13,7 +13,7 @@ defmodule TypeClass.Property.FailedCheck do
 
   """
 
-  @type t :: %TypeClass.Property.FailedCheck{
+  @type t :: %TypeClass.Property.FailedCheckError{
     message:    String.t,
     datatype:   module,
     type_class: module,
@@ -27,8 +27,8 @@ defmodule TypeClass.Property.FailedCheck do
 
   ## Examples
 
-      iex> TypeClass.Property.FailedCheck.new(List, CoolClass, :associative)
-      %TypeClass.Property.FailedCheck{
+      iex> TypeClass.Property.FailedCheckError.new(List, CoolClass, :associative)
+      %TypeClass.Property.FailedCheckError{
         message:  "List does not conform to property CoolClass.associative",
         datatype: List,
         property: :associative,
@@ -38,7 +38,7 @@ defmodule TypeClass.Property.FailedCheck do
   """
   @spec new(module, module, atom) :: t
   def new(datatype, class, prop_name) do
-    %TypeClass.Property.FailedCheck{
+    %TypeClass.Property.FailedCheckError{
       type_class: class,
       property:   prop_name,
       datatype:   datatype,

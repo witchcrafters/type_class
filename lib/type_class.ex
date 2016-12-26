@@ -132,6 +132,7 @@ defmodule TypeClass do
       end
 
   """
+  @lint {Credo.Check.Refactor.CyclomaticComplexity, false}
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do

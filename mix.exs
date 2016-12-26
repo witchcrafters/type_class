@@ -19,13 +19,12 @@ defmodule TypeClass.Mixfile do
       source_url:   "https://github.com/expede/type_class",
       homepage_url: "https://github.com/expede/type_class",
 
-      aliases: ["quality": ["test", "credo --strict"]],
+      aliases: ["quality": ["espec", "credo --strict"]],
 
       preferred_cli_env: [espec: :test],
 
       deps: [
-        # {:credo, "~> 0.4", only: [:dev, :test]},
-        {:credo, github: "rrrene/credo"},
+        {:credo, "~> 0.5", only: [:dev, :test]},
         {:espec, "~> 1.2", only: :test},
 
         {:dialyxir, "~> 0.3",  only: :dev},

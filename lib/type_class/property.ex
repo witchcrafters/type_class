@@ -12,7 +12,7 @@ defmodule TypeClass.Property do
         {:module, _prop_submodule} -> nil
 
         {:error, :nofile} ->
-          raise TypeClass.Property.Undefined.new(__MODULE__)
+          raise TypeClass.Property.UndefinedError.new(__MODULE__)
       end
     end
   end
@@ -25,7 +25,7 @@ defmodule TypeClass.Property do
 
     Stream.repeatedly(fn ->
       unless apply(property_module, prop_name, [example_module.generate(nil)]) do
-        raise TypeClass.Property.FailedCheck.new(datatype, class, prop_name)
+        raise TypeClass.Property.FailedCheckError.new(datatype, class, prop_name)
       end
     end)
     |> Enum.take(times)

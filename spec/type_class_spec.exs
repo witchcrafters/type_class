@@ -130,7 +130,7 @@ defmodule TypeClassSpec do
     end
   end
 
-  describe "classic case" do
+  describe "classic case compiles" do
     defclass FunctorTwo do
       where do
         def map(collection, fun)
