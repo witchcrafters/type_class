@@ -24,9 +24,6 @@ defmodule TypeClass.Mixfile do
       preferred_cli_env: [espec: :test],
 
       deps: [
-        {:operator, "~> 0.2"},
-        {:quark,    "~> 2.2"},
-
         # {:credo, "~> 0.4", only: [:dev, :test]},
         {:credo, github: "rrrene/credo"},
         {:espec, "~> 1.2", only: :test},

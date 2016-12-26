@@ -8,33 +8,60 @@ defmodule TypeClass do
 
   ## Example
 
-  defclass MyApp.Monoid do
-  @extend MyApp.Semigroup
+      defclass Semigroup do
+        use Operator
 
-  @doc "Appends the identity to the monoid"
-  @operator &&&
-  @spec append_id(Monoid.t) :: Monoid.t
-  def append_id(a), do: identity <> a
+        where do
+          @operator :<|>
+          def concat(a, b)
+        end
 
-  where do
-  @operator ^
-  identity(any) :: any
-  end
+        properties do
+          def associative(data) do
+            a = generate(data)
+            b = generate(data)
+            c = generate(data)
 
-  defproperty reflexivity(a), do: a == a
+            left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
+            right = Semigroup.concat(a, Semigroup.concat(b, c))
 
-  properties do
-  def symmetry(a, b), do: equal?(a, b) == equal?(b, a)
+            left == right
+          end
+        end
+      end
 
-  def transitivity(a, b, c) do
-  equal?(a, b) && equal?(b, c) && equal?(a, c)
-  end
-  end
-  end
+      definst Semigroup, for: List do
+        def concat(a, b), do: a ++ b
+      end
+
+      defclass Monoid do
+        extend Semigroup
+
+        where do
+          def empty(sample)
+        end
+
+        properties do
+          def left_identity(data) do
+            a = generate(data)
+            Semigroup.concat(Monoid.empty(a), a) == a
+          end
+
+          def right_identity(data) do
+            a = generate(data)
+            Semigroup.concat(a, Monoid.empty(a)) == a
+          end
+        end
+      end
+
+      definst Monoid, for: List do
+        def empty(_), do: []
+      end
 
 
-  ## Structure
-  A `Class` is composed of several parts:
+  ## Internal Structure
+
+  A `type_class` is composed of several parts:
   - Dependencies
   - Protocol
   - Properties
@@ -43,27 +70,68 @@ defmodule TypeClass do
   ### Dependencies
 
   Dependencies are the other type classes that the type class being
-  defined extends. For istance, . It only needs the immediate parents in
+  defined extends. For instance, Monoid has a Semigroup dependency.
+
+  It only needs the immediate parents in
   the chain, as those type classes will have performed all of the checks required
   for their parents.
 
 
-  ### Protocol
+  ### Proto
 
-  `Class` generates a `Foo.Protocol` submodule that holds all of the functions
-  to be implemented. It's a very lightweight/straightforward macro. The `Protocol`
-  should never need to be called explicitly, as all of the functions will be
-  aliased in the top-level API.
+  `defclass Foo` generates a `Foo.Proto` submodule that holds all of the functions
+  to be implemented (it's a normal protocol). It's a very lightweight & straightforward,
+  but The `Protocol` should never need to be called explicitly, as all of the functions will be
+  aliased in the top-level API, and will be automatically aliased/imported with the
+  `use` variants.
+
+  Macro: `where do`
+  Optional
 
 
   ### Properties
 
   Being a (quasi-)principled type class also means having properties. Users must
   define _at least one_ property, plus _at least one_ sample data generator.
-  These will be run at compile time (in dev and test environments),
-  and will throw errors if they fail.
+  These will be run at compile time and refuse to compile if they don't pass.
+
+  All custom structs need to implement the `TypeClass.Property.Generator` protocol.
+  This is called automatically by the prop checker. Base types have been implemented
+  by this library.
+
+  Please note that class functions are aliased to the last segment of their name.
+  ex. `Foo.Bar.MyClass.quux` is automatically usable as `MyClass.quux` in the `proprties` block
+
+  Macro: `properties do`
+  Non-optional
+
   """
 
+  @doc ~S"""
+  Top-level wrapper for all type class modules. Used as a replacement for `defmodule`.
+
+  ## Examples
+
+      defclass Semigroup do
+        where do
+          def concat(a, b)
+        end
+
+        properties do
+          def associative(data) do
+            a = generate(data)
+            b = generate(data)
+            c = generate(data)
+
+            left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
+            right = Semigroup.concat(a, Semigroup.concat(b, c))
+
+            left == right
+          end
+        end
+      end
+
+  """
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
@@ -131,6 +199,18 @@ defmodule TypeClass do
     end
   end
 
+  @doc ~S"""
+  Define an instance of the type class. The rough equivalent of `defimpl`.
+  `defimpl` will check the properties at compile time, and prevent compilation
+  if the datatype does not conform to the protocol.
+
+  ## Examples
+
+      definst Semigroup, for: List do
+        def concat(a, b), do: a ++ b
+      end
+
+  """
   defmacro definst(class, opts, do: body) do
     [for: datatype] = opts
 
@@ -147,6 +227,9 @@ defmodule TypeClass do
     end
   end
 
+  @doc ~S"""
+  Convenience function for `defprotocol ClassName.Proto`. Adds some
+  """
   defmacro where(do: fun_specs) do
     class = __CALLER__.module
 

@@ -4,8 +4,19 @@ defmodule TypeClass.Property.Undefined do
   Properties are required for all type classes.
   """
 
-  defexception message: @base, type_class: nil
+  @type t :: %TypeClass.Property.Undefined{type_class: module, message: String.t}
 
+  defexception message: "Property not defined for type", type_class: nil
+
+  @doc ~S"""
+  Convenience constructor
+
+  ## Examples
+
+      iex> TypeClass.Property.FailedCheck.new(List, CoolClass, :associative)
+
+  """
+  @spec new(module) :: t
   def new(class) do
     %TypeClass.Property.Undefined{
       type_class: class,

@@ -1,6 +1,4 @@
 defmodule TypeClass.Dependency do
-  alias TypeClass.Utility.Attribute
-
   defmacro __using__(_) do
     quote do
       import unquote(__MODULE__)
