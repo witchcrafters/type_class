@@ -67,6 +67,7 @@ defmodule TypeClass do
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
+        # alias unquote(class_name).Proto, as: unquote(class_name)
         import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
         require TypeClass.Property
         use TypeClass.Dependency
@@ -91,6 +92,22 @@ defmodule TypeClass do
 
             {:error, :nofile} ->
               quote do: import unquote(class)
+          end
+        end
+
+        defmacro __using__(class: :alias) do
+          class = unquote(class_name) |> Module.split |> List.last |> List.wrap |> Module.concat
+          proto = unquote(class_name).Proto
+
+          case Code.ensure_loaded(proto) do
+            {:module, proto} ->
+              quote do
+                alias unquote(__MODULE__)
+                alias unquote(proto), as: unquote(class)
+              end
+
+            {:error, :nofile} ->
+              quote do: alias unquote(class)
           end
         end
 
@@ -134,12 +151,14 @@ defmodule TypeClass do
   end
 
   defmacro where(do: fun_specs) do
+    class = __CALLER__.module
+
     quote do
       defprotocol Proto do
         @moduledoc ~s"""
-        Protocol for the `#{__MODULE__}` type class
+        Protocol for the `#{unquote(class)}` type class
 
-        For this type class's API, please refer to `#{__MODULE__}`
+        For this type class's API, please refer to `#{unquote(class)}`
         """
 
         import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
@@ -150,12 +169,14 @@ defmodule TypeClass do
   end
 
   defmacro properties(do: prop_funs) do
+    class = __CALLER__.module
+
     quote do
       defmodule Property do
         @moduledoc ~S"""
-        Properties for the `#{__MODULE__}` type class
+        Properties for the `#{unquote(class)}` type class
 
-        For this type class's functions, please refer to `#{__MODULE__}`
+        For this type class's functions, please refer to `#{unquote(class)}`
         """
 
         unquote(prop_funs)

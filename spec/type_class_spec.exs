@@ -1,4 +1,4 @@
-defmodule TypeClass.ClassSpec do
+defmodule TypeClassSpec do
   import TypeClass
   use ESpec
 
@@ -48,7 +48,7 @@ defmodule TypeClass.ClassSpec do
       require DependencyClass
 
       expect(DependencyClass.__dependencies__)
-      |> to(eql [TypeClass.ClassSpec.MyOtherClass, TypeClass.ClassSpec.MyClass])
+      |> to(eql [TypeClassSpec.MyOtherClass, TypeClassSpec.MyClass])
     end
   end
 
@@ -105,29 +105,29 @@ defmodule TypeClass.ClassSpec do
       def concat(a, b), do: a ++ b
     end
 
-    defclass Monoid do
-      extend Semigroup
+    # defclass Monoid do
+    #   extend Semigroup
 
-      where do
-        def empty(sample)
-      end
+    #   where do
+    #     def empty(sample)
+    #   end
 
-      properties do
-        def left_identity(data) do
-          a = generate(data)
-          Semigroup.Proto.concat(Monoid.Proto.empty(a), a) == a
-        end
+    #   properties do
+    #     def left_identity(data) do
+    #       a = generate(data)
+    #       Semigroup.concat(Monoid.empty(a), a) == a
+    #     end
 
-        def right_identity(data) do
-          a = generate(data)
-          Semigroup.Proto.concat(a, Monoid.Proto.empty(a)) == a
-        end
-      end
-    end
+    #     def right_identity(data) do
+    #       a = generate(data)
+    #       Semigroup.concat(a, Monoid.empty(a)) == a
+    #     end
+    #   end
+    # end
 
-    definst Monoid, for: List do
-      def empty(_), do: []
-    end
+    # definst Monoid, for: List do
+    #   def empty(_), do: []
+    # end
   end
 
   # describe "classic case" do

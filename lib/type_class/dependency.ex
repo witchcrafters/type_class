@@ -3,8 +3,6 @@ defmodule TypeClass.Dependency do
 
   defmacro __using__(_) do
     quote do
-      require TypeClass.Utility.Attribute # Must be first
-
       import unquote(__MODULE__)
       unquote(__MODULE__).set_up
     end
@@ -12,13 +10,14 @@ defmodule TypeClass.Dependency do
 
   defmacro set_up do
     quote do
-      TypeClass.Utility.Attribute.register(:extend, accumulate: true)
+      import TypeClass.Utility.Attribute
+      register(:extend, accumulate: true)
     end
   end
 
   defmacro extend(parent_class) do
     quote do
-      use unquote(parent_class), :class # use & ensure it actually is a class
+      use unquote(parent_class), class: :alias
       @extend unquote(parent_class)
     end
   end

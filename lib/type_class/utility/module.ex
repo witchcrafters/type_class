@@ -79,29 +79,47 @@ defmodule TypeClass.Utility.Module do
     |> Module.concat
   end
 
-  # def dispatch_delegate(fun_name, arity, module) do
-  #   args =
-  #     Stream.unfold(96, fn char ->
-  #       next = char + 1
-  #       {
-  #         {List.to_atom([next]), [], Elixir},
-  #         next
-  #       }
-  #     end)
-  #     |> Enum.take(arity)
+  def dispatch_delegate(fun_name, arity, module) do
+    args =
+      Stream.unfold(96, fn char ->
+        next = char + 1
+        {
+          {List.to_atom([next]), [], Elixir},
+          next
+        }
+      end)
+      |> Enum.take(arity)
 
-  #   quote do
-  #     defdelegate unquote(fun_name)(unquote_splicing(args)), to: unquote(module)
-  #   end
-  # end
+    quote do
+      # IO.puts (inspect(unquote(fun_name)) <> inspect(unquote(args)))
+      # def unquote(fun_name)(unquote_splicing(args)) do
+      #   apply(Proto, unquote(fun_name), unquote(args))
+      # end
+      defdelegate unquote(fun_name)(unquote_splicing(args)), to: unquote(module)
+    end
+  end
 
-  # defmacro reexport(module) do
-  #   quote do
-  #     import TypeClass.Utility.Module
+  def reexport(module_ast) do
+    {module, _} = Code.eval_quoted(module_ast)
+    case Code.ensure_loaded(module) do
+      {:error, :nofile} -> nil
 
-  #     for {fun_name, arity} <- get_functions(unquote(module)) do
-  #       dispatch_delegate(fun_name, arity, unquote(module))
-  #     end
-  #   end
-  # end
+      {:module, _module} ->
+        for {fun_name, arity} <- get_functions(module) do
+          dispatch_delegate(fun_name, arity, module)
+        end
+    end
+  end
+
+  def try_import(module_ast) do
+    {module, _} = Code.eval_quoted(module_ast)
+    case Code.ensure_loaded(module) do
+      {:error, :nofile} ->
+        nil
+
+      {:module, _module} ->
+        IO.puts "here"
+        quote do: import unquote(module_ast)
+    end
+  end
 end
