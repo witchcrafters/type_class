@@ -1,6 +1,11 @@
 defmodule TypeClass.Property do
+  @moduledoc "A *very* simple prop checker"
+
   alias TypeClass.Utility.Module
 
+
+  @doc "Ensure that the type class has defined properties"
+  @spec ensure!() :: no_return
   defmacro ensure! do
     quote do
       case Code.ensure_loaded(__MODULE__.Property) do
@@ -12,6 +17,8 @@ defmodule TypeClass.Property do
     end
   end
 
+  @doc "Run all properties for the type class"
+  @spec run!(module, module, atom, non_neg_integer) :: no_return
   def run!(datatype, class, prop_name, times \\ 100) do
     property_module = Module.append(class, Property)
     example_module = Module.append(TypeClass.Property.Generator, datatype)

@@ -77,7 +77,7 @@ defmodule TypeClass do
   for their parents.
 
 
-  ### Proto
+  ### Protocol
 
   `defclass Foo` generates a `Foo.Proto` submodule that holds all of the functions
   to be implemented (it's a normal protocol). It's a very lightweight & straightforward,
@@ -228,7 +228,18 @@ defmodule TypeClass do
   end
 
   @doc ~S"""
-  Convenience function for `defprotocol ClassName.Proto`. Adds some
+  Describe functions to be instantiated. Creates an internal protocol.
+
+  ## Examples
+
+      defclass Semigroup do
+        where do
+          def concat(a, b)
+        end
+
+        # ...
+      end
+
   """
   defmacro where(do: fun_specs) do
     class = __CALLER__.module
@@ -248,6 +259,34 @@ defmodule TypeClass do
     end
   end
 
+  @doc ~S"""
+  Define properties that any instance of the type class must satisfy.
+  They must by unary (takes a data seed), and return a boolean (true if passes).
+
+  `generate` is automatically imported. The type class being defined is aliased
+  automatically. The functions in the `where` block are also available under the
+  same alias.
+
+  ## Examples
+
+      defclass Semigroup do
+        # ...
+
+        properties do
+          def associative(data) do
+            a = generate(data)
+            b = generate(data)
+            c = generate(data)
+
+            left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
+            right = Semigroup.concat(a, Semigroup.concat(b, c))
+
+            left == right
+          end
+        end
+      end
+
+  """
   defmacro properties(do: prop_funs) do
     class = __CALLER__.module
     leaf  = class |> Module.split |> List.last |> List.wrap |> Module.concat

@@ -1,4 +1,10 @@
 defmodule TypeClass.Dependency do
+  @moduledoc ~S"""
+  Helpers for setting type class dependencies
+  """
+
+  @type ast :: tuple
+
   defmacro __using__(_) do
     quote do
       import unquote(__MODULE__)
@@ -6,6 +12,8 @@ defmodule TypeClass.Dependency do
     end
   end
 
+  @doc "Set up the dependency collection from `extend`"
+  @spec set_up() :: ast
   defmacro set_up do
     quote do
       import TypeClass.Utility.Attribute
@@ -13,6 +21,22 @@ defmodule TypeClass.Dependency do
     end
   end
 
+  @doc ~S"""
+  Set a type class dependency.
+  ie: another type class that need to be `definst`ed before this one.
+
+  ## Examples
+
+      defmodule Quux do
+        extend Foo
+        extend Bar
+        extend Baz
+
+        # ...
+      end
+
+  """
+  @spec extend(module) :: ast
   defmacro extend(parent_class) do
     quote do
       use unquote(parent_class), class: :alias
@@ -20,6 +44,8 @@ defmodule TypeClass.Dependency do
     end
   end
 
+  @doc "The opposite of `set_up/1`: collect dependencies"
+  @spec run() :: ast
   defmacro run do
     quote do
       def __dependencies__, do: @extend
