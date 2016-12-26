@@ -130,42 +130,62 @@ defmodule TypeClassSpec do
     end
   end
 
-  # describe "classic case" do
-  #   defclass Functor do
-  #     where do
-  #       def map(collection, fun)
-  #     end
-  #   end
+  describe "classic case" do
+    defclass FunctorTwo do
+      where do
+        def map(collection, fun)
+      end
 
-  #   defclass Apply do
-  #     extend Functor
+      properties do
+        def foo(_), do: true
+      end
+    end
 
-  #     where do
-  #       def ap(collection, fun)
-  #     end
-  #   end
+    defclass Apply do
+      extend FunctorTwo
 
-  #   defclass Applicative do
-  #     extend Apply
+      where do
+        def ap(collection, fun)
+      end
 
-  #     where do
-  #       def of(val, ex)
-  #     end
+      properties do
+        def foo(_), do: true
+      end
+    end
 
-  #     defdelegate wrap(value, representative), to: Proto
-  #   end
+    defclass Applicative do
+      extend Apply
 
-  #   defclass Chain do
-  #     extend Apply
+      where do
+        def of(val, ex)
+      end
 
-  #     where do
-  #       def chain(wrapped, chaining_fun)
-  #     end
-  #   end
+      defdelegate wrap(value, representative), to: Proto
 
-  #   defclass Monad do
-  #     extend Applicative
-  #     extend Chain
-  #   end
-  # end
+      properties do
+        def foo(_), do: true
+      end
+    end
+
+    defclass Chain do
+      extend Apply
+
+      where do
+        def chain(wrapped, chaining_fun)
+      end
+
+      properties do
+        def foo(_), do: true
+      end
+    end
+
+    defclass Monad do
+      extend Applicative
+      extend Chain
+
+      properties do
+        def foo(_), do: true
+      end
+    end
+  end
 end
