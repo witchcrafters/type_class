@@ -1,16 +1,18 @@
 defmodule TypeClass.Utility.Module do
   @moduledoc "Naming convention helpers to help follow TypeClass conventions"
 
+  @type ast :: tuple
+
   @doc ~S"""
   Generate the module name for the protocol portion of the class.
   Does not nest `Protocol`s.
 
   ## Examples
 
-      iex> MyClass.Awesome |> to_protocol
+      iex> to_protocol MyClass.Awesome
       MyClass.Awesome.Protocol
 
-      iex> MyClass.Awesome.Protocol |> to_protocol
+      iex> to_protocol MyClass.Awesome.Protocol
       MyClass.Awesome.Protocol
 
   """
@@ -23,10 +25,10 @@ defmodule TypeClass.Utility.Module do
 
   ## Examples
 
-      iex> MyClass.Awesome |> to_property
+      iex> to_property MyClass.Awesome
       MyClass.Awesome.Property
 
-      iex> MyClass.Awesome.Property |> to_property
+      iex> to_property MyClass.Awesome.Property
       MyClass.Awesome.Property
 
   """
@@ -61,9 +63,35 @@ defmodule TypeClass.Utility.Module do
   end
 
   def to_submodule(base_module, child_module) do
-    child_module
-    |> to_string
+    to_submodule(base_module, Module.split(child_module))
+  end
+
+  def get_functions(module) do
+    module.__info__(:functions)
+    |> Enum.into(%{})
+    |> Map.drop([
+      :__protocol__,
+      :impl_for,
+      :impl_for!,
+      :__builtin__,
+      :__derive__,
+      :__ensure_defimpl__,
+      :__functions_spec__,
+      :__impl__,
+      :__spec__?,
+      :assert_impl!,
+      :assert_protocol!,
+      :consolidate,
+      :consolidated?,
+      :extract_impls,
+      :extract_protocols
+    ])
+  end
+
+  def append(parent_module, submodule) do
+    parent_module
     |> Module.split
-    |> Quark.flip(&to_submodule/2).(base_module)
+    |> fn modules -> modules ++ List.wrap(submodule) end.()
+    |> Module.concat
   end
 end

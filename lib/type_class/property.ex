@@ -1,21 +1,33 @@
 defmodule TypeClass.Property do
-  alias __MODULE__
+  @moduledoc "A *very* simple prop checker"
 
-  defmacro __using__(_) do
+  alias TypeClass.Utility.Module
+
+
+  @doc "Ensure that the type class has defined properties"
+  @spec ensure!() :: no_return
+  defmacro ensure! do
     quote do
-      require unquote(__MODULE__)
-      alias   unquote(__MODULE__)
+      case Code.ensure_loaded(__MODULE__.Property) do
+        {:module, _prop_submodule} -> nil
+
+        {:error, :nofile} ->
+          raise TypeClass.Property.UndefinedError.new(__MODULE__)
+      end
     end
   end
 
-  # defmacro defproperty(name, )
+  @doc "Run all properties for the type class"
+  @spec run!(module, module, atom, non_neg_integer) :: no_return
+  def run!(datatype, class, prop_name, times \\ 100) do
+    property_module = Module.append(class, Property)
+    example_module = Module.append(TypeClass.Property.Generator, datatype)
 
-  @spec check_all([fun], [fun], pos_integer) :: :ok | Property.Error.t
-  def check_all(properties, data_generators, times \\ 100) do
-    # properties
-    # |> Enum.each(fn prop ->
-    #   # Enum.reduce(class.__PROPERTY)
-    #   check(prop, times)
-    # end)
+    Stream.repeatedly(fn ->
+      unless apply(property_module, prop_name, [example_module.generate(nil)]) do
+        raise TypeClass.Property.FailedCheckError.new(datatype, class, prop_name)
+      end
+    end)
+    |> Enum.take(times)
   end
 end
