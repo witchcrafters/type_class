@@ -198,7 +198,7 @@ defmodule TypeClass do
     fun_stubs =
       case fun_specs do
         {:__block__,[], funs} -> funs
-        fun = {:def, _ctx, _inner } -> [fun]
+        fun = {:def, _ctx, _inner} -> [fun]
       end
 
     delegates = for {:def, ctx, fun} <- List.wrap(fun_stubs) do
