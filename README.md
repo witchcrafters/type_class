@@ -4,9 +4,6 @@
 
 `TypeClass` brings (semi-)[principled](http://degoes.net/articles/principled-typelasses) [type classes](https://en.wikibooks.org/wiki/Haskell/Classes_and_types) to Elixir
 
-# NOTE!
-This is in extremely early stages! _Nothing_ works yet! Barely more than a sketch of an idea.
-
 # Table of Contents
 
 - [Quick Start](#quick-start)
