@@ -22,8 +22,8 @@ defmodule TypeClass do
             b = generate(data)
             c = generate(data)
 
-            left  = a |> concat(b) |> concat(c)
-            right = concat(a, concat(b, c))
+            left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
+            right = Semigroup.concat(a, Semigroup.concat(b, c))
 
             left == right
           end
@@ -121,8 +121,8 @@ defmodule TypeClass do
             b = generate(data)
             c = generate(data)
 
-            left  = a |> concat(b) |> concat(c)
-            right = concat(a, concat(b, c))
+            left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
+            right = Semigroup.concat(a, Semigroup.concat(b, c))
 
             left == right
           end
