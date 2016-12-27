@@ -142,58 +142,6 @@ defmodule TypeClass do
 
         unquote(body)
 
-        defmacro __using__(:class) do
-          quote do
-            use unquote(__MODULE__), class: :import
-          end
-        end
-
-        defmacro __using__(class: :import) do
-          class = unquote(class_name) # Help compiler with unwrapping quotes
-
-          case Code.ensure_loaded(unquote(class_name).Proto) do
-            {:module, proto} ->
-              quote do
-                import unquote(proto), except: [impl_for: 1, impl_for!: 1]
-                import unquote(class)
-              end
-
-            {:error, :nofile} ->
-              quote do: import unquote(class)
-          end
-        end
-
-        defmacro __using__(class: :alias) do
-          class = unquote(class_name) |> Module.split |> List.last |> List.wrap |> Module.concat
-          proto = unquote(class_name).Proto
-
-          case Code.ensure_loaded(proto) do
-            {:module, proto} ->
-              quote do
-                alias unquote(proto), as: unquote(class)
-                alias unquote(__MODULE__)
-              end
-
-            {:error, :nofile} ->
-              quote do: alias unquote(class)
-          end
-        end
-
-        defmacro __using__(class: :alias, as: as_name) do
-          class = unquote(class_name) # Help compiler with unwrapping quotes
-
-          case Code.ensure_loaded(unquote(class_name).Proto) do
-            {:module, proto} ->
-              quote do
-                alias unquote(proto), as: unquote(as_name)
-                alias unquote(class)
-              end
-
-            {:error, :nofile} ->
-              quote do: alias unquote(class)
-          end
-        end
-
         TypeClass.Dependency.run
         TypeClass.Property.ensure!
       end

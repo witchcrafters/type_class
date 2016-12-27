@@ -39,7 +39,7 @@ defmodule TypeClass.Dependency do
   @spec extend(module) :: ast
   defmacro extend(parent_class) do
     quote do
-      use unquote(parent_class), class: :alias
+      require unquote(parent_class)
       @extend unquote(parent_class)
     end
   end
