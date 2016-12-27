@@ -7,7 +7,7 @@ defmodule TypeClass.Mixfile do
       name: "TypeClass",
       description: "(Semi-)principled type classes for Elixir",
 
-      version: "1.0.0-alpha",
+      version: "1.0.0-alpha2",
       elixir:  "~> 1.3",
 
       package: [

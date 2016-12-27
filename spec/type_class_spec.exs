@@ -75,7 +75,7 @@ defmodule TypeClassSpec do
 
     describe "unified API (reexport)" do
       it "is fmappable" do
-        use Functor, class: :alias, as: Functor
+        alias Functor
         expect(Functor.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
       end
     end

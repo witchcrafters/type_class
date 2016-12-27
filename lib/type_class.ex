@@ -142,58 +142,6 @@ defmodule TypeClass do
 
         unquote(body)
 
-        defmacro __using__(:class) do
-          quote do
-            use unquote(__MODULE__), class: :import
-          end
-        end
-
-        defmacro __using__(class: :import) do
-          class = unquote(class_name) # Help compiler with unwrapping quotes
-
-          case Code.ensure_loaded(unquote(class_name).Proto) do
-            {:module, proto} ->
-              quote do
-                import unquote(class)
-                import unquote(proto), except: [impl_for: 1, impl_for!: 1]
-              end
-
-            {:error, :nofile} ->
-              quote do: import unquote(class)
-          end
-        end
-
-        defmacro __using__(class: :alias) do
-          class = unquote(class_name) |> Module.split |> List.last |> List.wrap |> Module.concat
-          proto = unquote(class_name).Proto
-
-          case Code.ensure_loaded(proto) do
-            {:module, proto} ->
-              quote do
-                alias unquote(__MODULE__)
-                alias unquote(proto), as: unquote(class)
-              end
-
-            {:error, :nofile} ->
-              quote do: alias unquote(class)
-          end
-        end
-
-        defmacro __using__(class: :alias, as: as_name) do
-          class = unquote(class_name) # Help compiler with unwrapping quotes
-
-          case Code.ensure_loaded(unquote(class_name).Proto) do
-            {:module, proto} ->
-              quote do
-                alias unquote(class)
-                alias unquote(proto), as: unquote(as_name)
-              end
-
-            {:error, :nofile} ->
-              quote do: alias unquote(class)
-          end
-        end
-
         TypeClass.Dependency.run
         TypeClass.Property.ensure!
       end
@@ -217,7 +165,8 @@ defmodule TypeClass do
 
     quote do
       for dependency <- unquote(class).__dependencies__ do
-        Protocol.assert_impl!(dependency, unquote datatype)
+        proto = Module.concat(Module.split(dependency) ++ ["Proto"])
+        Protocol.assert_impl!(proto, unquote datatype)
       end
 
       defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
@@ -244,6 +193,21 @@ defmodule TypeClass do
   """
   defmacro where(do: fun_specs) do
     class = __CALLER__.module
+    proto = Module.split(class) ++ ["Proto"] |> Enum.map(&String.to_atom/1)
+
+    fun_stubs =
+      case fun_specs do
+        {:__block__,[], funs} -> funs
+        fun = {:def, _ctx, _inner} -> [fun]
+      end
+
+    delegates = for {:def, ctx, fun} <- List.wrap(fun_stubs) do
+      {
+        :defdelegate,
+        ctx,
+        fun ++ [[to: {:__aliases__, [alias: false], proto}]]
+      }
+    end
 
     quote do
       defprotocol Proto do
@@ -257,6 +221,8 @@ defmodule TypeClass do
 
         Macro.escape unquote(fun_specs), unquote: true
       end
+
+      unquote(delegates)
     end
   end
 
