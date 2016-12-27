@@ -22,8 +22,8 @@ defmodule TypeClass do
             b = generate(data)
             c = generate(data)
 
-            left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
-            right = Semigroup.concat(a, Semigroup.concat(b, c))
+            left  = a |> concat(b) |> concat(c)
+            right = concat(a, concat(b, c))
 
             left == right
           end
@@ -44,12 +44,12 @@ defmodule TypeClass do
         properties do
           def left_identity(data) do
             a = generate(data)
-            Semigroup.concat(Monoid.empty(a), a) == a
+            Semigroup.concat(empty(a), a) == a
           end
 
           def right_identity(data) do
             a = generate(data)
-            Semigroup.concat(a, Monoid.empty(a)) == a
+            Semigroup.concat(a, empty(a)) == a
           end
         end
       end
@@ -81,9 +81,7 @@ defmodule TypeClass do
 
   `defclass Foo` generates a `Foo.Proto` submodule that holds all of the functions
   to be implemented (it's a normal protocol). It's a very lightweight & straightforward,
-  but The `Protocol` should never need to be called explicitly, as all of the functions will be
-  aliased in the top-level API, and will be automatically aliased/imported with the
-  `use` variants.
+  but The `Protocol` should never need to be called explicitly.
 
   Macro: `where do`
   Optional
@@ -123,8 +121,8 @@ defmodule TypeClass do
             b = generate(data)
             c = generate(data)
 
-            left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
-            right = Semigroup.concat(a, Semigroup.concat(b, c))
+            left  = a |> concat(b) |> concat(c)
+            right = concat(a, concat(b, c))
 
             left == right
           end
@@ -230,9 +228,7 @@ defmodule TypeClass do
   Define properties that any instance of the type class must satisfy.
   They must by unary (takes a data seed), and return a boolean (true if passes).
 
-  `generate` is automatically imported. The type class being defined is aliased
-  automatically. The functions in the `where` block are also available under the
-  same alias.
+  `generate` is automatically imported
 
   ## Examples
 
