@@ -44,6 +44,20 @@ defmodule TypeClass.Dependency do
     end
   end
 
+  defmacro extend(parent_class, alias: true) do
+    quote do
+      extend unquote(parent_class)
+      alias unquote(parent_class)
+    end
+  end
+
+  defmacro extend(parent_class, alias: alias_as) do
+    quote do
+      extend unquote(parent_class)
+      alias unquote(parent_class), as: unquote(alias_as)
+    end
+  end
+
   @doc "The opposite of `set_up/1`: collect dependencies"
   @spec run() :: ast
   defmacro run do
