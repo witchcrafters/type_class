@@ -277,9 +277,9 @@ defmodule TypeClass do
     end
   end
 
-  defmacro defalias(fun_head, as_name) do
+  defmacro defalias(fun_head, as: as_name) do
     quote do
-      defdelegate unquote(fun_head), [to: __MODULE__, as: unquote(as_name)]
+      defdelegate unquote(fun_head), to: __MODULE__, as: unquote(as_name)
     end
   end
 end
