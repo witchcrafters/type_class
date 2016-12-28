@@ -195,17 +195,23 @@ defmodule TypeClass do
 
     fun_stubs =
       case fun_specs do
-        {:__block__,[], funs} -> funs
+        {:__block__, _ctx, funs}   -> funs
         fun = {:def, _ctx, _inner} -> [fun]
       end
 
-    delegates = for {:def, ctx, fun} <- List.wrap(fun_stubs) do
-      {
-        :defdelegate,
-        ctx,
-        fun ++ [[to: {:__aliases__, [alias: false], proto}]]
-      }
-    end
+    delegates =
+      fun_stubs
+      |> List.wrap
+      |> Enum.map(fn
+        {:def, ctx, fun} ->
+          {
+            :defdelegate,
+            ctx,
+            fun ++ [[to: {:__aliases__, [alias: false], proto}]]
+          }
+
+        ast -> ast
+      end)
 
     quote do
       defprotocol Proto do
