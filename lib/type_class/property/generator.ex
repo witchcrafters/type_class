@@ -29,7 +29,7 @@ defprotocol TypeClass.Property.Generator do
 end
 
 defimpl TypeClass.Property.Generator, for: Any do
-  def generate(fun) when is_function(fun) do
+  def generate(fun) do
     Enum.random [
       &inspect/1,
       fn id -> id end,
@@ -40,6 +40,7 @@ defimpl TypeClass.Property.Generator, for: Any do
       end
     ]
   end
+
   def generate(value) do
     raise %Protocol.UndefinedError{
       protocol: TypeClass.Property.Generator,
