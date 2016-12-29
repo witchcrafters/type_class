@@ -32,12 +32,8 @@ defimpl TypeClass.Property.Generator, for: Any do
   def generate(fun) do
     Enum.random [
       &inspect/1,
-      fn id -> id end,
-      fn x ->
-        fn y ->
-          x |> y.()
-        end
-      end
+      &is_number/1,
+      fn id -> id end
     ]
   end
 end
