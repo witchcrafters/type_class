@@ -161,17 +161,59 @@ defmodule TypeClass do
   defmacro definst(class, opts, do: body) do
     [for: datatype] = opts
 
-    quote do
-      for dependency <- unquote(class).__dependencies__ do
-        proto = Module.concat(Module.split(dependency) ++ ["Proto"])
-        Protocol.assert_impl!(proto, unquote datatype)
-      end
+    case datatype do
+      Function ->
+        body_for_funs =
+          for ast = {name, ctx, inner} <- body do
+            case name do
+              :def ->
+                case inner do
+                  [{:when, when_ctx, [{inner_name, inner_ctx, [arg | args]}, conditions]}, do_block] ->
+                    [
+                      {
+                        :when,
+                        when_ctx,
+                        [
+                          {inner_name, inner_ctx, [arg | args]},
+                          {:and, inner_ctx, [{:is_function, inner_ctx, [arg | conditions]}]}
+                        ],
+                        do_block
+                      }
+                    ]
 
-      defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
+                  simple_inner -> simple_inner
+                end
 
-      for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
-        TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
-      end
+              _ -> ast
+            end
+          end
+
+        quote do
+          for dependency <- unquote(class).__dependencies__ do
+            proto = Module.concat(Module.split(dependency) ++ ["Proto"])
+            Protocol.assert_impl!(proto, unquote datatype)
+          end
+
+          defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body_for_funs)
+
+          for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
+            TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
+          end
+        end
+
+      _ ->
+        quote do
+          for dependency <- unquote(class).__dependencies__ do
+            proto = Module.concat(Module.split(dependency) ++ ["Proto"])
+            Protocol.assert_impl!(proto, unquote datatype)
+          end
+
+          defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
+
+          for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
+            TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
+          end
+        end
     end
   end
 
@@ -221,14 +263,32 @@ defmodule TypeClass do
         For this type class's API, please refer to `#{unquote(class)}`
         """
 
-        @fallback_to_any true
-
         import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
 
         Macro.escape unquote(fun_specs), unquote: true
       end
 
       unquote(delegates)
+    end
+  end
+
+  @doc ~S"""
+  Allow function instances to be defined.
+  This allows you to `definst ..., for Function`.
+
+  ## Examples
+
+      defclass Functor do
+        where do
+          include_function_instance
+          def map(a, b)
+        end
+      end
+
+  """
+  defmacro include_function_instance do
+    quote do
+      @fallback_to_any true
     end
   end
 
