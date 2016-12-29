@@ -3,6 +3,8 @@ defprotocol TypeClass.Property.Generator do
   Data generator protocol for property checks. The more variation the better.
   """
 
+  @fallback_to_any true
+
   @doc ~S"""
   Generate a random example of datatype.
 
@@ -24,6 +26,26 @@ defprotocol TypeClass.Property.Generator do
 
   """
   def generate(sample)
+end
+
+defimpl TypeClass.Property.Generator, for: Any do
+  def generate(fun) when is_function(fun) do
+    Enum.random [
+      &inspect/1,
+      fn id -> id end,
+      fn x ->
+        fn y ->
+          x |> y.()
+        end
+      end
+    ]
+  end
+  def generate(value) do
+    raise %Protocol.UndefinedError{
+      protocol: TypeClass.Property.Generator,
+      value: value
+    }
+  end
 end
 
 defimpl TypeClass.Property.Generator, for: Integer do
