@@ -40,13 +40,6 @@ defimpl TypeClass.Property.Generator, for: Any do
       end
     ]
   end
-
-  def generate(value) do
-    raise %Protocol.UndefinedError{
-      protocol: TypeClass.Property.Generator,
-      value: value
-    }
-  end
 end
 
 defimpl TypeClass.Property.Generator, for: Integer do
