@@ -28,14 +28,22 @@ defprotocol TypeClass.Property.Generator do
   def generate(sample)
 end
 
-defimpl TypeClass.Property.Generator, for: Any do
-  def generate(_function) do
+defmodule TypeClass.Property.Generator.Function do
+  @moduledoc false
+  # For bootstrapping Function instance with Any
+
+  @doc false
+  def generate(_) do
     Enum.random [
       &inspect/1,
       &is_number/1,
       fn id -> id end
     ]
   end
+end
+
+defimpl TypeClass.Property.Generator, for: Any do
+  def generate(_function), do: TypeClass.Property.Generator.Function.generate(true)
 end
 
 defimpl TypeClass.Property.Generator, for: Integer do
