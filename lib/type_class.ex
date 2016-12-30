@@ -332,6 +332,8 @@ defmodule TypeClass do
         For this type class's functions, please refer to `#{unquote(class)}`
         """
 
+        import TypeClass.Property, only: [equal?: 2]
+
         alias unquote(class)
         alias unquote(proto), as: unquote(leaf)
 
