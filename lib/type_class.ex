@@ -163,7 +163,7 @@ defmodule TypeClass do
 
     quote do
       defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
-      TypeClass.ensure unquote(datatype), conforms_to: unquote(class)
+      unquote(datatype) |> conforms(to: unquote(class))
     end
   end
 
@@ -278,8 +278,8 @@ defmodule TypeClass do
     end
   end
 
-  @doc "Check "
-  defmacro ensure(datatype, conforms_to: class) do
+  @doc "Check that a datatype conforms to the class hierarchy and properties"
+  defmacro conforms(datatype, to: class) do
     quote do
       for dependency <- unquote(class).__dependencies__ do
         proto = Module.concat(Module.split(dependency) ++ ["Proto"])
