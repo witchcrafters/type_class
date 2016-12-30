@@ -161,38 +161,6 @@ defmodule TypeClass do
   defmacro definst(class, opts, do: body) do
     [for: datatype] = opts
 
-    case datatype do
-      # Function ->
-      #   body_for_funs =
-      #     for ast = {kind, _ctx, inner} <- body do
-      #       case kind do
-      #         :def ->
-      #           [{fun_name, _, args = [arg|_]}, inner_body] = inner
-
-      #           quote do
-      #             def unquote(fun_name)(unquote_splicing(args)) do
-      #               if is_function(unquote(arg)) do
-      #                 unquote(inner_body)
-      #               else
-      #                 raise %Protocol.UndefinedError{ # Consistency
-      #                   protocol: unquote(class).Proto,
-      #                   value: unquote(arg)
-      #                 }
-      #               end
-      #             end
-      #           end
-
-      #         _ -> ast
-      #       end
-      #     end
-
-      #   instantiate(class, Any, body_for_funs)
-
-      _ -> instantiate(class, datatype, body)
-    end
-  end
-
-  def instantiate(class, datatype, body) do
     quote do
       for dependency <- unquote(class).__dependencies__ do
         proto = Module.concat(Module.split(dependency) ++ ["Proto"])
