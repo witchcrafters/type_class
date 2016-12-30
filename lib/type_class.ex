@@ -221,7 +221,7 @@ defmodule TypeClass do
       end
 
   """
-  defmacro where([do: fun_specs]) do
+  defmacro where(do: fun_specs) do
     class = __CALLER__.module
     proto = Module.split(class) ++ ["Proto"] |> Enum.map(&String.to_atom/1)
 
@@ -261,17 +261,6 @@ defmodule TypeClass do
       unquote(delegates)
     end
   end
-
-  @doc "Allow instantiation on `Function`. Bootstraps with `fallback_to_any`."
-  defmacro where([include: {:__aliases__, _, [:Function]}], [do: fun_specs]) do
-    quote do
-      where do
-        include_function_instance
-        unquote(fun_specs)
-      end
-    end
-  end
-
 
   @doc ~S"""
   Allow function instances to be defined.
