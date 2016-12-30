@@ -29,7 +29,7 @@ defprotocol TypeClass.Property.Generator do
 end
 
 defimpl TypeClass.Property.Generator, for: Any do
-  def generate(fun) do
+  def generate(_function) do
     Enum.random [
       &inspect/1,
       &is_number/1,

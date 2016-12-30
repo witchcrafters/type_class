@@ -164,27 +164,24 @@ defmodule TypeClass do
     case datatype do
       Function ->
         body_for_funs =
-          for ast = {name, ctx, inner} <- body do
-            case name do
-              :def ->
-                case inner do
-                  [{:when, when_ctx, [{inner_name, inner_ctx, [arg | args]}, conditions]}, do_block] ->
-                    [
-                      {
-                        :when,
-                        when_ctx,
-                        [
-                          {inner_name, inner_ctx, [arg | args]},
-                          {:and, inner_ctx, [{:is_function, inner_ctx, [arg | conditions]}]}
-                        ],
-                        do_block
-                      }
-                    ]
+          for ast = {kind, _ctx, inner} <- body do
+            if kind == :def do
+              [{fun_name, _, args = [arg|_]}, inner_body] = inner
 
-                  simple_inner -> simple_inner
+              quote do
+                def unquote(fun_name)(unquote_splicing(args)) do
+                  if is_function(unquote(arg)) do
+                    unquote(inner_body)
+                  else
+                    raise %Protocol.UndefinedError{ # Consistency
+                      protocol: unquote(class).Proto,
+                      value: unquote(arg)
+                    }
+                  end
                 end
-
-              _ -> ast
+              end
+            else
+              ast
             end
           end
 
@@ -194,7 +191,7 @@ defmodule TypeClass do
             Protocol.assert_impl!(proto, unquote datatype)
           end
 
-          defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body_for_funs)
+          defimpl unquote(class).Proto, for: Any, do: unquote(body_for_funs)
 
           for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
             TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)

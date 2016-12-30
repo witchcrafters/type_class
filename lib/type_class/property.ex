@@ -41,7 +41,7 @@ defmodule TypeClass.Property do
   def equal?(left, right) do
     cond do
       is_function(left) -> left.("foo") == right.("foo")
-      is_float(left)    -> round(left, 5) == round(right, 5)
+      is_float(left)    -> Float.round(left, 5) == Float.round(right, 5)
       true              -> left == right
     end
   end
