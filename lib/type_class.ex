@@ -207,7 +207,7 @@ defmodule TypeClass do
     end
   end
 
-  defmacro where([include: Function], [do: fun_specs]) do
+  defmacro where([include: {:aliases, _, [:Function]}, do: do_block]) do
     quote do
       where do
         include_function_instance
