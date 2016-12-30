@@ -221,8 +221,6 @@ defmodule TypeClass do
         For this type class's API, please refer to `#{unquote(class)}`
         """
 
-        @fallback_to_any true
-
         import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
 
         Macro.escape unquote(fun_specs), unquote: true
@@ -270,6 +268,8 @@ defmodule TypeClass do
 
         For this type class's functions, please refer to `#{unquote(class)}`
         """
+
+        import TypeClass.Property, only: [equal?: 2]
 
         alias unquote(class)
         alias unquote(proto), as: unquote(leaf)
