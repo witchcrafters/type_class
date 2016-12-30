@@ -262,6 +262,15 @@ defmodule TypeClass do
     end
   end
 
+  defmacro where(include: Function, do: fun_specs) do
+    quote do
+      where do
+        include_function_instance
+        unquote(fun_specs)
+      end
+    end
+  end
+
   @doc ~S"""
   Allow function instances to be defined.
   This allows you to `definst ..., for Function`.
