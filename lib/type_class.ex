@@ -207,6 +207,15 @@ defmodule TypeClass do
     end
   end
 
+  defmacro where(include: Function, do: fun_specs) do
+    quote do
+      where do
+        include_function_instance
+        unquote(fun_specs)
+      end
+    end
+  end
+
   @doc ~S"""
   Describe functions to be instantiated. Creates an internal protocol.
 
@@ -259,15 +268,6 @@ defmodule TypeClass do
       end
 
       unquote(delegates)
-    end
-  end
-
-  defmacro where([include: Function], do: fun_specs) do
-    quote do
-      where do
-        include_function_instance
-        unquote(fun_specs)
-      end
     end
   end
 
