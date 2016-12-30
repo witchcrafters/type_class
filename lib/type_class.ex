@@ -231,26 +231,6 @@ defmodule TypeClass do
   end
 
   @doc ~S"""
-  Allow function instances to be defined.
-  This allows you to `definst ..., for Function`.
-
-  ## Examples
-
-      defclass Functor do
-        where do
-          include_function_instance
-          def map(a, b)
-        end
-      end
-
-  """
-  defmacro include_function_instance do
-    quote do
-      @fallback_to_any true
-    end
-  end
-
-  @doc ~S"""
   Define properties that any instance of the type class must satisfy.
   They must by unary (takes a data seed), and return a boolean (true if passes).
 
