@@ -165,52 +165,45 @@ defmodule TypeClass do
       Function ->
         body_for_funs =
           for ast = {kind, _ctx, inner} <- body do
-            if kind == :def do
-              [{fun_name, _, args = [arg|_]}, inner_body] = inner
+            case kind do
+              :def ->
+                [{fun_name, _, args = [arg|_]}, inner_body] = inner
 
-              quote do
-                def unquote(fun_name)(unquote_splicing(args)) do
-                  if is_function(unquote(arg)) do
-                    unquote(inner_body)
-                  else
-                    raise %Protocol.UndefinedError{ # Consistency
-                      protocol: unquote(class).Proto,
-                      value: unquote(arg)
-                    }
+                quote do
+                  def unquote(fun_name)(unquote_splicing(args)) do
+                    if is_function(unquote(arg)) do
+                      unquote(inner_body)
+                    else
+                      raise %Protocol.UndefinedError{ # Consistency
+                        protocol: unquote(class).Proto,
+                        value: unquote(arg)
+                      }
+                    end
                   end
                 end
-              end
-            else
-              ast
+
+              _ -> ast
             end
           end
 
-        quote do
-          for dependency <- unquote(class).__dependencies__ do
-            proto = Module.concat(Module.split(dependency) ++ ["Proto"])
-            Protocol.assert_impl!(proto, unquote datatype)
-          end
+        instantiate(class, Any, body_for_funs)
 
-          defimpl unquote(class).Proto, for: Any, do: unquote(body_for_funs)
+      _ -> instantiate(class, datatype, body)
+    end
+  end
 
-          for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
-            TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
-          end
-        end
+  def instantiate(class, datatype, body) do
+    quote do
+      for dependency <- unquote(class).__dependencies__ do
+        proto = Module.concat(Module.split(dependency) ++ ["Proto"])
+        Protocol.assert_impl!(proto, unquote datatype)
+      end
 
-      _ ->
-        quote do
-          for dependency <- unquote(class).__dependencies__ do
-            proto = Module.concat(Module.split(dependency) ++ ["Proto"])
-            Protocol.assert_impl!(proto, unquote datatype)
-          end
+      defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
 
-          defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
-
-          for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
-            TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
-          end
-        end
+      for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
+        TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
+      end
     end
   end
 
