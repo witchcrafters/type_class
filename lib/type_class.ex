@@ -169,9 +169,7 @@ defmodule TypeClass do
 
   @doc "Variant of `definst/2` for use inside of a `defstruct` module definition"
   defmacro definst(class, do: body) do
-    quote do
-      definst(unquote(class), for: __MODULE__, do: unquote(body))
-    end
+    quote do: definst(unquote(class), for: __MODULE__, do: unquote(body))
   end
 
   @doc ~S"""
