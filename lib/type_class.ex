@@ -162,16 +162,8 @@ defmodule TypeClass do
     [for: datatype] = opts
 
     quote do
-      for dependency <- unquote(class).__dependencies__ do
-        proto = Module.concat(Module.split(dependency) ++ ["Proto"])
-        Protocol.assert_impl!(proto, unquote datatype)
-      end
-
       defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
-
-      for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
-        TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
-      end
+      TypeClass.ensure unquote(datatype), conforms_to: unquote(class)
     end
   end
 
@@ -283,6 +275,24 @@ defmodule TypeClass do
   defmacro defalias(fun_head, as: as_name) do
     quote do
       defdelegate unquote(fun_head), to: __MODULE__, as: unquote(as_name)
+    end
+  end
+
+  @doc "Check "
+  defmacro ensure(datatype, conforms_to: class) do
+    quote do
+      for dependency <- unquote(class).__dependencies__ do
+        proto = Module.concat(Module.split(dependency) ++ ["Proto"])
+
+        case Code.ensure_loaded(proto) do
+          {:module, _name} -> Protocol.assert_impl!(proto, unquote datatype)
+          _ -> nil
+        end
+      end
+
+      for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
+        TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
+      end
     end
   end
 end
