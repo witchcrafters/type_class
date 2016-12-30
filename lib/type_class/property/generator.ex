@@ -28,7 +28,7 @@ defprotocol TypeClass.Property.Generator do
   def generate(sample)
 end
 
-definst TypeClass.Property.Generator, for: Function do
+defimpl TypeClass.Property.Generator, for: Function do
   def generate(_) do
     Enum.random [
       &inspect/1,
