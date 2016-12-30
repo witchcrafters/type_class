@@ -295,4 +295,9 @@ defmodule TypeClass do
       end
     end
   end
+
+  @doc "Variant of `conforms/2` that can be called within a data module"
+  defmacro conforms(to: class) do
+    quote do: __MODULE__ |> conforms(to: unquote(class))
+  end
 end
