@@ -28,11 +28,7 @@ defprotocol TypeClass.Property.Generator do
   def generate(sample)
 end
 
-defmodule TypeClass.Property.Generator.Function do
-  @moduledoc false
-  # For bootstrapping Function instance with Any
-
-  @doc false
+definst TypeClass.Property.Generator, for: Function do
   def generate(_) do
     Enum.random [
       &inspect/1,
