@@ -3,7 +3,6 @@ defmodule TypeClass.Property do
 
   alias TypeClass.Utility.Module
 
-
   @doc "Ensure that the type class has defined properties"
   @spec ensure!() :: no_return
   defmacro ensure! do
@@ -45,5 +44,4 @@ defmodule TypeClass.Property do
       true              -> left == right
     end
   end
-
 end

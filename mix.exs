@@ -19,7 +19,7 @@ defmodule TypeClass.Mixfile do
       source_url:   "https://github.com/expede/type_class",
       homepage_url: "https://github.com/expede/type_class",
 
-      aliases: ["quality": ["espec", "credo --strict"]],
+      aliases: ["quality": ["espec", "credo --strict", "inch"]],
 
       preferred_cli_env: [espec: :test],
 

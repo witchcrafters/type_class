@@ -279,6 +279,7 @@ defmodule TypeClass do
     end
   end
 
+  @doc "Delegate to a local function"
   defmacro defalias(fun_head, as: as_name) do
     quote do
       defdelegate unquote(fun_head), to: __MODULE__, as: unquote(as_name)
