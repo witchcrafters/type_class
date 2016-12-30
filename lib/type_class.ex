@@ -230,7 +230,7 @@ defmodule TypeClass do
       end
 
   """
-  defmacro where(do: fun_specs) do
+  defmacro where([do: fun_specs]) do
     class = __CALLER__.module
     proto = Module.split(class) ++ ["Proto"] |> Enum.map(&String.to_atom/1)
 
