@@ -286,7 +286,7 @@ defmodule TypeClass do
 
         case Code.ensure_loaded(proto) do
           {:module, _name} -> Protocol.assert_impl!(proto, unquote datatype)
-          _ -> nil
+          _ -> unquote(datatype) |> conforms(to: dependency) # Conform recursively
         end
       end
 
