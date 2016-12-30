@@ -29,6 +29,8 @@ defprotocol TypeClass.Property.Generator do
 end
 
 defimpl TypeClass.Property.Generator, for: Function do
+  @moduledoc false
+
   def generate(_) do
     Enum.random [
       &inspect/1,
@@ -39,14 +41,20 @@ defimpl TypeClass.Property.Generator, for: Function do
 end
 
 defimpl TypeClass.Property.Generator, for: Any do
+  @moduledoc false
+
   def generate(_function), do: TypeClass.Property.Generator.Function.generate(true)
 end
 
 defimpl TypeClass.Property.Generator, for: Integer do
+  @moduledoc false
+
   def generate(_), do: :rand.uniform(1000) * Enum.random([1, 1, 1, -1])
 end
 
 defimpl TypeClass.Property.Generator, for: Float do
+  @moduledoc false
+
   def generate(_) do
     a = TypeClass.Property.Generator.generate(1)
     b = TypeClass.Property.Generator.generate(1)
@@ -55,6 +63,8 @@ defimpl TypeClass.Property.Generator, for: Float do
 end
 
 defimpl TypeClass.Property.Generator, for: BitString do
+  @moduledoc false
+
   def generate(_) do
     Stream.unfold("", &({&1, :rand.uniform(90)}))
     |> Stream.drop(1)
@@ -65,6 +75,8 @@ defimpl TypeClass.Property.Generator, for: BitString do
 end
 
 defimpl TypeClass.Property.Generator, for: List do
+  @moduledoc false
+
   def generate(_) do
     Stream.unfold(1, fn acc ->
       next =
@@ -81,6 +93,8 @@ defimpl TypeClass.Property.Generator, for: List do
 end
 
 defimpl TypeClass.Property.Generator, for: Tuple do
+  @moduledoc false
+
   def generate(_) do
     []
     |> TypeClass.Property.Generator.generate
@@ -89,6 +103,8 @@ defimpl TypeClass.Property.Generator, for: Tuple do
 end
 
 defimpl TypeClass.Property.Generator, for: Map do
+  @moduledoc false
+
   def generate(_) do
     Stream.unfold({0, 1}, fn acc ->
       key = ["", 0] |> Enum.random |> TypeClass.Property.Generator.generate
