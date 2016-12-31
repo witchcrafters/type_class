@@ -67,15 +67,14 @@ defmodule TypeClassSpec do
       def fmap(enum, fun), do: Enum.map(enum, fun)
     end
 
-    describe "underlying protocol" do
-      it "is fmappable" do
-        expect(Functor.Proto.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
-      end
-    end
+    # describe "underlying protocol" do
+    #   it "is fmappable" do
+    #     expect(Functor.Proto.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
+    #   end
+    # end
 
     describe "unified API (reexport)" do
       it "is fmappable" do
-        alias Functor
         expect(Functor.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
       end
     end

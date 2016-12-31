@@ -289,9 +289,8 @@ defmodule TypeClass do
       for dependency <- unquote(class).__dependencies__ do
         proto = Module.concat(Module.split(dependency) ++ ["Proto"])
 
-        case Code.ensure_loaded(proto) do
-          {:module, _name} -> Protocol.assert_impl!(proto, unquote datatype)
-          _ -> unquote(datatype) |> conforms(to: dependency) # Conform recursively
+        if Exceptional.Safe.safe(&Protocol.assert_protocol!/1).(proto) == :ok do
+          Protocol.assert_impl!(proto, unquote datatype)
         end
       end
 

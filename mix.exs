@@ -24,6 +24,8 @@ defmodule TypeClass.Mixfile do
       preferred_cli_env: [espec: :test],
 
       deps: [
+        {:exceptional, "~> 2.1"},
+
         {:credo, "~> 0.5", only: [:dev, :test]},
         {:espec, "~> 1.2", only: :test},
 
