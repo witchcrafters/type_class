@@ -7,7 +7,7 @@ defmodule TypeClass.Mixfile do
       name: "TypeClass",
       description: "(Semi-)principled type classes for Elixir",
 
-      version: "1.0.0-alpha7",
+      version: "1.0.0",
       elixir:  "~> 1.3",
 
       package: [
@@ -19,7 +19,7 @@ defmodule TypeClass.Mixfile do
       source_url:   "https://github.com/expede/type_class",
       homepage_url: "https://github.com/expede/type_class",
 
-      aliases: ["quality": ["espec", "credo --strict", "inch"]],
+      aliases: ["quality": ["credo --strict", "inch"]],
 
       preferred_cli_env: [espec: :test],
 

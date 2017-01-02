@@ -289,6 +289,7 @@ defmodule TypeClass do
       for dependency <- unquote(class).__dependencies__ do
         proto = Module.concat(Module.split(dependency) ++ ["Proto"])
 
+        # NOTE: does not follow chain if dependency has no `where`
         if Exceptional.Safe.safe(&Protocol.assert_protocol!/1).(proto) == :ok do
           Protocol.assert_impl!(proto, unquote datatype)
         end
