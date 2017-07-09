@@ -3,17 +3,17 @@ defmodule TypeClass.Dependency do
   Helpers for setting type class dependencies
   """
 
-  @type ast :: tuple
+  @type ast :: tuple()
 
   defmacro __using__(_) do
     quote do
       import unquote(__MODULE__)
-      unquote(__MODULE__).set_up
+      unquote(__MODULE__).set_up()
     end
   end
 
   @doc "Set up the dependency collection from `extend`"
-  @spec set_up() :: ast
+  @spec set_up() :: ast()
   defmacro set_up do
     quote do
       import TypeClass.Utility.Attribute
@@ -36,7 +36,7 @@ defmodule TypeClass.Dependency do
       end
 
   """
-  @spec extend(module) :: ast
+  @spec extend(module()) :: ast()
   defmacro extend(parent_class) do
     quote do
       require unquote(parent_class)
@@ -59,7 +59,7 @@ defmodule TypeClass.Dependency do
   end
 
   @doc "The opposite of `set_up/1`: collect dependencies"
-  @spec run() :: ast
+  @spec run() :: ast()
   defmacro run do
     quote do
       def __dependencies__, do: @extend

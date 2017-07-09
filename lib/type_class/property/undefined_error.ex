@@ -4,7 +4,10 @@ defmodule TypeClass.Property.UndefinedError do
   Properties are required for all type classes.
   """
 
-  @type t :: %TypeClass.Property.UndefinedError{type_class: module, message: String.t}
+  @type t :: %TypeClass.Property.UndefinedError{
+    type_class: module(),
+    message: String.t()
+  }
 
   defexception message: "Property not defined for type", type_class: nil
 
@@ -24,7 +27,7 @@ defmodule TypeClass.Property.UndefinedError do
       }
 
   """
-  @spec new(module) :: t
+  @spec new(module()) :: t()
   def new(class) do
     %TypeClass.Property.UndefinedError{
       type_class: class,

@@ -32,11 +32,11 @@ defimpl TypeClass.Property.Generator, for: Function do
   @moduledoc false
 
   def generate(_) do
-    Enum.random [
+    Enum.random([
       &inspect/1,
       &is_number/1,
       fn id -> id end
-    ]
+    ])
   end
 end
 
@@ -69,8 +69,8 @@ defimpl TypeClass.Property.Generator, for: BitString do
     Stream.unfold("", &({&1, :rand.uniform(90)}))
     |> Stream.drop(1)
     |> Stream.take(:rand.uniform(20))
-    |> Enum.to_list
-    |> List.to_string
+    |> Enum.to_list()
+    |> List.to_string()
   end
 end
 
@@ -81,14 +81,14 @@ defimpl TypeClass.Property.Generator, for: List do
     Stream.unfold(1, fn acc ->
       next =
         [0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, "", "", "", "", "", "", {}, [], %{}]
-        |> Enum.random
-        |> TypeClass.Property.Generator.generate
+        |> Enum.random()
+        |> TypeClass.Property.Generator.generate()
 
       {acc, next}
     end)
     |> Stream.drop(1)
     |> Stream.take(:rand.uniform(4))
-    |> Enum.to_list
+    |> Enum.to_list()
   end
 end
 
@@ -97,8 +97,8 @@ defimpl TypeClass.Property.Generator, for: Tuple do
 
   def generate(_) do
     []
-    |> TypeClass.Property.Generator.generate
-    |> List.to_tuple
+    |> TypeClass.Property.Generator.generate()
+    |> List.to_tuple()
   end
 end
 
@@ -107,11 +107,12 @@ defimpl TypeClass.Property.Generator, for: Map do
 
   def generate(_) do
     Stream.unfold({0, 1}, fn acc ->
-      key = ["", 0] |> Enum.random |> TypeClass.Property.Generator.generate
+      key = ["", 0] |> Enum.random() |> TypeClass.Property.Generator.generate()
+
       value =
         [0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, "", "", "", "", "", "", {}, [], %{}]
-        |> Enum.random
-        |> TypeClass.Property.Generator.generate
+        |> Enum.random()
+        |> TypeClass.Property.Generator.generate()
 
       next = {key, value}
 
@@ -119,7 +120,7 @@ defimpl TypeClass.Property.Generator, for: Map do
     end)
     |> Stream.drop(1)
     |> Stream.take(:rand.uniform(4))
-    |> Enum.to_list
+    |> Enum.to_list()
     |> Enum.into(%{})
   end
 end
