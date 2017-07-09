@@ -23,13 +23,12 @@ defmodule TypeClass.Property do
     property_module = Module.append(class, Property)
 
     data_generator =
-      case custom_generator do
-        nil ->
-          fn _ -> Module.append(TypeClass.Property.Generator, datatype).generate(nil) end
-          |> run!(datatype, class, prop_name, times)
-
-        _ ->
-          custom_generator
+      if custom_generator do
+        custom_generator
+      else
+        fn _ ->
+          Module.append(TypeClass.Property.Generator, datatype).generate(nil)
+        end
       end
 
     fn ->

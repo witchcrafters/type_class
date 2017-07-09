@@ -187,4 +187,46 @@ defmodule TypeClassSpec do
       end
     end
   end
+
+  describe "force type class" do
+    defclass Fail do
+      @force_type_class true
+
+      where do
+        def nonsense(goes_here)
+      end
+
+      properties do
+        def fail(_), do: false
+      end
+    end
+
+    definst Fail, for: Integer do
+      def nonsense(_), do: 1
+    end
+  end
+
+  describe "custom generator" do
+    defclass Only2Tuple do
+      where do
+        def second(tuple)
+      end
+
+      properties do
+        def limited(data) do
+          size = data |> generate() |> tuple_size()
+          size == 2
+        end
+      end
+    end
+
+    definst Only2Tuple, for: Tuple do
+      # @custom_generator fn _ -> {1, 2} end
+      def second({_a, b}), do: b
+      def second(otherwise) do
+        IO.puts ">>>>>>>"
+        IO.inspect otherwise
+      end
+    end
+  end
 end

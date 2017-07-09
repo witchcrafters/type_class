@@ -130,11 +130,18 @@ defmodule TypeClass do
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
+        import TypeClass.Property.FullGenerator
         require TypeClass.Property
         use TypeClass.Dependency
 
+        Module.register_attribute(__MODULE__, :force_type_class, [])
+
+        @force_type_class false
+
         unquote(body)
+
+        @doc false
+        def __force_type_class__, do: @force_type_class
 
         TypeClass.Dependency.run()
         TypeClass.Property.ensure!()
@@ -158,10 +165,15 @@ defmodule TypeClass do
     [for: datatype] = opts
 
     quote do
-      defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
+      defimpl unquote(class).Proto, for: unquote(datatype) do
+        Module.register_attribute(__MODULE__, :custom_generator, [])
+        @custom_generator false
 
-      unless @force_type_class do
-        unquote(datatype) |> conforms(to: unquote(class))
+        unquote(body)
+
+        unless unquote(class).__force_type_class__() do
+          unquote(datatype) |> conforms([to: unquote(class), custom_generator: @custom_generator])
+        end
       end
     end
   end
@@ -287,7 +299,8 @@ defmodule TypeClass do
 
   @doc "Check that a datatype conforms to the class hierarchy and properties"
   defmacro conforms(datatype, opts) do
-    [{:to, class} | _] = opts
+    class = Keyword.get(opts, :to)
+    custom_generator = Keyword.get(opts, :custom_generator)
 
     quote do
       for dependency <- unquote(class).__dependencies__ do
@@ -300,7 +313,7 @@ defmodule TypeClass do
       end
 
       for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
-        TypeClass.Property.run!(@custom_generator, unquote(datatype), unquote(class), prop_name)
+        TypeClass.Property.run!(unquote(custom_generator), unquote(datatype), unquote(class), prop_name)
       end
     end
   end
