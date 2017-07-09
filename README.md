@@ -11,6 +11,7 @@
   - [`defclass` and `definst`](#defclass-and-definst)
   - [Hierarchy](#hierarchy)
   - [Principled](#principled)
+- [Escape Hatches](#escape-hatches)
 - [Example](#example)
   - [TypeClass](#TypeClass)
   - [Haskell](#haskell)
@@ -62,6 +63,31 @@ Elixir is dynamically typed, and so we cannot constrain functions at compile tim
 > Abstractable. The ability to abstract over type classes themselves.
 
 De Goes is referring here to abstracting over type holes. Elixir is dynamically typed, so this one doesn't apply to us.
+
+# Escape Hatches
+
+In the cases that you _really need_ to override the prop checker, you have two options:
+
+## `@force_type_class true`
+This will force the prop checker to pass for a particular instance
+
+## `custom_generator/1`
+If you need to specify a certain type of data that conforms to the type class,
+you can specify it with `custom_generator` inside of the `definst`.
+
+For example, Tuples should only have instances for 2-tuples for certain classes,
+so we can restrict the prop test data to 2-tuples rather than n-tuples.
+
+The generator must conform to the standard unary generator format.
+
+```elixir
+definst AwesomeClass, for: Tuple do
+  custom_generator fn _ -> {generate(true), generate(1)}
+
+  # the rest as normal
+  def awesome_level(_), do: 9000
+end
+```
 
 # Example
 

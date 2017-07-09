@@ -1,7 +1,7 @@
 defmodule TypeClass.Utility.Module do
   @moduledoc "Naming convention helpers to help follow TypeClass conventions"
 
-  @type ast :: tuple
+  @type ast :: tuple()
 
   @doc ~S"""
   Generate the module name for the protocol portion of the class.
@@ -16,7 +16,7 @@ defmodule TypeClass.Utility.Module do
       MyClass.Awesome.Protocol
 
   """
-  @spec to_protocol(module) :: module
+  @spec to_protocol(module()) :: module()
   def to_protocol(base_module), do: to_submodule(base_module, "Protocol")
 
   @doc ~S"""
@@ -29,10 +29,10 @@ defmodule TypeClass.Utility.Module do
       MyClass.Awesome.Property
 
       iex> to_property MyClass.Awesome.Property
-      MyClass.Awesome.Property
+      MyClass.Awesome.roperty
 
   """
-  @spec to_property(module) :: module
+  @spec to_property(module()) :: module()
   def to_property(base_module), do: to_submodule(base_module, "Property")
 
   @doc ~S"""
@@ -51,11 +51,11 @@ defmodule TypeClass.Utility.Module do
       MyModule.Awesome.Submodule
 
   """
-  @spec to_submodule(module, String.t | module) :: module
+  @spec to_submodule(module(), String.t() | module()) :: module()
   def to_submodule(base_module, child_name) when is_bitstring(child_name) do
     base_module
-    |> Module.split
-    |> List.last
+    |> Module.split()
+    |> List.last()
     |> case do
          ^child_name -> base_module
          _           -> Module.concat([base_module, child_name])
@@ -90,8 +90,8 @@ defmodule TypeClass.Utility.Module do
 
   def append(parent_module, submodule) do
     parent_module
-    |> Module.split
+    |> Module.split()
     |> fn modules -> modules ++ List.wrap(submodule) end.()
-    |> Module.concat
+    |> Module.concat()
   end
 end

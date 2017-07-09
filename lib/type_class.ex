@@ -58,14 +58,12 @@ defmodule TypeClass do
         def empty(_), do: []
       end
 
-
   ## Internal Structure
 
   A `type_class` is composed of several parts:
   - Dependencies
   - Protocol
   - Properties
-
 
   ### Dependencies
 
@@ -76,7 +74,6 @@ defmodule TypeClass do
   the chain, as those type classes will have performed all of the checks required
   for their parents.
 
-
   ### Protocol
 
   `defclass Foo` generates a `Foo.Proto` submodule that holds all of the functions
@@ -85,7 +82,6 @@ defmodule TypeClass do
 
   Macro: `where do`
   Optional
-
 
   ### Properties
 
@@ -130,18 +126,24 @@ defmodule TypeClass do
       end
 
   """
-  @lint {Credo.Check.Refactor.CyclomaticComplexity, false}
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
+        import TypeClass.Property.GeneratorHelper
         require TypeClass.Property
         use TypeClass.Dependency
 
+        Module.register_attribute(__MODULE__, :force_type_class, [])
+
+        @force_type_class false
+
         unquote(body)
 
-        TypeClass.Dependency.run
-        TypeClass.Property.ensure!
+        @doc false
+        def __force_type_class__, do: @force_type_class
+
+        TypeClass.Dependency.run()
+        TypeClass.Property.ensure!()
       end
     end
   end
@@ -162,8 +164,19 @@ defmodule TypeClass do
     [for: datatype] = opts
 
     quote do
-      defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
-      unquote(datatype) |> conforms(to: unquote(class))
+      defimpl unquote(class).Proto, for: unquote(datatype) do
+        import TypeClass.Property.GeneratorHelper, only: [custom_generator: 1]
+
+        @doc false
+        def __custom_generator__, do: false
+        defoverridable [__custom_generator__: 0]
+
+        unquote(body)
+      end
+
+      unless unquote(class).__force_type_class__() do
+        unquote(datatype) |> conforms(to: unquote(class))
+      end
     end
   end
 
@@ -198,7 +211,7 @@ defmodule TypeClass do
 
     delegates =
       fun_stubs
-      |> List.wrap
+      |> List.wrap()
       |> Enum.map(fn
         {:def, ctx, fun} ->
           {
@@ -207,7 +220,8 @@ defmodule TypeClass do
             fun ++ [[to: {:__aliases__, [alias: false], proto}]]
           }
 
-        ast -> ast
+        ast ->
+          ast
       end)
 
     quote do
@@ -218,7 +232,7 @@ defmodule TypeClass do
         For this type class's API, please refer to `#{unquote(class)}`
         """
 
-        import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
+        import TypeClass.Property.GeneratorHelper
 
         Macro.escape unquote(fun_specs), unquote: true
       end
@@ -255,16 +269,18 @@ defmodule TypeClass do
   """
   defmacro properties(do: prop_funs) do
     class = __CALLER__.module
-    leaf  = class |> Module.split |> List.last |> List.wrap |> Module.concat
     proto = Module.concat(Module.split(class) ++ [Proto])
+
+    leaf =
+      class
+      |> Module.split()
+      |> List.last()
+      |> List.wrap()
+      |> Module.concat()
 
     quote do
       defmodule Property do
-        @moduledoc ~S"""
-        Properties for the `#{unquote(class)}` type class
-
-        For this type class's functions, please refer to `#{unquote(class)}`
-        """
+        @moduledoc false
 
         import TypeClass.Property, only: [equal?: 2]
 
@@ -284,7 +300,9 @@ defmodule TypeClass do
   end
 
   @doc "Check that a datatype conforms to the class hierarchy and properties"
-  defmacro conforms(datatype, to: class) do
+  defmacro conforms(datatype, opts) do
+    class = Keyword.get(opts, :to)
+
     quote do
       for dependency <- unquote(class).__dependencies__ do
         proto = Module.concat(Module.split(dependency) ++ ["Proto"])
@@ -302,7 +320,7 @@ defmodule TypeClass do
   end
 
   @doc "Variant of `conforms/2` that can be called within a data module"
-  defmacro conforms(to: class) do
-    quote do: __MODULE__ |> conforms(to: unquote(class))
+  defmacro conforms(opts) do
+    quote do: conforms(__MODULE__, unquote(opts))
   end
 end

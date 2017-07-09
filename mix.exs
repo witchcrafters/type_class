@@ -7,8 +7,8 @@ defmodule TypeClass.Mixfile do
       name: "TypeClass",
       description: "(Semi-)principled type classes for Elixir",
 
-      version: "1.0.0",
-      elixir:  "~> 1.3",
+      version: "1.1.0",
+      elixir:  "~> 1.4",
 
       package: [
         maintainers: ["Brooklyn Zelenka"],
@@ -26,14 +26,14 @@ defmodule TypeClass.Mixfile do
       deps: [
         {:exceptional, "~> 2.1"},
 
-        {:credo, "~> 0.5", only: [:dev, :test]},
-        {:espec, "~> 1.2", only: :test},
+        {:credo, "~> 0.7", only: [:dev, :test]},
+        {:espec, "~> 1.4", only: :test},
 
-        {:dialyxir, "~> 0.3",  only: :dev},
-        {:earmark,  "~> 1.0",  only: :dev},
-        {:ex_doc,   "~> 0.13", only: :dev},
+        {:dialyxir, "~> 0.5",  only: :dev},
+        {:earmark,  "~> 1.2",  only: :dev},
+        {:ex_doc,   "~> 0.16", only: :dev},
 
-        {:inch_ex, "~> 0.5", only: [:dev, :docs, :test]}
+        {:inch_ex, "~> 0.5", only: [:dev, :test]}
       ],
 
       docs: [
