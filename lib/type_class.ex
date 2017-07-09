@@ -126,11 +126,10 @@ defmodule TypeClass do
       end
 
   """
-  @lint {Credo.Check.Refactor.CyclomaticComplexity, false}
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        import TypeClass.Property.FullGenerator
+        import TypeClass.Property.GeneratorHelper
         require TypeClass.Property
         use TypeClass.Dependency
 
@@ -166,6 +165,8 @@ defmodule TypeClass do
 
     quote do
       defimpl unquote(class).Proto, for: unquote(datatype) do
+        import TypeClass.Property.GeneratorHelper, only: [custom_generator: 1]
+
         @doc false
         def __custom_generator__, do: false
         defoverridable [__custom_generator__: 0]
@@ -231,7 +232,7 @@ defmodule TypeClass do
         For this type class's API, please refer to `#{unquote(class)}`
         """
 
-        import TypeClass.Property.FullGenerator
+        import TypeClass.Property.GeneratorHelper
 
         Macro.escape unquote(fun_specs), unquote: true
       end

@@ -28,9 +28,20 @@ defprotocol TypeClass.Property.Generator do
   def generate(sample)
 end
 
-defmodule TypeClass.Property.FullGenerator do
+defmodule TypeClass.Property.GeneratorHelper do
+  @moduledoc "Helpers for handling generator values. Defaultys, overrides, &c"
+
+  @spec generate(any()) :: any()
   def generate({:CUSTOM_GENERATOR, generator}), do: generator.(nil)
   def generate(sample), do: TypeClass.Property.Generator.generate(sample)
+
+  @doc "Define a hidden `__cutsom_generator__/1` function"
+  defmacro custom_generator(generator) do
+    quote do
+      @doc false
+      def __custom_generator__, do: unquote(generator)
+    end
+  end
 end
 
 defimpl TypeClass.Property.Generator, for: Function do
