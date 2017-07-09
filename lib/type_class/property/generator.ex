@@ -44,6 +44,21 @@ defmodule TypeClass.Property.GeneratorHelper do
   end
 end
 
+defimpl TypeClass.Property.Generator, for: Any do
+  @moduledoc false
+
+  def generate(_any) do
+    [
+      "",
+      2, 1.1,
+      [], {}, %{},
+      fn _ -> nil end
+    ]
+    |> Enum.random()
+    |> TypeClass.Property.Generator.generate()
+  end
+end
+
 defimpl TypeClass.Property.Generator, for: Function do
   @moduledoc false
 
@@ -54,12 +69,6 @@ defimpl TypeClass.Property.Generator, for: Function do
       fn id -> id end
     ])
   end
-end
-
-defimpl TypeClass.Property.Generator, for: Any do
-  @moduledoc false
-
-  def generate(_function), do: TypeClass.Property.Generator.Function.generate(true)
 end
 
 defimpl TypeClass.Property.Generator, for: Integer do
