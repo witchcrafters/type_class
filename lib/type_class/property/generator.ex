@@ -29,13 +29,8 @@ defprotocol TypeClass.Property.Generator do
 end
 
 defmodule TypeClass.Property.FullGenerator do
-  def generate(sample, custom_generator \\ nil) do
-    if custom_generator do
-      custom_generator.(nil)
-    else
-      TypeClass.Property.Generator.generate(sample)
-    end
-  end
+  def generate({:CUSTOM_GENERATOR, generator}), do: generator.(nil)
+  def generate(sample), do: TypeClass.Property.Generator.generate(sample)
 end
 
 defimpl TypeClass.Property.Generator, for: Function do

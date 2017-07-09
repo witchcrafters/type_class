@@ -1,7 +1,7 @@
 defmodule TypeClass.Property do
   @moduledoc "A *very* simple prop checker"
 
-  alias TypeClass.Utility.Module
+  alias TypeClass.Utility.Module, as: TC
 
   @doc "Ensure that the type class has defined properties"
   @spec ensure!() :: no_return()
@@ -18,15 +18,16 @@ defmodule TypeClass.Property do
   end
 
   @doc "Run all properties for the type class"
-  @spec run!(fun() | nil, module(), module(), atom(), non_neg_integer()) :: no_return()
-  def run!(custom_generator, datatype, class, prop_name, times \\ 100) do
-    property_module = Module.append(class, Property)
+  @spec run!(module(), module(), atom(), non_neg_integer()) :: no_return()
+  def run!(datatype, class, prop_name, times \\ 100) do
+    property_module = TC.append(class, Property)
+    custom_generator = Module.concat([class, "Proto", datatype]).__custom_generator__()
 
     data_generator =
       if custom_generator do
-        custom_generator
+        {:CUSTOM_GENERATOR, custom_generator}
       else
-        Module.append(TypeClass.Property.Generator, datatype).generate(nil)
+        TC.append(TypeClass.Property.Generator, datatype).generate(nil)
       end
 
     fn ->

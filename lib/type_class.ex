@@ -166,23 +166,15 @@ defmodule TypeClass do
 
     quote do
       defimpl unquote(class).Proto, for: unquote(datatype) do
-        Module.register_attribute(__MODULE__, :custom_generator, [])
-        @custom_generator false
+        @doc false
+        def __custom_generator__, do: false
+        defoverridable [__custom_generator__: 0]
 
         unquote(body)
-
-        @doc false
-        def __custom_generator__, do: @custom_generator
       end
 
       unless unquote(class).__force_type_class__() do
-        proto_impl_module = Module.concat([unquote(class), "Proto", unquote(datatype)])
-
-        unquote(datatype)
-        |> conforms([
-          to: unquote(class),
-          custom_generator: proto_impl_module.__custom_generator__
-        ])
+        unquote(datatype) |> conforms(to: unquote(class))
       end
     end
   end
@@ -309,7 +301,6 @@ defmodule TypeClass do
   @doc "Check that a datatype conforms to the class hierarchy and properties"
   defmacro conforms(datatype, opts) do
     class = Keyword.get(opts, :to)
-    custom_generator = Keyword.get(opts, :custom_generator)
 
     quote do
       for dependency <- unquote(class).__dependencies__ do
@@ -322,7 +313,7 @@ defmodule TypeClass do
       end
 
       for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
-        TypeClass.Property.run!(unquote(custom_generator), unquote(datatype), unquote(class), prop_name)
+        TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
       end
     end
   end
