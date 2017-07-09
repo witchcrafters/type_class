@@ -260,11 +260,7 @@ defmodule TypeClass do
 
     quote do
       defmodule Property do
-        @moduledoc ~S"""
-        Properties for the `#{unquote(class)}` type class
-
-        For this type class's functions, please refer to `#{unquote(class)}`
-        """
+        @moduledoc false
 
         import TypeClass.Property, only: [equal?: 2]
 
