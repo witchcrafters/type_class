@@ -58,14 +58,12 @@ defmodule TypeClass do
         def empty(_), do: []
       end
 
-
   ## Internal Structure
 
   A `type_class` is composed of several parts:
   - Dependencies
   - Protocol
   - Properties
-
 
   ### Dependencies
 
@@ -76,7 +74,6 @@ defmodule TypeClass do
   the chain, as those type classes will have performed all of the checks required
   for their parents.
 
-
   ### Protocol
 
   `defclass Foo` generates a `Foo.Proto` submodule that holds all of the functions
@@ -85,7 +82,6 @@ defmodule TypeClass do
 
   Macro: `where do`
   Optional
-
 
   ### Properties
 

@@ -75,7 +75,7 @@ defmodule TypeClassSpec do
 
     describe "unified API (reexport)" do
       it "is fmappable" do
-        expect(Functor.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
+        expect(Functor.fmap([1, 2, 3], fn x -> x + 1 end)) |> to(eql [2, 3, 4])
       end
     end
   end

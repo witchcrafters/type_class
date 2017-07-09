@@ -1,7 +1,6 @@
 defmodule TypeClass.Utility.Module do
   @moduledoc "Naming convention helpers to help follow TypeClass conventions"
 
-
   @type ast :: tuple()
 
   @doc ~S"""
