@@ -18,13 +18,22 @@ defmodule TypeClass.Property do
   end
 
   @doc "Run all properties for the type class"
-  @spec run!(module(), module(), atom(), non_neg_integer()) :: no_return()
-  def run!(datatype, class, prop_name, times \\ 100) do
+  @spec run!(fun() | nil, module(), module(), atom(), non_neg_integer()) :: no_return()
+  def run!(custom_generator, datatype, class, prop_name, times \\ 100) do
     property_module = Module.append(class, Property)
-    example_module  = Module.append(TypeClass.Property.Generator, datatype)
+
+    data_generator =
+      case custom_generator do
+        nil ->
+          fn _ -> Module.append(TypeClass.Property.Generator, datatype).generate(nil) end
+          |> run!(datatype, class, prop_name, times)
+
+        _ ->
+          custom_generator
+      end
 
     fn ->
-      unless apply(property_module, prop_name, [example_module.generate(nil)]) do
+      unless apply(property_module, prop_name, [data_generator]) do
         raise TypeClass.Property.FailedCheckError.new(datatype, class, prop_name)
       end
     end

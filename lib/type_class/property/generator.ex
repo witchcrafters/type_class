@@ -19,8 +19,8 @@ defprotocol TypeClass.Property.Generator do
           Stream.unfold("", &({&1, :rand.uniform(90)}))
           |> Stream.drop(1)
           |> Stream.take(:rand.uniform(4))
-          |> Enum.to_list
-          |> List.to_string
+          |> Enum.to_list()
+          |> List.to_string()
         end
       end
 

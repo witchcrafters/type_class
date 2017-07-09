@@ -136,8 +136,8 @@ defmodule TypeClass do
 
         unquote(body)
 
-        TypeClass.Dependency.run
-        TypeClass.Property.ensure!
+        TypeClass.Dependency.run()
+        TypeClass.Property.ensure!()
       end
     end
   end
@@ -159,7 +159,10 @@ defmodule TypeClass do
 
     quote do
       defimpl unquote(class).Proto, for: unquote(datatype), do: unquote(body)
-      unquote(datatype) |> conforms(to: unquote(class))
+
+      unless @force_type_class do
+        unquote(datatype) |> conforms(to: unquote(class))
+      end
     end
   end
 
@@ -194,7 +197,7 @@ defmodule TypeClass do
 
     delegates =
       fun_stubs
-      |> List.wrap
+      |> List.wrap()
       |> Enum.map(fn
         {:def, ctx, fun} ->
           {
@@ -203,7 +206,8 @@ defmodule TypeClass do
             fun ++ [[to: {:__aliases__, [alias: false], proto}]]
           }
 
-        ast -> ast
+        ast ->
+          ast
       end)
 
     quote do
@@ -251,8 +255,14 @@ defmodule TypeClass do
   """
   defmacro properties(do: prop_funs) do
     class = __CALLER__.module
-    leaf  = class |> Module.split |> List.last |> List.wrap |> Module.concat
     proto = Module.concat(Module.split(class) ++ [Proto])
+
+    leaf =
+      class
+      |> Module.split()
+      |> List.last()
+      |> List.wrap()
+      |> Module.concat()
 
     quote do
       defmodule Property do
@@ -276,7 +286,9 @@ defmodule TypeClass do
   end
 
   @doc "Check that a datatype conforms to the class hierarchy and properties"
-  defmacro conforms(datatype, to: class) do
+  defmacro conforms(datatype, opts) do
+    [{:to, class} | _] = opts
+
     quote do
       for dependency <- unquote(class).__dependencies__ do
         proto = Module.concat(Module.split(dependency) ++ ["Proto"])
@@ -288,13 +300,13 @@ defmodule TypeClass do
       end
 
       for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
-        TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
+        TypeClass.Property.run!(@custom_generator, unquote(datatype), unquote(class), prop_name)
       end
     end
   end
 
   @doc "Variant of `conforms/2` that can be called within a data module"
-  defmacro conforms(to: class) do
-    quote do: __MODULE__ |> conforms(to: unquote(class))
+  defmacro conforms(opts) do
+    quote do: conforms(__MODULE__, unquote(opts))
   end
 end
