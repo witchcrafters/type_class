@@ -2,7 +2,7 @@
 /cover
 /deps
 /doc
-/docs
+/docs/*
 erl_crash.dump
 *.ez
 *.beam
