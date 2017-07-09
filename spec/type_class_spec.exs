@@ -221,12 +221,8 @@ defmodule TypeClassSpec do
     end
 
     definst Only2Tuple, for: Tuple do
-      # @custom_generator fn _ -> {1, 2} end
+      @custom_generator fn _ -> {1, 2} end
       def second({_a, b}), do: b
-      def second(otherwise) do
-        IO.puts ">>>>>>>"
-        IO.inspect otherwise
-      end
     end
   end
 end

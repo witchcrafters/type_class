@@ -171,9 +171,18 @@ defmodule TypeClass do
 
         unquote(body)
 
-        unless unquote(class).__force_type_class__() do
-          unquote(datatype) |> conforms([to: unquote(class), custom_generator: @custom_generator])
-        end
+        @doc false
+        def __custom_generator__, do: @custom_generator
+      end
+
+      unless unquote(class).__force_type_class__() do
+        proto_impl_module = Module.concat([unquote(class), "Proto", unquote(datatype)])
+
+        unquote(datatype)
+        |> conforms([
+          to: unquote(class),
+          custom_generator: proto_impl_module.__custom_generator__
+        ])
       end
     end
   end
@@ -230,7 +239,7 @@ defmodule TypeClass do
         For this type class's API, please refer to `#{unquote(class)}`
         """
 
-        import TypeClass.Property.Generator, except: [impl_for: 1, impl_for!: 1]
+        import TypeClass.Property.FullGenerator
 
         Macro.escape unquote(fun_specs), unquote: true
       end

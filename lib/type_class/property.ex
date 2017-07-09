@@ -26,9 +26,7 @@ defmodule TypeClass.Property do
       if custom_generator do
         custom_generator
       else
-        fn _ ->
-          Module.append(TypeClass.Property.Generator, datatype).generate(nil)
-        end
+        Module.append(TypeClass.Property.Generator, datatype).generate(nil)
       end
 
     fn ->
