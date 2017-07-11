@@ -69,7 +69,25 @@ De Goes is referring here to abstracting over type holes. Elixir is dynamically 
 In the cases that you _really need_ to override the prop checker, you have two options:
 
 ## `@force_type_class true`
-This will force the prop checker to pass for a particular instance
+This will force the prop checker to pass for all data types for the class.
+This is generally a bad idea (see section on principled classes above),
+but may be nessesary for some extreme edge cases.
+
+Using this option will trigger a compile time warning.
+
+## `@force_type_class true`
+This will force the prop checker to pass for a particular instance.
+
+This is sometimes needed, since TypeClass's property checker
+may not be able to accurately validate all data types correctly for
+all possible cases, especially when only subsets of built-in types are valid.
+(For example, a class that can only be deifned on 2-tuples).
+
+Forcing a type instance in this way is like telling
+the checker "trust me this is correct", and should only be used as
+a last resort. If at all possible, try to use `custom_generator/1` first.
+
+Using this option will trigger a compile time warning.
 
 ## `custom_generator/1`
 If you need to specify a certain type of data that conforms to the type class,
@@ -82,7 +100,9 @@ The generator must conform to the standard unary generator format.
 
 ```elixir
 definst AwesomeClass, for: Tuple do
-  custom_generator fn _ -> {generate(true), generate(1)}
+  custom_generator(a) do
+    {:always_two, a}
+  end
 
   # the rest as normal
   def awesome_level(_), do: 9000
