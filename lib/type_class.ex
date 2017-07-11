@@ -178,19 +178,42 @@ defmodule TypeClass do
         Module.register_attribute(__MODULE__, :force_type_class, [])
         @force_type_instance false
 
-        @doc false
-        def __force_type_instance__, do: @force_type_instance
-
-        defoverridable [
-          __custom_generator__:   0,
-          __force_type_instance__: 0
-        ]
+        defoverridable [__custom_generator__: 0]
 
         unquote(body)
+
+        @doc false
+        def __force_type_instance__, do: @force_type_instance
       end
 
-      unless unquote(class).__force_type_class__() or instance.__force_type_instance__() do
-        unquote(datatype) |> conforms(to: unquote(class))
+      cond do
+        unquote(class).__force_type_class__() ->
+          IO.warn """
+          The type class #{unquote(class)} has been forced to bypass \
+          all property checks for all data types. This is very rarely valid, \
+          as all type classes should have properties associted with them.
+
+          For more, please see the TypeClass README:
+          https://github.com/expede/type_class/blob/master/README.md
+          """
+
+        instance.__force_type_instance__() ->
+          IO.warn """
+          The data type #{unquote(datatype)} has been forced to skip property \
+          validation for the type class #{unquote(class)}
+
+          This is sometimes valid, since TypeClass's property checker \
+          may not be able to accurately validate all data types correctly for \
+          all possible cases. Forcing a type instance in this way is like telling \
+          the checker "trust me this is correct", and should only be used as \
+          a last resort.
+
+          For more, please see the TypeClass README:
+          https://github.com/expede/type_class/blob/master/README.md
+          """
+
+        true ->
+          unquote(datatype) |> conforms(to: unquote(class))
       end
     end
   end
