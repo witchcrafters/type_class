@@ -75,7 +75,7 @@ but may be nessesary for some extreme edge cases.
 
 Using this option will trigger a compile time warning.
 
-## `@force_type_class true`
+## `@force_type_instance true`
 This will force the prop checker to pass for a particular instance.
 
 This is sometimes needed, since TypeClass's property checker
