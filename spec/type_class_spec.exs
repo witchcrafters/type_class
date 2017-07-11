@@ -206,6 +206,31 @@ defmodule TypeClassSpec do
     end
   end
 
+  describe "force instance" do
+    defclass GoodClassBadInst do
+
+      where do
+        def my_div(num_a, num_b)
+      end
+
+      properties do
+        def usually_good_but_hard_for_floats(data) do
+          a = generate(data)
+          GoodClassBadInst.my_div(a * a, a) == a # `==` so that we force the floats to disagree
+        end
+      end
+    end
+
+    definst GoodClassBadInst, for: Integer do
+      def my_div(int_a, int_b), do: int_a / int_b
+    end
+
+    definst GoodClassBadInst, for: Float do
+      @force_type_instance true
+      def my_div(float_a, float_b), do: float_a / float_b
+    end
+  end
+
   describe "custom generator" do
     defclass Only2Tuple do
       where do
@@ -221,7 +246,10 @@ defmodule TypeClassSpec do
     end
 
     definst Only2Tuple, for: Tuple do
-      custom_generator fn _ -> {1, 2} end
+      custom_generator(a) do
+        {:always_two, a}
+      end
+
       def second({_a, b}), do: b
     end
   end

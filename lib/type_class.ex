@@ -129,8 +129,11 @@ defmodule TypeClass do
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        import TypeClass.Property.GeneratorHelper
+        import TypeClass.Property.Generator, only: [generate: 1]
+        import TypeClass.Property.Generator.Custom
+
         require TypeClass.Property
+
         use TypeClass.Dependency
 
         Module.register_attribute(__MODULE__, :force_type_class, [])
@@ -164,18 +167,53 @@ defmodule TypeClass do
     [for: datatype] = opts
 
     quote do
+      instance = Module.concat([unquote(class), Proto, unquote(datatype)])
+
       defimpl unquote(class).Proto, for: unquote(datatype) do
-        import TypeClass.Property.GeneratorHelper, only: [custom_generator: 1]
+        import TypeClass.Property.Generator.Custom
 
         @doc false
         def __custom_generator__, do: false
+
+        Module.register_attribute(__MODULE__, :force_type_class, [])
+        @force_type_instance false
+
         defoverridable [__custom_generator__: 0]
 
         unquote(body)
+
+        @doc false
+        def __force_type_instance__, do: @force_type_instance
       end
 
-      unless unquote(class).__force_type_class__() do
-        unquote(datatype) |> conforms(to: unquote(class))
+      cond do
+        unquote(class).__force_type_class__() ->
+          IO.warn """
+          The type class #{unquote(class)} has been forced to bypass \
+          all property checks for all data types. This is very rarely valid, \
+          as all type classes should have properties associted with them.
+
+          For more, please see the TypeClass README:
+          https://github.com/expede/type_class/blob/master/README.md
+          """
+
+        instance.__force_type_instance__() ->
+          IO.warn """
+          The data type #{unquote(datatype)} has been forced to skip property \
+          validation for the type class #{unquote(class)}
+
+          This is sometimes valid, since TypeClass's property checker \
+          may not be able to accurately validate all data types correctly for \
+          all possible cases. Forcing a type instance in this way is like telling \
+          the checker "trust me this is correct", and should only be used as \
+          a last resort.
+
+          For more, please see the TypeClass README:
+          https://github.com/expede/type_class/blob/master/README.md
+          """
+
+        true ->
+          unquote(datatype) |> conforms(to: unquote(class))
       end
     end
   end
@@ -232,7 +270,7 @@ defmodule TypeClass do
         For this type class's API, please refer to `#{unquote(class)}`
         """
 
-        import TypeClass.Property.GeneratorHelper
+        import TypeClass.Property.Generator.Custom
 
         Macro.escape unquote(fun_specs), unquote: true
       end
