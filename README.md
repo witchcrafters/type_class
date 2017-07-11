@@ -20,7 +20,7 @@
 
 ```elixir
 def deps do
-  [{:type_class, "~> 1.0.0-alpha"}]
+  [{:type_class, "~> 1.1"}]
 end
 ```
 
