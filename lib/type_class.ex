@@ -167,17 +167,29 @@ defmodule TypeClass do
     [for: datatype] = opts
 
     quote do
+      instance = Module.concat([unquote(class), Proto, unquote(datatype)])
+
       defimpl unquote(class).Proto, for: unquote(datatype) do
         import TypeClass.Property.Generator.Custom
 
         @doc false
         def __custom_generator__, do: false
-        defoverridable [__custom_generator__: 0]
+
+        Module.register_attribute(__MODULE__, :force_type_class, [])
+        @force_type_instance false
+
+        @doc false
+        def __force_type_instance__, do: @force_type_instance
+
+        defoverridable [
+          __custom_generator__:   0,
+          __force_type_instance__: 0
+        ]
 
         unquote(body)
       end
 
-      unless unquote(class).__force_type_class__() do
+      unless unquote(class).__force_type_class__() or instance.__force_type_instance__() do
         unquote(datatype) |> conforms(to: unquote(class))
       end
     end
