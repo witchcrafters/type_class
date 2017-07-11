@@ -25,7 +25,7 @@ defmodule TypeClass.Property do
 
     data_generator =
       if custom_generator do
-        {:CUSTOM_GENERATOR, custom_generator}
+        custom_generator
       else
         TC.append(TypeClass.Property.Generator, datatype).generate(nil)
       end

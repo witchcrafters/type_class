@@ -43,11 +43,14 @@ defimpl TypeClass.Property.Generator, for: Any do
   end
 end
 
-defimpl TypeClass.Property.Generator for: TypeClass.Property.Generator.Custom do
+defimpl TypeClass.Property.Generator, for: TypeClass.Property.Generator.Custom do
   @moduledoc false
 
-  def generate(generator), do: generate(generator, nil)
-  def generate(generator, seed), do: generator.(seed)
+  def generate(generator) do
+    generate(generator, TypeClass.Property.Generator.generate(nil))
+  end
+
+  def generate(%{generator: generator}, seed), do: generator.(seed)
 end
 
 defimpl TypeClass.Property.Generator, for: Function do

@@ -221,7 +221,10 @@ defmodule TypeClassSpec do
     end
 
     definst Only2Tuple, for: Tuple do
-      custom_generator fn _ -> {1, 2} end
+      custom_generator(a) do
+        {:always_two, a}
+      end
+
       def second({_a, b}), do: b
     end
   end

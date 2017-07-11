@@ -129,8 +129,11 @@ defmodule TypeClass do
   defmacro defclass(class_name, do: body) do
     quote do
       defmodule unquote(class_name) do
-        import TypeClass.Property.GeneratorHelper
+        import TypeClass.Property.Generator, only: [generate: 1]
+        import TypeClass.Property.Generator.Custom
+
         require TypeClass.Property
+
         use TypeClass.Dependency
 
         Module.register_attribute(__MODULE__, :force_type_class, [])
@@ -232,7 +235,7 @@ defmodule TypeClass do
         For this type class's API, please refer to `#{unquote(class)}`
         """
 
-        import TypeClass.Property.GeneratorHelper
+        import TypeClass.Property.Generator.Custom
 
         Macro.escape unquote(fun_specs), unquote: true
       end
