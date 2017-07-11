@@ -165,7 +165,7 @@ defmodule TypeClass do
 
     quote do
       defimpl unquote(class).Proto, for: unquote(datatype) do
-        import TypeClass.Property.GeneratorHelper, only: [custom_generator: 1]
+        import TypeClass.Property.Generator.Custom
 
         @doc false
         def __custom_generator__, do: false
