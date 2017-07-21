@@ -137,7 +137,6 @@ defmodule TypeClass do
         use TypeClass.Dependency
 
         Module.register_attribute(__MODULE__, :force_type_class, [])
-
         @force_type_class false
 
         unquote(body)
@@ -214,6 +213,14 @@ defmodule TypeClass do
 
         true ->
           unquote(datatype) |> conforms(to: unquote(class))
+      end
+    end
+  end
+
+  defmacro definst(class, for: datatype) do
+    quote do
+      definst unquote(class), for: unquote(datatype) do
+        # Intentionally blank; hooking into definst magic
       end
     end
   end
