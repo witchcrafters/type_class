@@ -77,9 +77,7 @@ defmodule TypeClassSpec do
           def plus_five(a), do: a + 5
         end
 
-        definst MoreProps, for: Integer do
-
-        end
+        definst MoreProps, for: Integer
       end
     end
   end
