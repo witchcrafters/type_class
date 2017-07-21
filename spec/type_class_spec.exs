@@ -72,11 +72,13 @@ defmodule TypeClassSpec do
         end
       end
 
-      it "compiles" do
+      it "compiles without an explicit `where` block" do
+        # Prep
         definst Adder, for: Integer do
           def plus_one(a), do: a + 5
         end
 
+        # Test
         definst MoreProps, for: Integer
       end
     end
