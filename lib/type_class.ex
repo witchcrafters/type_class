@@ -139,7 +139,7 @@ defmodule TypeClass do
         Module.register_attribute(__MODULE__, :force_type_class, [])
         @force_type_class false
 
-        Module.register_attribute(__MODULE__, :class_methods,[])
+        Module.register_attribute(__MODULE__, :class_methods, [])
         @class_methods false
 
         unquote(body)
