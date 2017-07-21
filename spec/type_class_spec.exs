@@ -26,16 +26,6 @@ defmodule TypeClassSpec do
     end
   end
 
-  defclass MoreProps do
-    extend MyClass
-
-    properties do
-      def foo(a) do
-        equal?(a, a)
-      end
-    end
-  end
-
   describe "moduleness" do
     it "is an alias for defmodule" do
       expect(MyClass.plus_five(42)) |> to(eql MyModule.plus_five(42))
@@ -63,10 +53,22 @@ defmodule TypeClassSpec do
 
     describe "without `where`" do
       defclass Adder do
-        def plus_five(int), do: int + 5
+        where do
+          def plus_one(a)
+        end
 
         properties do
-          def foo(_), do: true
+          def pass(_), do: true
+        end
+      end
+
+      defclass MoreProps do
+        extend Adder
+
+        properties do
+          def yep(a) do
+            equal?(a, a)
+          end
         end
       end
 
@@ -75,9 +77,9 @@ defmodule TypeClassSpec do
           def plus_five(a), do: a + 5
         end
 
-        # definst MoreProps, for: Integer do
+        definst MoreProps, for: Integer do
 
-        # end
+        end
       end
     end
   end
