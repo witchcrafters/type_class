@@ -62,12 +62,22 @@ defmodule TypeClassSpec do
     end
 
     describe "without `where`" do
-      definst MyClass, for: Integer do
-        def plus_five(a), do: a + 5
+      defclass Adder do
+        def plus_five(int), do: int + 5
+
+        properties do
+          def foo(_), do: true
+        end
       end
 
-      definst MoreProps, for: Integer do
+      it "compiles" do
+        definst Adder, for: Integer do
+          def plus_five(a), do: a + 5
+        end
 
+        # definst MoreProps, for: Integer do
+
+        # end
       end
     end
   end
@@ -87,11 +97,11 @@ defmodule TypeClassSpec do
       def fmap(enum, fun), do: Enum.map(enum, fun)
     end
 
-    # describe "underlying protocol" do
-    #   it "is fmappable" do
-    #     expect(Functor.Proto.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
-    #   end
-    # end
+    describe "underlying protocol" do
+      it "is fmappable" do
+        expect(Functor.Proto.List.fmap([1, 2, 3], fn x -> x + 1 end)) |> to(eql [2, 3, 4])
+      end
+    end
 
     describe "unified API (reexport)" do
       it "is fmappable" do
