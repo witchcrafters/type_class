@@ -154,6 +154,10 @@ defmodule TypeClassSpec do
           Semigroup.concat(a, Monoid.empty(a)) == a
         end
       end
+
+      definst for: Integer do
+        def empty(_), do: 0
+      end
     end
 
     definst Monoid, for: List do

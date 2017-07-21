@@ -175,7 +175,7 @@ defmodule TypeClass do
       defimpl unquote(class).Proto, for: unquote(datatype) do
         import TypeClass.Property.Generator.Custom
 
-        Module.register_attribute(__MODULE__, :force_type_instance, []) # TODO: was this the right change?
+        Module.register_attribute(__MODULE__, :force_type_instance, [])
         @force_type_instance false
 
         @doc false
@@ -220,6 +220,49 @@ defmodule TypeClass do
     end
   end
 
+  @doc ~S"""
+  Convenience alises for `definst/3`
+
+  ## Implicit `class`
+  ### Examples
+
+  definst Semigroup, for: List do
+  def concat(a, b), do: a ++ b
+  end
+
+  ## No body
+
+  When you only want to check the properties (ex. when there is no `where` block)
+
+  ### Examples
+
+      # Depenency
+      defclass Base do
+        where do
+          def plus_one(a)
+        end
+
+        properties do
+          def pass(_), do: true
+        end
+      end
+
+      # No `where`
+      defclass MoreProps do
+        extend Base
+
+        properties do
+          def yep(a), do: equal?(a, a)
+        end
+      end
+
+      definst Base, for: Integer do
+        def plus_one(a), do: a + 5
+      end
+
+      definst MoreProps, for: Integer
+
+  """
   defmacro definst(class, for: datatype) do
     quote do
       definst unquote(class), for: unquote(datatype) do
