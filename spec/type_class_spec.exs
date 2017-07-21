@@ -74,7 +74,7 @@ defmodule TypeClassSpec do
 
       it "compiles" do
         definst Adder, for: Integer do
-          def plus_five(a), do: a + 5
+          def plus_one(a), do: a + 5
         end
 
         definst MoreProps, for: Integer
