@@ -137,14 +137,17 @@ defmodule TypeClass do
         use TypeClass.Dependency
 
         Module.register_attribute(__MODULE__, :force_type_class, [])
-
         @force_type_class false
+
+        Module.register_attribute(__MODULE__, :class_methods, [])
+        @class_methods false
 
         unquote(body)
 
         @doc false
         def __force_type_class__, do: @force_type_class
 
+        TypeClass.run_where!()
         TypeClass.Dependency.run()
         TypeClass.Property.ensure!()
       end
@@ -172,12 +175,11 @@ defmodule TypeClass do
       defimpl unquote(class).Proto, for: unquote(datatype) do
         import TypeClass.Property.Generator.Custom
 
-        @doc false
-        def __custom_generator__, do: false
-
-        Module.register_attribute(__MODULE__, :force_type_class, [])
+        Module.register_attribute(__MODULE__, :force_type_instance, [])
         @force_type_instance false
 
+        @doc false
+        def __custom_generator__, do: false
         defoverridable [__custom_generator__: 0]
 
         unquote(body)
@@ -218,6 +220,57 @@ defmodule TypeClass do
     end
   end
 
+  @doc ~S"""
+  Convenience alises for `definst/3`
+
+  ## Implicit `class`
+  ### Examples
+
+  definst Semigroup, for: List do
+  def concat(a, b), do: a ++ b
+  end
+
+  ## No body
+
+  When you only want to check the properties (ex. when there is no `where` block)
+
+  ### Examples
+
+      # Depenency
+      defclass Base do
+        where do
+          def plus_one(a)
+        end
+
+        properties do
+          def pass(_), do: true
+        end
+      end
+
+      # No `where`
+      defclass MoreProps do
+        extend Base
+
+        properties do
+          def yep(a), do: equal?(a, a)
+        end
+      end
+
+      definst Base, for: Integer do
+        def plus_one(a), do: a + 5
+      end
+
+      definst MoreProps, for: Integer
+
+  """
+  defmacro definst(class, for: datatype) do
+    quote do
+      definst unquote(class), for: unquote(datatype) do
+        # Intentionally blank; hooking into definst magic
+      end
+    end
+  end
+
   @doc "Variant of `definst/2` for use inside of a `defstruct` module definition"
   defmacro definst(class, do: body) do
     quote do: definst(unquote(class), for: __MODULE__, do: unquote(body))
@@ -238,11 +291,17 @@ defmodule TypeClass do
 
   """
   defmacro where(do: fun_specs) do
+    Module.put_attribute(__CALLER__.module, :class_methods, fun_specs)
+  end
+
+  defmacro run_where! do
     class = __CALLER__.module
+    fun_specs = Module.get_attribute(class, :class_methods)
     proto = Module.split(class) ++ ["Proto"] |> Enum.map(&String.to_atom/1)
 
     fun_stubs =
       case fun_specs do
+        nil                        -> []
         {:__block__, _ctx, funs}   -> funs
         fun = {:def, _ctx, _inner} -> [fun]
       end

@@ -50,6 +50,38 @@ defmodule TypeClassSpec do
       expect(DependencyClass.__dependencies__)
       |> to(eql [TypeClassSpec.MyOtherClass, TypeClassSpec.MyClass])
     end
+
+    describe "without `where`" do
+      defclass Adder do
+        where do
+          def plus_one(a)
+        end
+
+        properties do
+          def pass(_), do: true
+        end
+      end
+
+      defclass MoreProps do
+        extend Adder
+
+        properties do
+          def yep(a) do
+            equal?(a, a)
+          end
+        end
+      end
+
+      it "compiles without an explicit `where` block" do
+        # Prep
+        definst Adder, for: Integer do
+          def plus_one(a), do: a + 5
+        end
+
+        # Test
+        definst MoreProps, for: Integer
+      end
+    end
   end
 
   describe "protocol" do
@@ -67,11 +99,11 @@ defmodule TypeClassSpec do
       def fmap(enum, fun), do: Enum.map(enum, fun)
     end
 
-    # describe "underlying protocol" do
-    #   it "is fmappable" do
-    #     expect(Functor.Proto.fmap([1,2,3], fn x -> x + 1 end)) |> to(eql [2,3,4])
-    #   end
-    # end
+    describe "underlying protocol" do
+      it "is fmappable" do
+        expect(Functor.Proto.List.fmap([1, 2, 3], fn x -> x + 1 end)) |> to(eql [2, 3, 4])
+      end
+    end
 
     describe "unified API (reexport)" do
       it "is fmappable" do
@@ -121,6 +153,10 @@ defmodule TypeClassSpec do
           a = generate(data)
           Semigroup.concat(a, Monoid.empty(a)) == a
         end
+      end
+
+      definst for: Integer do
+        def empty(_), do: 0
       end
     end
 
