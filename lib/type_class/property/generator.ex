@@ -143,3 +143,13 @@ defimpl TypeClass.Property.Generator, for: Map do
     |> Enum.into(%{})
   end
 end
+
+defimpl TypeClass.Property.Generator, for: MapSet do
+  @moduledoc false
+
+  def generate(_) do
+    []
+    |> TypeClass.Property.Generator.generate()
+    |> Enum.reduce(MapSet.new(), fn(element, set) -> MapSet.put(set, element) end)
+  end
+end
