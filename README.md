@@ -13,7 +13,7 @@
   - [Principled](#principled)
 - [Escape Hatches](#escape-hatches)
 - [Example](#example)
-  - [TypeClass](#TypeClass)
+  - [TypeClass](#typeclass)
   - [Haskell](#haskell)
 
 # Quick Start
