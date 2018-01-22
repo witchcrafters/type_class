@@ -7,3 +7,4 @@ erl_crash.dump
 *.ez
 *.beam
 .DS_Store
+npm-debug.log
