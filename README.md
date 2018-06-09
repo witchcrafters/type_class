@@ -25,7 +25,7 @@ end
 ```
 
 # Type Classes
-Type classes are not unlike protocols. They are essentially a mechanism for ad hoc polymorphism. However, doing extensive work with protocols can be cumbersome in Elixir. Even the standard library uses the confusingly named `Enumerator` protocol to support the `Enum` module. `TypeClass` attempts to hide many of the details to give you a single module interface.
+Type classes are not unlike protocols. They are essentially a mechanism for ad hoc polymorphism. However, doing extensive work with protocols can be cumbersome in Elixir. Even the standard library uses the [`Enumerable`](https://hexdocs.pm/elixir/Enumerable.html) protocol to support the `Enum` module. `TypeClass` attempts to hide many of the details to give you a single module interface.
 
 ## Condensed Style
 To this end, `TypeClass` provides the `defclass` macro to handle generating all of the modules, submodules, and protocols.
