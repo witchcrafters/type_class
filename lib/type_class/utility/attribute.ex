@@ -10,7 +10,7 @@ defmodule TypeClass.Utility.Attribute do
   end
 
   @doc "Set a compile-time module attribute"
-  @spec set(atom(), [as: atom()]) :: no_return()
+  @spec set(atom(), as: atom()) :: no_return()
   defmacro set(value, as: attribute) do
     quote bind_quoted: [attribute: attribute, value: value] do
       Module.put_attribute(__MODULE__, attribute, value)

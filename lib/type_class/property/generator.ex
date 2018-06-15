@@ -34,8 +34,11 @@ defimpl TypeClass.Property.Generator, for: Any do
   def generate(_any) do
     [
       "",
-      2, 1.1,
-      [], {}, %{},
+      2,
+      1.1,
+      [],
+      {},
+      %{},
       fn _ -> nil end
     ]
     |> Enum.random()
@@ -85,7 +88,8 @@ defimpl TypeClass.Property.Generator, for: BitString do
   @moduledoc false
 
   def generate(_) do
-    Stream.unfold("", &({&1, :rand.uniform(90)}))
+    ""
+    |> Stream.unfold(&{&1, :rand.uniform(90)})
     |> Stream.drop(1)
     |> Stream.take(:rand.uniform(20))
     |> Enum.to_list()
@@ -97,7 +101,8 @@ defimpl TypeClass.Property.Generator, for: List do
   @moduledoc false
 
   def generate(_) do
-    Stream.unfold(1, fn acc ->
+    1
+    |> Stream.unfold(fn acc ->
       next =
         [0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, "", "", "", "", "", "", {}, [], %{}]
         |> Enum.random()
@@ -125,7 +130,8 @@ defimpl TypeClass.Property.Generator, for: Map do
   @moduledoc false
 
   def generate(_) do
-    Stream.unfold({0, 1}, fn acc ->
+    {0, 1}
+    |> Stream.unfold(fn acc ->
       key = ["", 0] |> Enum.random() |> TypeClass.Property.Generator.generate()
 
       value =
@@ -150,6 +156,6 @@ defimpl TypeClass.Property.Generator, for: MapSet do
   def generate(_) do
     []
     |> TypeClass.Property.Generator.generate()
-    |> Enum.reduce(MapSet.new(), fn(element, set) -> MapSet.put(set, element) end)
+    |> Enum.reduce(MapSet.new(), fn element, set -> MapSet.put(set, element) end)
   end
 end

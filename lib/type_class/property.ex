@@ -48,10 +48,11 @@ defmodule TypeClass.Property do
   @spec equal?(any(), any()) :: boolean()
   def equal?(left, right) do
     import ExUnit.Assertions
+
     cond do
       is_function(left) -> assert left.("foo") == right.("foo")
-      is_float(left)    -> assert Float.round(left, 5) == Float.round(right, 5)
-      true              -> assert left == right
+      is_float(left) -> assert Float.round(left, 5) == Float.round(right, 5)
+      true -> assert left == right
     end
   end
 end
