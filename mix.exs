@@ -6,7 +6,7 @@ defmodule TypeClass.Mixfile do
       app: :type_class,
       name: "TypeClass",
       description: "(Semi-)principled type classes for Elixir",
-      version: "1.2.3",
+      version: "1.2.4",
       elixir: "~> 1.4",
       package: [
         maintainers: ["Brooklyn Zelenka"],
@@ -19,11 +19,11 @@ defmodule TypeClass.Mixfile do
       preferred_cli_env: [espec: :test],
       deps: [
         {:exceptional, "~> 2.1"},
-        {:credo, "~> 0.7", only: [:dev, :test]},
-        {:espec, "~> 1.4", only: :test},
+        {:credo, "~> 0.9", only: [:dev, :test]},
+        {:espec, "~> 1.5", only: :test},
         {:dialyxir, "~> 0.5", only: :dev},
         {:earmark, "~> 1.2", only: :dev},
-        {:ex_doc, "~> 0.16", only: :dev},
+        {:ex_doc, "~> 0.18", only: :dev},
         {:inch_ex, "~> 0.5", only: [:dev, :test]}
       ],
       docs: [
