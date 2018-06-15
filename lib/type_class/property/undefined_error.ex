@@ -5,9 +5,9 @@ defmodule TypeClass.Property.UndefinedError do
   """
 
   @type t :: %TypeClass.Property.UndefinedError{
-    type_class: module(),
-    message: String.t()
-  }
+          type_class: module(),
+          message: String.t()
+        }
 
   defexception message: "Property not defined for type", type_class: nil
 

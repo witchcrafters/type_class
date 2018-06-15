@@ -14,13 +14,16 @@ defmodule TypeClass.Property.FailedCheckError do
   """
 
   @type t :: %TypeClass.Property.FailedCheckError{
-    message:    String.t(),
-    datatype:   module(),
-    type_class: module(),
-    property:   atom()
-  }
+          message: String.t(),
+          datatype: module(),
+          type_class: module(),
+          property: atom()
+        }
 
-  defexception message: "Failed type class property", datatype: nil, type_class: nil, property: nil
+  defexception message: "Failed type class property",
+               datatype: nil,
+               type_class: nil,
+               property: nil
 
   @doc ~S"""
   Convenience constructor
@@ -40,9 +43,9 @@ defmodule TypeClass.Property.FailedCheckError do
   def new(datatype, class, prop_name) do
     %TypeClass.Property.FailedCheckError{
       type_class: class,
-      property:   prop_name,
-      datatype:   datatype,
-      message:    "#{datatype} does not conform to property #{class}.#{to_string(prop_name)}"
+      property: prop_name,
+      datatype: datatype,
+      message: "#{datatype} does not conform to property #{class}.#{to_string(prop_name)}"
     }
   end
 end

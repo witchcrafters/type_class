@@ -57,9 +57,9 @@ defmodule TypeClass.Utility.Module do
     |> Module.split()
     |> List.last()
     |> case do
-         ^child_name -> base_module
-         _           -> Module.concat([base_module, child_name])
-       end
+      ^child_name -> base_module
+      _ -> Module.concat([base_module, child_name])
+    end
   end
 
   def to_submodule(base_module, child_module) do
@@ -91,7 +91,7 @@ defmodule TypeClass.Utility.Module do
   def append(parent_module, submodule) do
     parent_module
     |> Module.split()
-    |> fn modules -> modules ++ List.wrap(submodule) end.()
+    |> (fn modules -> modules ++ List.wrap(submodule) end).()
     |> Module.concat()
   end
 end

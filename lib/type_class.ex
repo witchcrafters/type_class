@@ -180,7 +180,7 @@ defmodule TypeClass do
 
         @doc false
         def __custom_generator__, do: false
-        defoverridable [__custom_generator__: 0]
+        defoverridable __custom_generator__: 0
 
         unquote(body)
 
@@ -190,17 +190,17 @@ defmodule TypeClass do
 
       cond do
         unquote(class).__force_type_class__() ->
-          IO.warn """
+          IO.warn("""
           The type class #{unquote(class)} has been forced to bypass \
           all property checks for all data types. This is very rarely valid, \
           as all type classes should have properties associted with them.
 
           For more, please see the TypeClass README:
           https://github.com/expede/type_class/blob/master/README.md
-          """
+          """)
 
         instance.__force_type_instance__() ->
-          IO.warn """
+          IO.warn("""
           The data type #{unquote(datatype)} has been forced to skip property \
           validation for the type class #{unquote(class)}
 
@@ -212,7 +212,7 @@ defmodule TypeClass do
 
           For more, please see the TypeClass README:
           https://github.com/expede/type_class/blob/master/README.md
-          """
+          """)
 
         true ->
           unquote(datatype) |> conforms(to: unquote(class))
@@ -297,12 +297,12 @@ defmodule TypeClass do
   defmacro run_where! do
     class = __CALLER__.module
     fun_specs = Module.get_attribute(class, :class_methods)
-    proto = Module.split(class) ++ ["Proto"] |> Enum.map(&String.to_atom/1)
+    proto = (Module.split(class) ++ ["Proto"]) |> Enum.map(&String.to_atom/1)
 
     fun_stubs =
       case fun_specs do
-        nil                        -> []
-        {:__block__, _ctx, funs}   -> funs
+        nil -> []
+        {:__block__, _ctx, funs} -> funs
         fun = {:def, _ctx, _inner} -> [fun]
       end
 
@@ -331,7 +331,7 @@ defmodule TypeClass do
 
         import TypeClass.Property.Generator.Custom
 
-        Macro.escape unquote(fun_specs), unquote: true
+        Macro.escape(unquote(fun_specs), unquote: true)
       end
 
       unquote(delegates)
@@ -406,7 +406,7 @@ defmodule TypeClass do
 
         # NOTE: does not follow chain if dependency has no `where`
         if Exceptional.Safe.safe(&Protocol.assert_protocol!/1).(proto) == :ok do
-          Protocol.assert_impl!(proto, unquote datatype)
+          Protocol.assert_impl!(proto, unquote(datatype))
         end
       end
 
