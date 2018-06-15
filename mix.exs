@@ -20,7 +20,6 @@ defmodule TypeClass.Mixfile do
       deps: [
         {:exceptional, "~> 2.1"},
         {:credo, "~> 0.9", only: [:dev, :test]},
-        {:espec, "~> 1.5", only: :test},
         {:dialyxir, "~> 0.5", only: :dev},
         {:earmark, "~> 1.2", only: :dev},
         {:ex_doc, "~> 0.18", only: :dev},
