@@ -50,9 +50,9 @@ defmodule TypeClass.Property do
     import ExUnit.Assertions
 
     cond do
-      is_function(left) -> assert left.("foo") == right.("foo")
-      is_float(left) -> assert Float.round(left, 5) == Float.round(right, 5)
-      true -> assert left == right
+      is_function(left) -> left.("foo") == right.("foo")
+      is_float(left) -> Float.round(left, 5) == Float.round(right, 5)
+      true -> left == right
     end
   end
 end
