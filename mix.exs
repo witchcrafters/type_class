@@ -23,7 +23,7 @@ defmodule TypeClass.Mixfile do
         {:dialyxir, "~> 0.5", only: :dev},
         {:earmark, "~> 1.2", only: :dev},
         {:ex_doc, "~> 0.18", only: :dev},
-        {:inch_ex, "~> 0.5", only: [:dev, :test]}
+        {:inch_ex, "~> 2.0", only: [:dev, :test]}
       ],
       docs: [
         extras: ["README.md"],
