@@ -19,7 +19,7 @@ defmodule TypeClass.Mixfile do
       preferred_cli_env: [espec: :test],
       deps: [
         {:exceptional, "~> 2.1"},
-        {:credo, "~> 0.9", only: [:dev, :test]},
+        {:credo, "~> 1.0", only: [:dev, :test]},
         {:dialyxir, "~> 0.5", only: :dev},
         {:earmark, "~> 1.2", only: :dev},
         {:ex_doc, "~> 0.18", only: :dev},
