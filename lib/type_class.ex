@@ -165,6 +165,50 @@ defmodule TypeClass do
         def concat(a, b), do: a ++ b
       end
 
+  ## `__MODULE__`'s meaning changes inside `definst`
+
+  Beware  that   the  value  of   `__MODULE__`  inside
+  `definst`  will   be  different  from   the  outside
+  context:  `definst`'s  `do`  block will  be  invoked
+  inside `defimpl` macro's body, and `defimpl` creates
+  its own container module to run things in.
+
+  For example, the code below won't compile:
+
+      defmodule Name do
+        import Algae
+        import TypeClass
+        use Witchcraft
+
+        defdata do
+          name :: String.t()
+        end
+
+        definst Witchcraft.Functor, for: __MODULE__ do
+          @force_type_instance true
+
+          def map(%__MODULE__{name: name}, f) do
+            __MODULE__.new(name)
+          end
+        end
+      end
+
+      # ** (CompileError) lib/instance/assword.ex:13:
+      #    Witchcraft.Functor.Proto.Instance.Name.__struct__/0 is undefined,
+      #    cannot expand struct Witchcraft.Functor.Proto.Instance.Name
+
+  Either use the full module name, or `alias` it, if
+  too long, such as
+
+      defmodule Name do
+        # (...)
+        # here
+
+        definst Witchcraft.Functor, for: __MODULE__ do
+          # or here
+          # (...)
+        end
+      end
   """
   defmacro definst(class, opts, do: body) do
     [for: datatype] = opts
