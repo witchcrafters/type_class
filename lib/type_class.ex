@@ -169,14 +169,23 @@ defmodule TypeClass do
   defmacro definst(class, opts, do: body) do
     [for: datatype] = opts
 
+    # __MODULE__ == TypeClass
+
     quote do
       instance = Module.concat([unquote(class), Proto, unquote(datatype)])
+
+      # __MODULE__ == datatype
+      datatype_module = unquote(datatype)
 
       defimpl unquote(class).Proto, for: unquote(datatype) do
         import TypeClass.Property.Generator.Custom
 
+        # __MODULE__ == class.Proto.datatype
         Module.register_attribute(__MODULE__, :force_type_instance, [])
         @force_type_instance false
+
+        Module.register_attribute(__MODULE__, :datatype, [])
+        @datatype datatype_module
 
         @doc false
         def __custom_generator__, do: false
