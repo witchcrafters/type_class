@@ -107,6 +107,9 @@ defmodule TypeClass do
   ## Examples
 
       defclass Semigroup do
+
+        # @force_type_class true
+
         where do
           def concat(a, b)
         end
@@ -124,6 +127,8 @@ defmodule TypeClass do
           end
         end
       end
+
+  See [`@force_type_class`](readme.html#force_type_class-true) section in the README for more.
 
   """
   defmacro defclass(class_name, do: body) do
@@ -162,8 +167,13 @@ defmodule TypeClass do
   ## Examples
 
       definst Semigroup, for: List do
+
+        # @force_type_instance true
+
         def concat(a, b), do: a ++ b
       end
+
+  See [`@force_type_instance`](readme.html#force_type_instance-true) section in the README for more.
 
   """
   defmacro definst(class, opts, do: body) do

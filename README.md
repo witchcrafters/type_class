@@ -73,7 +73,7 @@ This will force the prop checker to pass for all data types for the class.
 This is generally a bad idea (see section on principled classes above),
 but may be nessesary for some extreme edge cases.
 
-Using this option will trigger a compile time warning.
+Using this option will trigger a compile time warning. See [`defclass/2`](TypeClass.html#defclass/2) on how to use.
 
 ## `@force_type_instance true`
 This will force the prop checker to pass for a particular instance.
@@ -87,7 +87,7 @@ Forcing a type instance in this way is like telling
 the checker "trust me this is correct", and should only be used as
 a last resort. If at all possible, try to use `custom_generator/1` first.
 
-Using this option will trigger a compile time warning.
+Using this option will trigger a compile time warning. See [`definst/3`](TypeClass.html#definst/3) on how to use.
 
 ## `custom_generator/1`
 If you need to specify a certain type of data that conforms to the type class,
