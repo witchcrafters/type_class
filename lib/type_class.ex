@@ -156,7 +156,7 @@ defmodule TypeClass do
 
   @doc ~S"""
   Define an instance of the type class. The rough equivalent of `defimpl`.
-  `defimpl` will check the properties at compile time, and prevent compilation
+  `definst` will check the properties at compile time, and prevent compilation
   if the datatype does not conform to the protocol.
 
   ## Examples
