@@ -22,7 +22,7 @@ defmodule TypeClass.Mixfile do
         {:credo, "~> 0.9", only: [:dev, :test]},
         {:dialyxir, "~> 0.5", only: :dev},
         {:earmark, "~> 1.2", only: :dev},
-        {:ex_doc, "~> 0.18", only: :dev},
+        {:ex_doc, "~> 0.19", only: :dev},
         {:inch_ex, "~> 0.5", only: [:dev, :test]}
       ],
       docs: [

@@ -223,20 +223,57 @@ defmodule TypeClass do
   @doc ~S"""
   Convenience alises for `definst/3`
 
-  ## Implicit `class`
+  ## 1. Implicit `:for`
+
+  Shortcut for
+
+      definst ATypeClass, for: __MODULE__ do
+        # required function definitions
+      end
+
+  when  implementing type  class instances  inside
+  the module where the data type is defined.
+
   ### Examples
 
-  definst Semigroup, for: List do
-  def concat(a, b), do: a ++ b
-  end
+      defmodule Name do
+        import Algae
+        import TypeClass
+        use Witchcraft
 
-  ## No body
+        defdata do
+          name :: String.t()
+        end
 
-  When you only want to check the properties (ex. when there is no `where` block)
+        definst Witchcraft.Functor do
+          @force_type_instance true
+          def map(%{name: name}, f), do: %{name: f.(name)}
+          # def map(_, _), do: 27 # %{name: f.(name)}
+        end
+
+        def add_title(%__MODULE__{} = name, title) do
+          name ~> &Kernel.<>(title, &1)
+        end
+      end
+
+      iex(3)> name = X.new("Kilgore Troutman")
+      %X{name: "Kilgore Troutman"}
+
+      iex(4)> X.add_title(name, "Dr. ")
+      %{name: "Dr. Kilgore Troutman"}
+
+    NOTE: copy-pasting the above in IEx won't work because `definst`
+    checks properties at **compile** time.
+
+  ## 2. No body
+
+  When  you only  want  to check  the properties  (ex.
+  when  there   is  no  `where`  block,   such  as  in
+  [`Witchcraft.Monad`](https://hexdocs.pm/witchcraft/Witchcraft.Monad.html#content)).
 
   ### Examples
 
-      # Depenency
+      # Dependency
       defclass Base do
         where do
           def plus_one(a)
@@ -271,9 +308,12 @@ defmodule TypeClass do
     end
   end
 
-  @doc "Variant of `definst/2` for use inside of a `defstruct` module definition"
   defmacro definst(class, do: body) do
-    quote do: definst(unquote(class), for: __MODULE__, do: unquote(body))
+    quote do
+      definst unquote(class), for: __MODULE__ do
+        unquote(body)
+      end
+    end
   end
 
   @doc ~S"""
