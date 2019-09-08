@@ -211,9 +211,8 @@ defmodule TypeClass do
       end
   """
   defmacro definst(class, opts, do: body) do
-    [for: datatype] = opts
-
     # __MODULE__ == TypeClass
+    [for: datatype] = opts
 
     quote do
       instance = Module.concat([unquote(class), Proto, unquote(datatype)])
@@ -221,7 +220,7 @@ defmodule TypeClass do
       # __MODULE__ == datatype
       datatype_module = unquote(datatype)
 
-      defimpl unquote(class).Proto, for: unquote(datatype) do
+      defimpl unquote(class).Proto, for: datatype_module do
         import TypeClass.Property.Generator.Custom
 
         # __MODULE__ == class.Proto.datatype
