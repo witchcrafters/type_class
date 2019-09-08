@@ -51,9 +51,10 @@ defmodule TypeClass.Mixfile do
 
   defp package do
     [
-      maintainers: ["Brooklyn Zelenka"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/witchcrafters/type_class"}
+      links: %{"GitHub" => "https://github.com/witchcrafters/type_class"},
+      maintainers: ["Brooklyn Zelenka", "Steven Vandevelde"],
+      organization: "witchcrafters"
     ]
   end
 end
