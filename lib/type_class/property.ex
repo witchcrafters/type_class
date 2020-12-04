@@ -1,8 +1,6 @@
 defmodule TypeClass.Property do
   @moduledoc "A *very* simple prop checker"
 
-  alias TypeClass.Utility.Module, as: TC
-
   @doc "Ensure that the type class has defined properties"
   @spec ensure!() :: no_return()
   defmacro ensure! do
@@ -47,8 +45,6 @@ defmodule TypeClass.Property do
   """
   @spec equal?(any(), any()) :: boolean()
   def equal?(left, right) do
-    import ExUnit.Assertions
-
     cond do
       is_function(left) -> left.("foo") == right.("foo")
       is_float(left) -> Float.round(left, 5) == Float.round(right, 5)
