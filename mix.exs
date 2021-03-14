@@ -9,8 +9,8 @@ defmodule TypeClass.Mixfile do
       preferred_cli_env: [espec: :test],
 
       # Versions
-      version: "1.2.6",
-      elixir: "~> 1.9",
+      version: "1.2.7",
+      elixir: "~> 1.11",
 
       # Docs
       name: "TypeClass",
@@ -24,19 +24,24 @@ defmodule TypeClass.Mixfile do
 
   defp aliases do
     [
-      quality: ["credo --strict", "inch"]
+      quality: [
+          "test",
+          "credo --strict"
+        ]
     ]
   end
 
   defp deps do
     [
       {:exceptional, "~> 2.1"},
-      {:credo, "~> 1.1.4", only: [:dev, :test]},
-      {:dialyxir, "~> 0.5", only: :dev},
-      {:earmark, "~> 1.4.0", only: :dev},
-      {:espec, "~> 1.7.0", only: :test},
-      {:ex_doc, "~> 0.21.2", only: :dev},
-      {:inch_ex, "~> 2.0", only: [:dev, :test]}
+
+      {:espec, "~> 1.8", only: :test, runtime: false},
+      {:credo,    "~> 1.5",  only: [:dev, :test], runtime: false},
+      {:inch_ex,  "~> 2.0",  only: [:dev, :docs, :test], runtime: false},
+
+      {:dialyxir, "~> 1.1",  only: :dev, runtime: false},
+      {:earmark,  "~> 1.4",  only: :dev, runtime: false},
+      {:ex_doc,   "~> 0.23", only: :dev, runtime: false},
     ]
   end
 
