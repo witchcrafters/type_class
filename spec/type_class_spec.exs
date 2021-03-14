@@ -28,7 +28,7 @@ defmodule TypeClassSpec do
 
   describe "moduleness" do
     it "is an alias for defmodule" do
-      expect(MyClass.plus_five(42)) |> to(eql MyModule.plus_five(42))
+      expect(MyClass.plus_five(42)) |> to(eql(MyModule.plus_five(42)))
     end
   end
 
@@ -47,8 +47,8 @@ defmodule TypeClassSpec do
     it "has a dependency" do
       require DependencyClass
 
-      expect(DependencyClass.__dependencies__)
-      |> to(eql [TypeClassSpec.MyOtherClass, TypeClassSpec.MyClass])
+      expect(DependencyClass.__dependencies__())
+      |> to(eql([TypeClassSpec.MyOtherClass, TypeClassSpec.MyClass]))
     end
 
     describe "without `where`" do
@@ -101,13 +101,13 @@ defmodule TypeClassSpec do
 
     describe "underlying protocol" do
       it "is fmappable" do
-        expect(Functor.Proto.List.fmap([1, 2, 3], fn x -> x + 1 end)) |> to(eql [2, 3, 4])
+        expect(Functor.Proto.List.fmap([1, 2, 3], fn x -> x + 1 end)) |> to(eql([2, 3, 4]))
       end
     end
 
     describe "unified API (reexport)" do
       it "is fmappable" do
-        expect(Functor.fmap([1, 2, 3], fn x -> x + 1 end)) |> to(eql [2, 3, 4])
+        expect(Functor.fmap([1, 2, 3], fn x -> x + 1 end)) |> to(eql([2, 3, 4]))
       end
     end
   end
@@ -124,7 +124,7 @@ defmodule TypeClassSpec do
           b = generate(data)
           c = generate(data)
 
-          left  = a |> Semigroup.concat(b) |> Semigroup.concat(c)
+          left = a |> Semigroup.concat(b) |> Semigroup.concat(c)
           right = Semigroup.concat(a, Semigroup.concat(b, c))
 
           left == right
@@ -153,10 +153,6 @@ defmodule TypeClassSpec do
           a = generate(data)
           Semigroup.concat(a, Monoid.empty(a)) == a
         end
-      end
-
-      definst for: Integer do
-        def empty(_), do: 0
       end
     end
 
@@ -244,7 +240,6 @@ defmodule TypeClassSpec do
 
   describe "force instance" do
     defclass GoodClassBadInst do
-
       where do
         def my_div(num_a, num_b)
       end
@@ -252,7 +247,8 @@ defmodule TypeClassSpec do
       properties do
         def usually_good_but_hard_for_floats(data) do
           a = generate(data)
-          GoodClassBadInst.my_div(a * a, a) == a # `==` so that we force the floats to disagree
+          # `==` so that we force the floats to disagree
+          GoodClassBadInst.my_div(a * a, a) == a
         end
       end
     end

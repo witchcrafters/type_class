@@ -161,7 +161,7 @@ defmodule TypeClass do
 
   @doc ~S"""
   Define an instance of the type class. The rough equivalent of `defimpl`.
-  `defimpl` will check the properties at compile time, and prevent compilation
+  `definst` will check the properties at compile time, and prevent compilation
   if the datatype does not conform to the protocol.
 
   ## Examples
@@ -175,18 +175,70 @@ defmodule TypeClass do
 
   See [`@force_type_instance`](readme.html#force_type_instance-true) section in the README for more.
 
+  ## `__MODULE__`'s meaning changes inside `definst`
+
+  Beware  that   the  value  of   `__MODULE__`  inside
+  `definst`  will   be  different  from   the  outside
+  context:  `definst`'s  `do`  block will  be  invoked
+  inside `defimpl` macro's body, and `defimpl` creates
+  its own container module to run things in.
+
+  For example, the code below won't compile:
+
+      defmodule Name do
+        import Algae
+        import TypeClass
+        use Witchcraft
+
+        defdata do
+          name :: String.t()
+        end
+
+        definst Witchcraft.Functor, for: __MODULE__ do
+          @force_type_instance true
+
+          def map(%__MODULE__{name: name}, f) do
+            __MODULE__.new(name)
+          end
+        end
+      end
+
+      # ** (CompileError) lib/instance/assword.ex:13:
+      #    Witchcraft.Functor.Proto.Instance.Name.__struct__/0 is undefined,
+      #    cannot expand struct Witchcraft.Functor.Proto.Instance.Name
+
+  Either use the full module name, or `alias` it, if
+  too long, such as
+
+      defmodule Name do
+        # (...)
+        # here
+
+        definst Witchcraft.Functor, for: __MODULE__ do
+          # or here
+          # (...)
+        end
+      end
   """
   defmacro definst(class, opts, do: body) do
+    # __MODULE__ == TypeClass
     [for: datatype] = opts
 
     quote do
       instance = Module.concat([unquote(class), Proto, unquote(datatype)])
 
-      defimpl unquote(class).Proto, for: unquote(datatype) do
+      # __MODULE__ == datatype
+      datatype_module = unquote(datatype)
+
+      defimpl unquote(class).Proto, for: datatype_module do
         import TypeClass.Property.Generator.Custom
 
+        # __MODULE__ == class.Proto.datatype
         Module.register_attribute(__MODULE__, :force_type_instance, [])
         @force_type_instance false
+
+        Module.register_attribute(__MODULE__, :datatype, [])
+        @datatype datatype_module
 
         @doc false
         def __custom_generator__, do: false
@@ -233,20 +285,57 @@ defmodule TypeClass do
   @doc ~S"""
   Convenience alises for `definst/3`
 
-  ## Implicit `class`
+  ## 1. Implicit `:for`
+
+  Shortcut for
+
+      definst ATypeClass, for: __MODULE__ do
+        # required function definitions
+      end
+
+  when  implementing type  class instances  inside
+  the module where the data type is defined.
+
   ### Examples
 
-  definst Semigroup, for: List do
-  def concat(a, b), do: a ++ b
-  end
+      defmodule Name do
+        import Algae
+        import TypeClass
+        use Witchcraft
 
-  ## No body
+        defdata do
+          name :: String.t()
+        end
 
-  When you only want to check the properties (ex. when there is no `where` block)
+        definst Witchcraft.Functor do
+          @force_type_instance true
+          def map(%{name: name}, f), do: %{name: f.(name)}
+          # def map(_, _), do: 27 # %{name: f.(name)}
+        end
+
+        def add_title(%__MODULE__{} = name, title) do
+          name ~> &Kernel.<>(title, &1)
+        end
+      end
+
+      iex(3)> name = X.new("Kilgore Troutman")
+      %X{name: "Kilgore Troutman"}
+
+      iex(4)> X.add_title(name, "Dr. ")
+      %{name: "Dr. Kilgore Troutman"}
+
+    NOTE: copy-pasting the above in IEx won't work because `definst`
+    checks properties at **compile** time.
+
+  ## 2. No body
+
+  When  you only  want  to check  the properties  (ex.
+  when  there   is  no  `where`  block,   such  as  in
+  [`Witchcraft.Monad`](https://hexdocs.pm/witchcraft/Witchcraft.Monad.html#content)).
 
   ### Examples
 
-      # Depenency
+      # Dependency
       defclass Base do
         where do
           def plus_one(a)
@@ -281,9 +370,12 @@ defmodule TypeClass do
     end
   end
 
-  @doc "Variant of `definst/2` for use inside of a `defstruct` module definition"
   defmacro definst(class, do: body) do
-    quote do: definst(unquote(class), for: __MODULE__, do: unquote(body))
+    quote do
+      definst unquote(class), for: __MODULE__ do
+        unquote(body)
+      end
+    end
   end
 
   @doc ~S"""

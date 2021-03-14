@@ -20,14 +20,14 @@ defmodule TypeClass.Property do
   @doc "Run all properties for the type class"
   @spec run!(module(), module(), atom(), non_neg_integer()) :: no_return()
   def run!(datatype, class, prop_name, times \\ 100) do
-    property_module = TC.append(class, Property)
+    property_module = Module.concat(class, Property)
     custom_generator = Module.concat([class, "Proto", datatype]).__custom_generator__()
 
     data_generator =
       if custom_generator do
         custom_generator
       else
-        TC.append(TypeClass.Property.Generator, datatype).generate(nil)
+        Module.concat(TypeClass.Property.Generator, datatype).generate(nil)
       end
 
     fn ->

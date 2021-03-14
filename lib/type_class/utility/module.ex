@@ -87,11 +87,4 @@ defmodule TypeClass.Utility.Module do
       :extract_protocols
     ])
   end
-
-  def append(parent_module, submodule) do
-    parent_module
-    |> Module.split()
-    |> (fn modules -> modules ++ List.wrap(submodule) end).()
-    |> Module.concat()
-  end
 end

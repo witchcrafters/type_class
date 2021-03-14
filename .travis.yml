@@ -1,8 +1,8 @@
 language: elixir
 elixir:
-  - 1.4.5
+  - 1.9.1
 otp_release:
-  - 20.0
-script: mix test; mix credo --strict
+  - 22.0.5
+script: mix test; mix espec; mix credo --strict
 after_script:
   - MIX_ENV=docs mix do deps.get, inch.report

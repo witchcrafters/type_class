@@ -4,32 +4,57 @@ defmodule TypeClass.Mixfile do
   def project do
     [
       app: :type_class,
-      name: "TypeClass",
-      description: "(Semi-)principled type classes for Elixir",
-      version: "1.2.5",
-      elixir: "~> 1.4",
-      package: [
-        maintainers: ["Brooklyn Zelenka"],
-        licenses: ["MIT"],
-        links: %{"GitHub" => "https://github.com/expede/type_class"}
-      ],
-      source_url: "https://github.com/expede/type_class",
-      homepage_url: "https://github.com/expede/type_class",
-      aliases: [quality: ["credo --strict", "inch"]],
+      aliases: aliases(),
+      deps: deps(),
       preferred_cli_env: [espec: :test],
-      deps: [
-        {:exceptional, "~> 2.1"},
-        {:credo, "~> 0.9", only: [:dev, :test]},
-        {:dialyxir, "~> 0.5", only: :dev},
-        {:earmark, "~> 1.2", only: :dev},
-        {:ex_doc, "~> 0.18", only: :dev},
-        {:inch_ex, "~> 0.5", only: [:dev, :test]}
-      ],
-      docs: [
-        extras: ["README.md"],
-        logo: "./brand/logo.png",
-        main: "readme"
-      ]
+
+      # Versions
+      version: "1.2.6",
+      elixir: "~> 1.9",
+
+      # Docs
+      name: "TypeClass",
+      docs: docs(),
+
+      # Hex
+      description: "(Semi-)principled type classes for Elixir",
+      package: package()
+    ]
+  end
+
+  defp aliases do
+    [
+      quality: ["credo --strict", "inch"]
+    ]
+  end
+
+  defp deps do
+    [
+      {:exceptional, "~> 2.1"},
+      {:credo, "~> 1.1.4", only: [:dev, :test]},
+      {:dialyxir, "~> 0.5", only: :dev},
+      {:earmark, "~> 1.4.0", only: :dev},
+      {:espec, "~> 1.7.0", only: :test},
+      {:ex_doc, "~> 0.21.2", only: :dev},
+      {:inch_ex, "~> 2.0", only: [:dev, :test]}
+    ]
+  end
+
+  defp docs do
+    [
+      extras: ["README.md"],
+      logo: "./brand/logo.png",
+      main: "readme",
+      source_url: "https://github.com/witchcrafters/type_class"
+    ]
+  end
+
+  defp package do
+    [
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/witchcrafters/type_class"},
+      maintainers: ["Brooklyn Zelenka", "Steven Vandevelde"],
+      organization: "witchcrafters"
     ]
   end
 end
