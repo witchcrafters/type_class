@@ -15,9 +15,9 @@ defmodule TypeClass.Property do
     end
   end
 
-  @doc "Run all properties for the type class"
-  @spec run!(module(), module(), atom(), non_neg_integer()) :: no_return()
-  def run!(datatype, class, prop_name, times \\ 100) do
+  @doc "Check all properties for the type class"
+  @spec check!(module(), module(), atom(), non_neg_integer()) :: no_return()
+  def check!(datatype, class, prop_name, times \\ 100) do
     property_module = Module.concat(class, Property)
     custom_generator = Module.concat([class, "Proto", datatype]).__custom_generator__()
 
@@ -35,6 +35,13 @@ defmodule TypeClass.Property do
     end
     |> Stream.repeatedly()
     |> Enum.take(times)
+  end
+
+  # FIXME doc & typespec
+  def check_all!(datatype, class, times \\ 100) do
+    for {prop_name, _one} <- Module.concat(class, Property).__info__(:functions) do
+      TypeClass.Property.check!(datatype, class, prop_name, times)
+    end
   end
 
   @doc ~S"""

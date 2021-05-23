@@ -19,6 +19,7 @@
 
     elixir =
       [ unstable.elixir
+        unstable.elixir_ls
       ];
 
     platform =
@@ -35,7 +36,7 @@
 in
 
 pkgs.mkShell {
-  name = "Quark";
+  name = "TypeClass";
   nativeBuildInputs = builtins.concatLists [
     deps.common 
     deps.elixir
