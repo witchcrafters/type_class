@@ -154,6 +154,8 @@ defmodule TypeClass do
 
         TypeClass.run_where!()
         TypeClass.Dependency.run()
+
+        # FIXME if check_time: :aot, :compile?
         TypeClass.Property.ensure!()
       end
     end
@@ -230,6 +232,13 @@ defmodule TypeClass do
       # __MODULE__ == datatype
       datatype_module = unquote(datatype)
 
+      # FIXME if to run at test time
+      # defmodule unquote(datatype).Property do
+      #   @moduledoc false
+      #
+      #   unquote(body)
+      # end
+
       defimpl unquote(class).Proto, for: datatype_module do
         import TypeClass.Property.Generator.Custom
 
@@ -250,35 +259,35 @@ defmodule TypeClass do
         def __force_type_instance__, do: @force_type_instance
       end
 
-      cond do
-        unquote(class).__force_type_class__() ->
-          IO.warn("""
-          The type class #{unquote(class)} has been forced to bypass \
-          all property checks for all data types. This is very rarely valid, \
-          as all type classes should have properties associted with them.
+     #  cond do
+     #    unquote(class).__force_type_class__() ->
+     #      IO.warn("""
+     #      The type class #{unquote(class)} has been forced to bypass \
+     #      all property checks for all data types. This is very rarely valid, \
+     #      as all type classes should have properties associted with them.
 
-          For more, please see the TypeClass README:
-          https://github.com/expede/type_class/blob/master/README.md
-          """)
+     #      For more, please see the TypeClass README:
+     #      https://github.com/expede/type_class/blob/master/README.md
+     #      """)
 
-        instance.__force_type_instance__() ->
-          IO.warn("""
-          The data type #{unquote(datatype)} has been forced to skip property \
-          validation for the type class #{unquote(class)}
+     #    instance.__force_type_instance__() ->
+     #      IO.warn("""
+     #      The data type #{unquote(datatype)} has been forced to skip property \
+     #      validation for the type class #{unquote(class)}
 
-          This is sometimes valid, since TypeClass's property checker \
-          may not be able to accurately validate all data types correctly for \
-          all possible cases. Forcing a type instance in this way is like telling \
-          the checker "trust me this is correct", and should only be used as \
-          a last resort.
+     #      This is sometimes valid, since TypeClass's property checker \
+     #      may not be able to accurately validate all data types correctly for \
+     #      all possible cases. Forcing a type instance in this way is like telling \
+     #      the checker "trust me this is correct", and should only be used as \
+     #      a last resort.
 
-          For more, please see the TypeClass README:
-          https://github.com/expede/type_class/blob/master/README.md
-          """)
+     #      For more, please see the TypeClass README:
+     #      https://github.com/expede/type_class/blob/master/README.md
+     #      """)
 
-        true ->
-          unquote(datatype) |> conforms(to: unquote(class))
-      end
+     #    true ->
+     #      unquote(datatype) |> conforms(to: unquote(class))
+     #  end
     end
   end
 
@@ -506,15 +515,14 @@ defmodule TypeClass do
       for dependency <- unquote(class).__dependencies__ do
         proto = Module.concat(Module.split(dependency) ++ ["Proto"])
 
-        # NOTE: does not follow chain if dependency has no `where`
+        # NOTE: only follows chain if dependency has a `where`
         if Exceptional.Safe.safe(&Protocol.assert_protocol!/1).(proto) == :ok do
           Protocol.assert_impl!(proto, unquote(datatype))
         end
       end
 
-      for {prop_name, _one} <- unquote(class).Property.__info__(:functions) do
-        TypeClass.Property.run!(unquote(datatype), unquote(class), prop_name)
-      end
+      # FIXME only if at compile time
+      TypeClass.Property.check_all!(unqupte(class))
     end
   end
 
