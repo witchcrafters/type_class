@@ -38,9 +38,9 @@ defmodule TypeClass.Property do
   end
 
   # FIXME doc & typespec
-  def check_all!(module, class, times \\ 100) do
-    for {prop_name, _one} <- class.Property.__info__(:functions) do
-      TypeClass.Property.check!(unquote(datatype), unquote(class), prop_name)
+  def check_all!(datatype, class, times \\ 100) do
+    for {prop_name, _one} <- Module.concat(class, Property).__info__(:functions) do
+      TypeClass.Property.check!(datatype, class, prop_name, times)
     end
   end
 

@@ -259,6 +259,7 @@ defmodule TypeClass do
         def __force_type_instance__, do: @force_type_instance
       end
 
+    # FIXME only if checked AOT
      #  cond do
      #    unquote(class).__force_type_class__() ->
      #      IO.warn("""
@@ -522,7 +523,7 @@ defmodule TypeClass do
       end
 
       # FIXME only if at compile time
-      TypeClass.Property.check_all!(unqupte(class))
+      TypeClass.Property.check_all!(unquote(class), unquote(class)) # FIXME
     end
   end
 
