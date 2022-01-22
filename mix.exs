@@ -6,7 +6,7 @@ defmodule TypeClass.Mixfile do
       app: :type_class,
       aliases: aliases(),
       deps: deps(),
-      preferred_cli_env: [espec: :test],
+      preferred_cli_env: [espec: :test, quality: :test],
 
       # Versions
       version: "1.2.7",
