@@ -35,7 +35,7 @@ defmodule TypeClass.Mixfile do
     [
       {:exceptional, "~> 2.1"},
 
-      {:espec, "~> 1.8", only: :test, runtime: false},
+      {:espec,    "~> 1.8", only: :test, runtime: false},
       {:credo,    "~> 1.5",  only: [:dev, :test], runtime: false},
       {:inch_ex,  "~> 2.0",  only: [:dev, :docs, :test], runtime: false},
 
