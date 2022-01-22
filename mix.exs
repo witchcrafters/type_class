@@ -26,6 +26,7 @@ defmodule TypeClass.Mixfile do
     [
       quality: [
           "test",
+          "espec",
           "credo --strict"
         ]
     ]
