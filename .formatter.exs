@@ -1,6 +1,6 @@
 # Used by "mix format"
 [
-  inputs: ["mix.exs", "{config,lib,test}/**/*.{ex,exs}"],
+  inputs: ["mix.exs", "{lib,test}/**/*.{ex,exs}"],
   locals_without_parens: [
     defalias: 2,
     defclass: 2,

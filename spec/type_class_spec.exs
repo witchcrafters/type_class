@@ -191,8 +191,6 @@ defmodule TypeClassSpec do
         def of(val, ex)
       end
 
-      defdelegate wrap(value, representative), to: Proto
-
       properties do
         def foo(_), do: true
       end

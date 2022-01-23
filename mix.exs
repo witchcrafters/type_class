@@ -6,10 +6,10 @@ defmodule TypeClass.Mixfile do
       app: :type_class,
       aliases: aliases(),
       deps: deps(),
-      preferred_cli_env: [espec: :test],
+      preferred_cli_env: [espec: :test, quality: :test],
 
       # Versions
-      version: "1.2.7",
+      version: "1.2.8",
       elixir: "~> 1.11",
 
       # Docs
@@ -26,6 +26,7 @@ defmodule TypeClass.Mixfile do
     [
       quality: [
           "test",
+          "espec",
           "credo --strict"
         ]
     ]
@@ -35,7 +36,7 @@ defmodule TypeClass.Mixfile do
     [
       {:exceptional, "~> 2.1"},
 
-      {:espec, "~> 1.8", only: :test, runtime: false},
+      {:espec,    "~> 1.8", only: :test, runtime: false},
       {:credo,    "~> 1.5",  only: [:dev, :test], runtime: false},
       {:inch_ex,  "~> 2.0",  only: [:dev, :docs, :test], runtime: false},
 
