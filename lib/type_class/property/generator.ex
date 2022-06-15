@@ -116,6 +116,24 @@ defimpl TypeClass.Property.Generator, for: List do
   end
 end
 
+defimpl TypeClass.Property.Generator, for: Stream do
+  @moduledoc false
+
+  def generate(_) do
+    1
+    |> Stream.unfold(fn acc ->
+      next =
+        [0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, "", "", "", "", "", "", {}, [], %{}]
+        |> Enum.random()
+        |> TypeClass.Property.Generator.generate()
+
+      {acc, next}
+    end)
+    |> Stream.drop(1)
+    |> Stream.take(:rand.uniform(4))
+  end
+end
+
 defimpl TypeClass.Property.Generator, for: Tuple do
   @moduledoc false
 
