@@ -116,6 +116,18 @@ defimpl TypeClass.Property.Generator, for: List do
   end
 end
 
+defimpl TypeClass.Property.Generator, for: Stream do
+  @moduledoc false
+
+  def generate(_) do
+    l = TypeClass.Property.Generator.generate([])
+
+    l
+    |> Stream.cycle()
+    |> Stream.take(length(l))
+  end
+end
+
 defimpl TypeClass.Property.Generator, for: Tuple do
   @moduledoc false
 
