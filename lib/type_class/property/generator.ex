@@ -120,17 +120,11 @@ defimpl TypeClass.Property.Generator, for: Stream do
   @moduledoc false
 
   def generate(_) do
-    1
-    |> Stream.unfold(fn acc ->
-      next =
-        [0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, "", "", "", "", "", "", {}, [], %{}]
-        |> Enum.random()
-        |> TypeClass.Property.Generator.generate()
+    l = TypeClass.Property.Generator.generate([])
 
-      {acc, next}
-    end)
-    |> Stream.drop(1)
-    |> Stream.take(:rand.uniform(4))
+    l
+    |> Stream.cycle()
+    |> Stream.take(length(l))
   end
 end
 
